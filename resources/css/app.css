@@ -1,0 +1,40 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source "../**/*.blade.php";
+@source "../**/*.js";
+@source "../**/*.vue";
+@source "../views";
+
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-lekton:'Lekton','sans-serif';
+    --font-lekton-bold:'Lekton-bold','sans-serif';
+    --color-primary: #E60010;
+    --color-primary-100: oklch(50.5% 0.213 27.518);
+    --color-secondary: #141414;
+    --color-secondary-100: #18181B;
+
+}
+
+
+@font-face {
+    font-family: 'Lekton';
+    src: url('../fonts/Lekton-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lekton-bold';
+    src: url('../fonts/Lekton-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+

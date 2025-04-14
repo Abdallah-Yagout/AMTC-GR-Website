@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}" dir="{{ session('dir', 'ltr') }}">
-
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,8 +18,9 @@
         @livewireStyles
         <script src="{{ asset('js/jquery.js') }}"></script>
     </head>
-    <body class="font-lekton-bold tracking-widest antialiased">
-        <x-banner />
+    <body class="{{ app()->getLocale() === 'ar' ? 'font-cairo' : 'font-lekton-bold' }}">
+
+    <x-banner />
 
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             @livewire('navigation-menu')

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [\App\Http\Controllers\HomeController::class,'index'])->name('home');
+Route::get('/community', [\App\Http\Controllers\CommunityController::class,'index'])->name('community.index');
 
 Route::middleware([
     'auth:sanctum',

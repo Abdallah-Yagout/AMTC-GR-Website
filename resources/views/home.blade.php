@@ -104,21 +104,19 @@
     </section>
     <section class="bg-[#111] text-white py-12 border-t border-[#17171A]">
         <div class="container mx-auto px-4">
-            <h2 class="text-3xl md:text-4xl font-semibold text-center mb-10">Community Highlights</h2>
+            <h2 class="text-3xl md:text-4xl font-semibold text-center mb-10">{{__('Community Highlights')}}</h2>
 
             <div class="grid md:grid-cols-2 gap-8">
                 <!-- Card 1 -->
                 <div class="flex items-start gap-4 bg-[#111] p-6 rounded-lg">
                     <img src="{{asset('img/image 11.png')}}" alt="User Image" class="w-12 h-12 rounded-full">
                     <div>
-                        <h3 class="font-bold text-lg">Mohammed (Winner of GR Supra GT Cup Round 2)</h3>
+                        <h3 class="font-bold text-lg">{{__('Mohammed (Winner of GR Supra GT Cup Round 2)')}}</h3>
                         <p class="text-sm text-gray-300 mt-1">
-                            An incredible performance at Spa-Francorchamps secures Davidson’s second victory of the season.
+                            {{__('An incredible performance at Spa-Francorchamps secures Davidson’s second victory of the season.')}}
                         </p>
                         <div class="flex text-xs text-gray-500 mt-2 space-x-4">
-                            <span>2 days ago</span>
-                            <span>2.4k 👁️</span>
-                            <span>136 💬</span>
+                            <span>{{__('2 days ago')}}</span>
                         </div>
                     </div>
                 </div>
@@ -127,14 +125,12 @@
                 <div class="flex items-start gap-4 bg-[#111] p-6 rounded-lg">
                     <img src="{{asset('img/image 12.png')}}" alt="User Image" class="w-12 h-12 rounded-full">
                     <div>
-                        <h3 class="font-bold text-lg">Toni Breidinger</h3>
+                        <h3 class="font-bold text-lg">{{__('Toni Breidinger')}}</h3>
                         <p class="text-sm text-gray-300 mt-1">
-                            Toyota Gazoo Racing announces new track pack featuring iconic Japanese circuits.
+                            {{__('Toyota Gazoo Racing announces new track pack featuring iconic Japanese circuits.')}}
                         </p>
                         <div class="flex text-xs text-gray-500 mt-2 space-x-4">
-                            <span>4 days ago</span>
-                            <span>6.4k 👁️</span>
-                            <span>56 💬</span>
+                            <span>{{__('4 days ago')}}</span>
                         </div>
                     </div>
                 </div>

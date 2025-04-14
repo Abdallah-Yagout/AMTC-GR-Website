@@ -14,7 +14,7 @@
                     <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
                         {{ __('Home') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('community')">
+                    <x-nav-link href="{{ route('community.index') }}" :active="request()->routeIs('community.index')">
                         {{ __('Community') }}
                     </x-nav-link>
                     <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('tournament')">
@@ -32,18 +32,18 @@
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <!-- Language Switcher -->
 
-                <div class="relative ms-4" x-data="{ open: false }" @click.away="open = false">
-                    <button @click="open = !open" class="flex items-center space-x-1 text-gray-300 hover:text-white focus:outline-none">
+                <div class="relative ms-4 border border-3 me-6 border-white rounded-full" x-data="{ open: false }" @click.away="open = false">
+                    <button @click="open = !open" class="flex items-center space-x-1 px-2.5 py-2 text-gray-300 hover:text-white focus:outline-none">
                         @if(app()->getLocale() == 'ar')
-                            <span class="fi fi-sa fis rounded"></span>
-                            <span class="text-sm">العربية</span>
+{{--                            <span class="fi fi-sa fis rounded"></span>--}}
+                            <span class="text-sm">AR</span>
                         @else
-                            <span class="fi fi-gb fis rounded"></span>
-                            <span class="text-sm">English</span>
+{{--                            <span class="fi fi-gb fis rounded"></span>--}}
+                            <span class="text-sm">EN</span>
                         @endif
-                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
+{{--                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">--}}
+{{--                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>--}}
+{{--                        </svg>--}}
                     </button>
 
                     <div x-show="open" x-transition:enter="transition ease-out duration-100"

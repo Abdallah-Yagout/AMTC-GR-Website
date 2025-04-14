@@ -12,14 +12,11 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
     'Segoe UI Symbol', 'Noto Color Emoji';
     --font-lekton:'Lekton','sans-serif';
-    --font-cairo:'Cairo','sans-serif';
     --font-lekton-bold:'Lekton-bold','sans-serif';
     --color-primary: #E60010;
     --color-primary-100: oklch(50.5% 0.213 27.518);
-    --color-primary-200:#FF0000 ;
     --color-secondary: #141414;
     --color-secondary-100: #18181B;
-    --color-gray-50: #999999;
 
 }
 

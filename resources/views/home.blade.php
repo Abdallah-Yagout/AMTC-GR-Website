@@ -4,7 +4,7 @@
         <div class="absolute inset-0 z-0">
             <img src="{{ asset('img/gazo_car.png') }}"
                  alt="Toyota Gazoo Racing E-Sports Background"
-                 class="w-full h-auto md:h-screen object-cover opacity-70">
+                 class="w-full h-full md:h-screen object-cover">
             <div class="absolute inset-0 bg-black/50"></div>
         </div>
 

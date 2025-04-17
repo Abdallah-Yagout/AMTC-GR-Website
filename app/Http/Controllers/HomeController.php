@@ -29,12 +29,10 @@ class HomeController extends Controller
     {
         $availableLocales = ['en', 'ar'];
         if (in_array($locale, $availableLocales)) {
-            // Store the selected locale in the session
             Session::put('locale', $locale);
             Session::put('dir', $locale === 'ar' ? 'rtl' : 'ltr');
-
-            // Set the application locale immediately for this request
             App::setLocale($locale);
+
         }
 
 

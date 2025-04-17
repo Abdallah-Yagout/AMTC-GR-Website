@@ -15,6 +15,7 @@
     --font-lekton-bold:'Lekton-bold','sans-serif';
     --color-primary: #E60010;
     --color-primary-100: oklch(50.5% 0.213 27.518);
+    --color-primary-200: rgba(255,0,0,40%);
     --color-secondary: #141414;
     --color-secondary-100: #18181B;
 

@@ -11,8 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('communities', function (Blueprint $table) {
+        Schema::create('forums', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users');
+            $table->json('title');
+            $table->string('slug');
+            $table->text('body');
+            $table->integer('upvotes')->default(0);
+            $table->string('image');
+            $table->unsignedTinyInteger('status')->default(0);
             $table->timestamps();
         });
     }
@@ -22,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('communities');
+        Schema::dropIfExists('forums');
     }
 };

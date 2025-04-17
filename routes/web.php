@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [\App\Http\Controllers\HomeController::class,'index'])->name('home');
-Route::get('/community', [\App\Http\Controllers\CommunityController::class,'index'])->name('community.index');
+Route::get('/', [\App\Http\Controllers\HomeController::class,'index'])->name('home')->middleware(\App\Http\Middleware\SetLocale::class);
+Route::get('/community', [\App\Http\Controllers\ForumController::class,'index'])->name('forum.index')->middleware(\App\Http\Middleware\SetLocale::class);
 
 Route::middleware([
     'auth:sanctum',

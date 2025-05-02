@@ -7,7 +7,7 @@
         <div>
             <p class="font-semibold mb-1">{{__('An incredible performance at Spa-Francorchamps secures Davidson’s second victory of the season.')}}</p>
             <div class="flex items-center space-x-2 text-sm text-gray-400">
-                <img src="{{ asset('img/image 11.png') }}" alt="User Avatar" class="w-6 h-6 rounded-full object-cover" />
+                <img src="{{ asset('storage').'/'.$forum->user->profile_photo_path }}" alt="User Avatar" class="w-6 h-6 rounded-full object-cover" />
                 <p><span class="text-primary font-medium">{{$forum->user->name}}</span> • {{$forum->created_at->diffForHumans()}}</p>
             </div>
         </div>

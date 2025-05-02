@@ -17,11 +17,11 @@
                     <x-nav-link href="{{ route('forum.index') }}" :active="request()->routeIs('forum.index')">
                         {{ __('Community') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('tournament')">
+                    <x-nav-link href="{{ route('tournament.index') }}" :active="request()->routeIs('tournament')">
                         {{ __('Tournament') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('live')">
-                        {{ __('Live') }}
+                    <x-nav-link href="{{ route('participants.index') }}" :active="request()->routeIs('live')">
+                        {{ __('Leaderboard') }}
                     </x-nav-link>
                     <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('listing')">
                         {{ __('Listing') }}
@@ -177,7 +177,7 @@
                     </div>
                 @else
                     <div class="flex items-center gap-4">
-                        <a href="{{ route('login') }}" class="inline-block px-5 py-1.5 hover:bg-primary-100 bg-primary  text-white border border-transparent hover:border-[#19140035]  rounded-3xl text-sm leading-normal">
+                        <a href="{{ route('register') }}" class="inline-block px-5 py-1.5 hover:bg-primary-100 bg-primary  text-white border border-transparent hover:border-[#19140035]  rounded-3xl text-sm leading-normal">
                             {{ __('Join Race') }}
                         </a>
                     </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Tournament;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
@@ -21,7 +22,8 @@ class HomeController extends Controller
         $data['upcoming_event']=Event::where('date', '>', Carbon::now())
             ->orderBy('date', 'asc')
             ->first();
-            $data['events']=Event::take(3)->latest()->get();
+            $data['tournaments']=Tournament::take(3)->latest()->get();
+
         return view('home',$data);
     }
 

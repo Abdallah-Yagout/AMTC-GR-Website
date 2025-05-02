@@ -18,11 +18,11 @@
         @livewireStyles
         <script src="{{ asset('js/jquery.js') }}"></script>
     </head>
-    <body class="{{ app()->getLocale() === 'ar' ? 'font-cairo' : 'font-lekton-bold' }}">
+    <body class="{{ app()->getLocale() === 'ar' ? 'font-cairo' : 'font-changa' }}">
 
     <x-banner />
 
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div class="min-h-screen bg-black">
             @livewire('navigation-menu')
 
             <!-- Page Heading -->

@@ -2,24 +2,22 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\EventResource\Pages;
-use App\Filament\Resources\EventResource\RelationManagers;
-use App\Models\Event;
+use App\Filament\Resources\NewsResource\Pages;
+use App\Filament\Resources\NewsResource\RelationManagers;
+use App\Models\News;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class EventResource extends Resource
+class NewsResource extends Resource
 {
-    protected static ?string $model = Event::class;
+    protected static ?string $model = News::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -28,13 +26,9 @@ class EventResource extends Resource
         return $form
             ->schema([
                 TextInput::make('title'),
-                Select::make('location')->options([
-                'Sanaa'=>'sanaa',
-                'aden'=>'aden',
-                ]),
                 Forms\Components\FileUpload::make('image')
-                ->directory('events'),
-                Forms\Components\DatePicker::make('date'),
+                    ->directory('events'),
+                Forms\Components\RichEditor::make('description'),
                 Forms\Components\Toggle::make('status')
             ]);
     }
@@ -43,11 +37,7 @@ class EventResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('title'),
-                TextColumn::make('location'),
-                Tables\Columns\ImageColumn::make('image'),
-                TextColumn::make('date'),
-                ToggleColumn::make('status')
+                //
             ])
             ->filters([
                 //
@@ -72,9 +62,9 @@ class EventResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListEvents::route('/'),
-            'create' => Pages\CreateEvent::route('/create'),
-            'edit' => Pages\EditEvent::route('/{record}/edit'),
+            'index' => Pages\ListNews::route('/'),
+            'create' => Pages\CreateNews::route('/create'),
+            'edit' => Pages\EditNews::route('/{record}/edit'),
         ];
     }
 }

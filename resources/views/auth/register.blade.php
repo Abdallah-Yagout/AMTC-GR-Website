@@ -9,7 +9,6 @@
         <h1 class="text-3xl py-4 text-white font-bold mb-10">Register</h1>
         <form method="POST" action="{{ route('register') }}">
             @csrf
-
             <div>
                 <x-label for="name" value="{{ __('Name') }}" />
                 <x-input placeholder="name" id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
@@ -49,7 +48,7 @@
 
             <div class="flex flex-col items-center justify-end mt-4">
 
-               <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 w-full dark:bg-primary border border-transparent rounded-md font-semibold text-xs text-white dark:text-white uppercase mt-6 tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-hidden justify-center focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-50 transition ease-in-out duration-150">
+               <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 w-full dark:bg-primary border border-transparent rounded-md font-semibold text-xs text-white dark:text-white uppercase mt-6 tracking-widest hover:bg-primary-100 dark:hover:bg-primary-100 focus:bg-primary-100 dark:focus:bg-primary-100 active:bg-primary-100 dark:active:bg-primary-100 focus:outline-hidden justify-center focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-50 transition ease-in-out duration-150">
                     {{ __('Register') }}
                </button>
                 <a class="underline mt-6 text-sm text-white dark:text-white hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">

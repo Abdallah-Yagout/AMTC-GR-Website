@@ -6,15 +6,51 @@ use App\Models\participants;
 use App\Models\Tournament;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class ParticipantsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data['tournament']=Tournament::active()->first();
-        $data['participants']=participants::where('tournament_id',$data['tournament']->id)->get();
-        return view('participants.index',$data);
+        // Get all seasons for the dropdown
+        $seasons = Tournament::select('season')->distinct()->orderBy('season', 'desc')->get();
+
+        // Get the selected season from request or use the latest one
+        $selectedSeason = $request->season ?? Tournament::max('season');
+
+        // Get active tournament for real-time results
+        $data['tournament'] = Tournament::active()->first();
+
+        // Get participants for real-time results
+        $data['participants'] = Participants::where('tournament_id', $data['tournament']->id)
+            ->whereNotNull('position')
+            ->get();
+
+        // Get season leaderboard data with wins and points
+        $data['season_leaderboard'] = Participants::select([
+            'user_id',
+            'position',
+            'users.name',
+            'users.profile_photo_path',
+            DB::raw('COUNT(CASE WHEN is_winner = 1 THEN 1 END) as wins'),
+            DB::raw('SUM(points) as total_points'),
+            DB::raw('AVG(time_taken) as avg_time')
+        ])
+            ->join('users', 'users.id', '=', 'participants.user_id')
+            ->whereHas('tournament', function($query) use ($selectedSeason) {
+                $query->where('season', $selectedSeason);
+            })
+            ->groupBy('user_id', 'users.name', 'users.profile_photo_path')
+            ->orderByDesc('wins')
+            ->orderByDesc('total_points')
+            ->orderBy('avg_time')
+            ->get();
+
+        $data['seasons'] = $seasons;
+        $data['selectedSeason'] = $selectedSeason;
+
+        return view('participants.index', $data);
     }
 
     public function apply($id)

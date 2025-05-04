@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Event;
+use App\Models\News;
 use App\Models\Tournament;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -19,7 +19,7 @@ class HomeController extends Controller
     public function index()
     {
 
-        $data['upcoming_event']=Event::where('date', '>', Carbon::now())
+        $data['upcoming_event']=News::where('date', '>', Carbon::now())
             ->orderBy('date', 'asc')
             ->first();
             $data['tournaments']=Tournament::take(3)->latest()->get();

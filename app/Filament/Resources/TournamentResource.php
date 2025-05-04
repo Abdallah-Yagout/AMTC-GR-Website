@@ -32,7 +32,8 @@ class TournamentResource extends Resource
                     'aden'=>'aden',
                     'mukalla'=>'mukalla',
                 ])->multiple(),
-                Forms\Components\DatePicker::make('date')
+                Forms\Components\DatePicker::make('date'),
+                TextInput::make('season'),
 
             ]);
     }
@@ -48,6 +49,7 @@ class TournamentResource extends Resource
                     ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('date'),
+                Tables\Columns\TextColumn::make('season')->badge(),
             ])
             ->filters([
                 //

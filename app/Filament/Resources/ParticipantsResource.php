@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ParticipantsResource\Pages;
 use App\Filament\Resources\ParticipantsResource\RelationManagers;
-use App\Models\Participants;
+use App\Models\participant;
 use App\Models\Tournament;
 use App\Models\User;
 use Filament\Forms;
@@ -21,7 +21,7 @@ use Illuminate\Support\Carbon;
 
 class ParticipantsResource extends Resource
 {
-    protected static ?string $model = Participants::class;
+    protected static ?string $model = participant::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 

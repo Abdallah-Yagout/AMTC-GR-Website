@@ -15,4 +15,9 @@ class Tournament extends Model
         return $query->where('status', 1);
     }
 
+    public function participants()
+    {
+        return $this->hasMany(\App\Models\participant::class);
+    }
+
 }

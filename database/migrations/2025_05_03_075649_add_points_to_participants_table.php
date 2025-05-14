@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('participants', function (Blueprint $table) {
+        Schema::table('leaderboard', function (Blueprint $table) {
             $table->integer('points')->default(0)->after('wins');
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('participants', function (Blueprint $table) {
+        Schema::table('leaderboard', function (Blueprint $table) {
             //
         });
     }

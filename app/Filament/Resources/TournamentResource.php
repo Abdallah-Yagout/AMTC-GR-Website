@@ -32,8 +32,15 @@ class TournamentResource extends Resource
                     'aden'=>'aden',
                     'mukalla'=>'mukalla',
                 ])->multiple(),
-                Forms\Components\DatePicker::make('date'),
-                TextInput::make('season'),
+                Select::make('tournament_id')
+                    ->options(
+                        Tournament::pluck('title','id')
+                    ),
+                Forms\Components\DatePicker::make('start_date'),
+                Forms\Components\DatePicker::make('end_date'),
+                Forms\Components\TextInput::make('number_of_players')
+                ->numeric(),
+                Forms\Components\Toggle::make('status'),
 
             ]);
     }
@@ -48,8 +55,9 @@ class TournamentResource extends Resource
                     ->formatStateUsing(fn ($state) => is_array($state) ? implode(', ', $state) : $state)
                     ->badge()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('date'),
-                Tables\Columns\TextColumn::make('season')->badge(),
+                Tables\Columns\TextColumn::make('start_date'),
+               Tables\Columns\ToggleColumn::make('status')
+
             ])
             ->filters([
                 //
@@ -67,7 +75,7 @@ class TournamentResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\ParticipantsRelationManager::class,
         ];
     }
 

@@ -51,6 +51,11 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+// In User.php
+    public function participants()
+    {
+        return $this->hasMany(\App\Models\participant::class);
+    }
 
     /**
      * Get the attributes that should be cast.

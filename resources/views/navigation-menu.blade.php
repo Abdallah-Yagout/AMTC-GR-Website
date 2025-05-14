@@ -5,7 +5,7 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a class="flex flex-1 items-center justify-center sm:justify-center md:justify-start" href="{{ route('dashboard') }}">
+                    <a class="flex flex-1 items-center justify-center sm:justify-center md:justify-start" href="{{ route('home') }}">
                         <img class="h-10 w-auto" src="{{ asset('img/logo.png') }}" alt="Your Company">
                     </a>
                 </div>
@@ -20,11 +20,11 @@
                     <x-nav-link href="{{ route('tournament.index') }}" :active="request()->routeIs('tournament')">
                         {{ __('Tournament') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('participants.index') }}" :active="request()->routeIs('live')">
+                    <x-nav-link href="{{ route('leaderboard.index') }}" :active="request()->routeIs('live')">
                         {{ __('Leaderboard') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('listing')">
-                        {{ __('Listing') }}
+                    <x-nav-link href="{{ route('news.index') }}" :active="request()->routeIs('news')">
+                        {{ __('News') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -199,8 +199,22 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+            <x-responsive-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
                 {{ __('Home') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link href="{{ route('tournament.index') }}" :active="request()->routeIs('tournament.index')">
+                {{ __('Tournament') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link href="{{ route('forum.index') }}" :active="request()->routeIs('forum.index')">
+                {{ __('Community') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link href="{{ route('leaderboard.index') }}" :active="request()->routeIs('leaderboard.index')">
+                {{ __('Leaderboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link href="{{ route('news.index') }}" :active="request()->routeIs('news.index')">
+                {{ __('News') }}
             </x-responsive-nav-link>
         </div>
 

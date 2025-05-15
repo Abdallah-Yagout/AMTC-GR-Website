@@ -6,6 +6,7 @@ use App\Filament\Resources\TournamentResource\Pages;
 use App\Filament\Resources\TournamentResource\RelationManagers;
 use App\Models\Tournament;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -40,8 +41,8 @@ class TournamentResource extends Resource
                 Forms\Components\DatePicker::make('end_date'),
                 Forms\Components\TextInput::make('number_of_players')
                 ->numeric(),
-                Forms\Components\Toggle::make('status'),
-
+                FileUpload::make('image')
+                ->directory('tournaments')
             ]);
     }
 
@@ -55,6 +56,9 @@ class TournamentResource extends Resource
                     ->formatStateUsing(fn ($state) => is_array($state) ? implode(', ', $state) : $state)
                     ->badge()
                     ->searchable(),
+                Tables\Columns\ImageColumn::make('image')
+                ->size(100)
+                ->circular(),
                 Tables\Columns\TextColumn::make('start_date'),
                Tables\Columns\ToggleColumn::make('status')
 

@@ -55,9 +55,14 @@ class User extends Authenticatable implements FilamentUser
         'profile_photo_url',
     ];
 // In User.php
+    public function leaderboards()
+    {
+        return $this->hasMany(Leaderboard::class);
+    }
+
     public function participants()
     {
-        return $this->hasMany(\App\Models\participant::class);
+        return $this->hasMany(Participant::class);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Tournament extends Model
 {
@@ -12,12 +13,18 @@ class Tournament extends Model
 
     public function scopeActive($query)
     {
-        return $query->where('status', 1);
+        return $query->where('status', '1');
+    }
+
+
+    public function leaderboards()
+    {
+        return $this->hasMany(Leaderboard::class);
     }
 
     public function participants()
     {
-        return $this->hasMany(\App\Models\participant::class);
+        return $this->hasMany(Participant::class);
     }
 
 }

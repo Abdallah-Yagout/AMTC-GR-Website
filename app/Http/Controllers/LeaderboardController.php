@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Leaderboard;
 use App\Models\participant;
 use App\Models\Tournament;
 use App\Models\User;
@@ -14,54 +15,57 @@ class LeaderboardController extends Controller
 
     public function index(Request $request)
     {
-        // Get all tournaments
-        $data['tournaments'] = Tournament::orderBy('date', 'desc')->get();
 
-        // Get active tournament
-        $data['tournament'] = Tournament::active()->first();
 
-        // Get final tournament (assuming it's marked as is_final = true)
-        $data['finalTournament'] = Tournament::where('is_final', true)->first();
+        // Get active tournament (where tournament_id is null - main tournament)
+        $data['tournament'] = Tournament::active()
+            ->whereNull('tournament_id')
+            ->first();
+        // Initialize variables to avoid undefined errors
+        $data['finalTournament'] = null;
+        $data['leaderboard'] = collect();
+        $data['finalLeaderboard'] = collect();
+        $data['season_leaderboard'] = collect();
 
-        // Real-time leaderboard for current tournament
-        $data['leaderboard'] = participant::where('tournament_id', $data['tournament']->id ?? null)
-            ->whereNotNull('position')
-            ->with('user')
-            ->get();
-
-        // Final tournament leaderboard if exists
-        if ($data['finalTournament']) {
-            $data['finalLeaderboard'] = participant::where('tournament_id', $data['finalTournament']->id)
-                ->whereNotNull('position')
-                ->with('user')
+        // Get leaderboard for active main tournament if exists
+        if ($data['tournament']) {
+            $data['leaderboard'] = Leaderboard::with('user')
+                ->where('tournament_id', $data['tournament']->id)
                 ->orderBy('position')
                 ->get();
+
+            // Get final tournament (where tournament_id points to the main tournament)
+            $data['finalTournament'] = Tournament::active()->where('tournament_id', $data['tournament']->id)
+                ->first();
+
+            // Get final leaderboard if exists
+            if ($data['finalTournament']) {
+                $data['finalLeaderboard'] = Leaderboard::active()->with('user')
+                    ->where('tournament_id', $data['finalTournament']->id)
+                    ->orderBy('position')
+                    ->get();
+            }
+
+            // Get season leaderboard grouped by location
+            // Include both main tournament and its sub-tournaments
+            $data['season_leaderboard'] = Leaderboard::with('user')
+                ->whereHas('tournament', function($query) use ($data) {
+                    $query->where(function($q) use ($data) {
+                            $q->whereNull('tournament_id') // Main tournament
+                            ->orWhere('tournament_id', $data['tournament']->id); // Its sub-tournaments
+                        });
+                })
+                ->get()
+                ->groupBy('location')
+                ->map(function($locationGroup) {
+                    return $locationGroup->sortBy('position')->values();
+                });
+
         }
 
-        // Leaderboard per location (all tournaments combined)
-        $participantsByLocation = participant::select([
-            'location',
-            'user_id',
-            'position',
-            'users.name',
-            'users.profile_photo_path',
-            DB::raw('COUNT(CASE WHEN is_winner = 1 THEN 1 END) as wins'),
-            DB::raw('SUM(points) as total_points'),
-            DB::raw('AVG(time_taken) as avg_time')
-        ])
-            ->join('users', 'users.id', '=', 'participants.user_id')
-            ->groupBy('location', 'user_id', 'users.name', 'users.profile_photo_path')
-            ->orderBy('location')
-            ->orderByDesc('wins')
-            ->orderByDesc('total_points')
-            ->orderBy('avg_time')
-            ->get()
-            ->groupBy('location');
-
-        $data['season_leaderboard'] = $participantsByLocation;
-
         return view('leaderboard.index', $data);
-    }    public function apply(Tournament $id)
+    }
+    public function apply(Tournament $id)
     {
 
         return view('tournament.apply', ['tournament' => $id]);

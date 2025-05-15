@@ -1,6 +1,8 @@
-@props(['date', 'title', 'location', 'id'])
+@props(['date', 'title', 'location', 'image','id'])
 
 <div class="bg-secondary-100 rounded-2xl overflow-hidden shadow-lg max-w-sm">
+    <img src="{{ $image }}" alt="{{ $title }}" class="w-full h-48 object-cover">
+
     <div class="p-5">
         <p class="text-primary text-sm font-semibold mb-1">
             {{ \Carbon\Carbon::parse($date)->translatedFormat('F j, Y') }}

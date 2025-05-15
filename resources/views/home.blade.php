@@ -93,7 +93,7 @@
                 @foreach($tournaments as $tournament)
 
                     <x-event-card
-{{--                        :image="asset('storage/' . $tournament->image)"--}}
+                        :image="asset('storage/' . $tournament->image)"
                         :date="$tournament->date"
                         :title="$tournament->title"
                         :location="$tournament->location"

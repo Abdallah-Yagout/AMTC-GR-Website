@@ -4,9 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class participant extends Model
+class Participant extends Model
 {
-    protected $table = 'participants';
     public function user()
     {
         return $this->belongsTo('App\Models\User');

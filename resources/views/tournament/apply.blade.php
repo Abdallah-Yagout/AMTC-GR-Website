@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="flex flex-col items-center pt-6 sm:pt-0">
-        <section class="w-full bg-primary-200 px-6 sm:px-20 py-4 dark:text-white">
+        <section class="w-full bg-primary-200 px-6 sm:px-20 py-4 text-white">
             <h1 class="text-3xl font-bold">{{ __('Join the Competition') }}</h1>
             <p class="mb-8">{{ __('Submit your entry and monitor your progress — full speed ahead!') }}</p>
         </section>
@@ -37,7 +37,7 @@
                         <select
                             required
                             name="gender"
-                            class="w-full p-2 rounded border border-gray-300 focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400 dark:bg-transparent bg-transparent focus:bg-transparent text-gray-400 appearance-none hover:bg-transparent transition-colors duration-200">
+                            class="w-full p-2 rounded border border-gray-300 focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400 bg-transparent bg-transparent focus:bg-transparent text-gray-400 appearance-none hover:bg-transparent transition-colors duration-200">
                             <option value="">{{ __('Select') }}</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
@@ -51,7 +51,7 @@
                         <select
                             name="city"
                             required
-                            class="w-full p-2 rounded border border-gray-300 focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400 dark:bg-transparent bg-transparent focus:bg-transparent text-gray-400 appearance-none hover:bg-transparent transition-colors duration-200">
+                            class="w-full p-2 rounded border border-gray-300 focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400 bg-transparent focus:bg-transparent text-gray-400 appearance-none hover:bg-transparent transition-colors duration-200">
                             <option value="">{{ __('Select') }}</option>
                             @foreach($tournament->location as $city)
                                 <option value="{{$city}}">{{$city}}</option>

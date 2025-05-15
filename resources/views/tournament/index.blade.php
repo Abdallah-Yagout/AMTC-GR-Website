@@ -1,5 +1,5 @@
 <x-app-layout>
-    <section class="dark:bg-primary-200 px-10 py-10 dark:text-white">
+    <section class="bg-primary-200 px-10 py-10 text-white">
         <h1 class="text-3xl font-bold mb-2">Let the Race Begin!</h1>
         <p class="text-lg">Check out detailed event schedules and gear up for action in Mukalla, Aden, and Sana'a</p>
     </section>
@@ -24,14 +24,14 @@
         @foreach($tournamentsByLocation as $location => $tournaments)
             <div x-show="tab === '{{ $location }}'" class="space-y-3 sm:space-y-4">
                 @forelse($tournaments as $tournament)
-                    <div class="p-3 sm:p-4 shadow-sm bg-white dark:bg-secondary-100 dark:text-white rounded-lg">
+                    <div class="p-3 sm:p-4 shadow-sm  bg-secondary-100 text-white rounded-lg">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
                             <div class="flex-1">
                                 <h3 class="text-lg sm:text-xl font-semibold line-clamp-2">{{ $tournament->title }}</h3>
-                                <p class="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-1 line-clamp-2 sm:line-clamp-3">
+                                <p class="text-xs sm:text-sm text-gray-600 text-gray-400 mt-1 line-clamp-2 sm:line-clamp-3">
                                     {{ $tournament->description }}
                                 </p>
-                                <p class="text-xs sm:text-sm mt-2 text-gray-700 dark:text-gray-300">
+                                <p class="text-xs sm:text-sm mt-2 text-gray-300">
                                     Date: {{ \Carbon\Carbon::parse($tournament->date)->format('F j, Y') }}
                                 </p>
                             </div>
@@ -53,7 +53,7 @@
                         </div>
                     </div>
                 @empty
-                    <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 p-4 text-center">
+                    <p class="text-sm sm:text-base text-gray-600 text-gray-400 p-4 text-center">
                         No tournaments available in {{ ucfirst($location) }}.
                     </p>
                 @endforelse

@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ParticipantsResource\Pages;
-use App\Filament\Resources\ParticipantsResource\RelationManagers;
-use App\Models\participant;
+use App\Filament\Resources\ParticipantResource\Pages;
+use App\Filament\Resources\ParticipantResource\RelationManagers;
+use App\Models\Leaderboard;
+use App\Models\Participant;
 use App\Models\Tournament;
 use App\Models\User;
 use Filament\Forms;
@@ -14,14 +15,15 @@ use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Carbon;
 
-class ParticipantsResource extends Resource
+class ParticipantResource extends Resource
 {
-    protected static ?string $model = participant::class;
+    protected static ?string $model = Participant::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -29,9 +31,6 @@ class ParticipantsResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('user_id')
-                ->options(User::all()->pluck('name', 'id'))
-                ->searchable(),
                 Select::make('tournament_id')
                     ->label('Tournament')
                     ->options(
@@ -47,13 +46,15 @@ class ParticipantsResource extends Resource
                     ->afterStateUpdated(function (Set $set, ?string $state) {
                         $tournament = Tournament::find($state);
                         if ($tournament) {
-                            $locations = collect($tournament->locations) // assume locations is a JSON column like ["Aden", "Sana'a"]
-                            ->mapWithKeys(fn($loc) => [$loc => $loc])
+                            // Set available locations
+                            $locations = collect($tournament->location)
+                                ->mapWithKeys(fn($loc) => [$loc => $loc])
                                 ->toArray();
-                            $set('available_locations', $locations); // use a custom field or state holder if needed
+                            $set('available_locations', $locations);
                         }
                     }),
-
+                Forms\Components\Select::make('user_id')
+                    ->options(User::pluck('name','id')),
                 Select::make('location')
                     ->label('Location')
                     ->options(function (Get $get) {
@@ -64,12 +65,7 @@ class ParticipantsResource extends Resource
                     })
                     ->searchable()
                     ->required(),
-                Forms\Components\TextInput::make('time_taken')
-                ->numeric(),
-                Forms\Components\TextInput::make('position')
-                ->numeric(),
-                Forms\Components\TextInput::make('is_winner')
-                ->numeric(),
+
             ]);
     }
 
@@ -77,17 +73,32 @@ class ParticipantsResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.name'),
-                Tables\Columns\TextColumn::make('tournament.title'),
-                Tables\Columns\TextColumn::make('location'),
-                Tables\Columns\TextColumn::make('is_winner')
-                ->formatStateUsing(function ($state) {
-                    return $state ? 'Yes' : 'No';
-                })->badge(),
-                Tables\Columns\TextColumn::make('position'),
+                TextColumn::make('tournament.title'),
+                TextColumn::make('user.name'),
+                TextColumn::make('location'),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('tournament_id')
+                    ->label('Tournament')
+                    ->options(
+                        Tournament::all()->mapWithKeys(function ($tournament) {
+                            $formattedDate = \Carbon\Carbon::parse($tournament->date)->format('Y-m-d');
+                            return [
+                                $tournament->id => "{$tournament->title} . {$formattedDate}"
+                            ];
+                        })->toArray()
+                    )
+                    ->searchable(),
+
+                Tables\Filters\SelectFilter::make('location')
+                    ->label('Location')
+                    ->options(
+                        Leaderboard::query()
+                            ->distinct()
+                            ->pluck('location', 'location')
+                            ->toArray()
+                    )
+                    ->searchable(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -110,8 +121,8 @@ class ParticipantsResource extends Resource
     {
         return [
             'index' => Pages\ListParticipants::route('/'),
-            'create' => Pages\CreateParticipants::route('/create'),
-            'edit' => Pages\EditParticipants::route('/{record}/edit'),
+            'create' => Pages\CreateParticipant::route('/create'),
+            'edit' => Pages\EditParticipant::route('/{record}/edit'),
         ];
     }
 }

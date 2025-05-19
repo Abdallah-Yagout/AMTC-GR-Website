@@ -1,0 +1,55 @@
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../vendor/laravel/jetstream/**/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-lekton:'Lekton','sans-serif';
+    --font-changa:'Changa','sans-serif';
+    --font-lekton-bold:'Lekton-bold','sans-serif';
+    --color-primary: #E60010;
+    --color-primary-100: oklch(50.5% 0.213 27.518);
+    --color-primary-200: rgba(255,0,0,40%);
+    --color-secondary: #141414;
+    --color-secondary-100: #18181B;
+    --color-secondary-200: #4F4F50;
+    --color-secondary-300: #71717A;
+
+}
+@font-face {
+    font-family: 'Changa';
+    src: url('../fonts/Changa-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lekton';
+    src: url('../fonts/Lekton-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Cairo';
+    src: url('../fonts/Cairo-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Lekton-bold';
+    src: url('../fonts/Lekton-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+

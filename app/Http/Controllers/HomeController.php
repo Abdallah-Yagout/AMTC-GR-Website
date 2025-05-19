@@ -19,9 +19,11 @@ class HomeController extends Controller
     public function index()
     {
 
-        $data['upcoming_event']=News::where('date', '>', Carbon::now())
-            ->orderBy('date', 'asc')
+        $data['upcoming_tournament'] = Tournament::where('start_date', '>=', Carbon::now())
+            ->orderBy('start_date', 'asc')  // Changed from 'date' to 'start_date'
             ->first();
+
+
         $data['tournaments']=Tournament::take(3)->latest()->get();
         $data['news']=News::take(3)->latest()->get();
 

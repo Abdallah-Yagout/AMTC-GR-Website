@@ -15,53 +15,55 @@ class LeaderboardController extends Controller
 
     public function index(Request $request)
     {
+        // Get selected year from request or default to current year
+        $selectedYear = $request->input('year', date('Y'));
 
+        // Get all tournaments with their leaderboards
+        $tournaments = Tournament::with(['leaderboards' => function($query) {
+            $query->with('user')->orderBy('position');
+        }])->orderBy('start_date')->get();
+        // Group tournaments by year
+        $tournamentsByYear = $tournaments->groupBy(function($tournament) {
+            return \Carbon\Carbon::parse($tournament->start_date)->format('Y');
+        });
 
-        // Get active tournament (where tournament_id is null - main tournament)
-        $data['tournament'] = Tournament::active()
-            ->whereNull('tournament_id')
-            ->first();
-        // Initialize variables to avoid undefined errors
-        $data['finalTournament'] = null;
-        $data['leaderboard'] = collect();
-        $data['finalLeaderboard'] = collect();
-        $data['season_leaderboard'] = collect();
+        // Get available years (sorted newest first)
+        $availableYears = $tournamentsByYear->keys()->sortDesc()->values()->toArray();
 
-        // Get leaderboard for active main tournament if exists
-        if ($data['tournament']) {
-            $data['leaderboard'] = Leaderboard::with('user')
-                ->where('tournament_id', $data['tournament']->id)
-                ->orderBy('position')
-                ->get();
-
-            // Get final tournament (where tournament_id points to the main tournament)
-            $data['finalTournament'] = Tournament::active()->where('tournament_id', $data['tournament']->id)
-                ->first();
-
-            // Get final leaderboard if exists
-            if ($data['finalTournament']) {
-                $data['finalLeaderboard'] = Leaderboard::active()->with('user')
-                    ->where('tournament_id', $data['finalTournament']->id)
-                    ->orderBy('position')
-                    ->get();
-            }
-
-            // Get season leaderboard grouped by location
-            // Include both main tournament and its sub-tournaments
-            $data['season_leaderboard'] = Leaderboard::with('user')
-                ->whereHas('tournament', function($query) use ($data) {
-                    $query->where(function($q) use ($data) {
-                            $q->whereNull('tournament_id') // Main tournament
-                            ->orWhere('tournament_id', $data['tournament']->id); // Its sub-tournaments
-                        });
-                })
-                ->get()
-                ->groupBy('location')
-                ->map(function($locationGroup) {
-                    return $locationGroup->sortBy('position')->values();
-                });
-
+        // Set default year if not selected
+        if (!$selectedYear && count($availableYears) > 0) {
+            $selectedYear = $availableYears[0];
         }
+
+        // Get tournaments for selected year
+        $yearTournaments = $tournamentsByYear->get($selectedYear, collect());
+
+        // Organize data structure
+        $data = [
+            'selectedYear' => $selectedYear,
+            'availableYears' => $availableYears,
+            'tournaments' => [],
+            'seasonLeaderboard' => collect(),
+        ];
+
+
+        // Process tournaments for selected year
+        foreach ($yearTournaments as $tournament) {
+            $tournamentData = [
+                'id' => $tournament->id,
+                'title' => $tournament->title,
+                'is_final' => !is_null($tournament->tournament_id),
+                'locationLeaderboards' => $tournament->leaderboards->groupBy('location'),
+                'tournament_id' => $tournament->tournament_id,
+            ];
+
+            $data['tournaments'][] = $tournamentData;
+        }
+
+        // Prepare season leaderboard (combines all tournaments)
+        $data['seasonLeaderboard'] = $yearTournaments->flatMap(function($tournament) {
+            return $tournament->leaderboards;
+        })->sortBy('position')->values();
 
         return view('leaderboard.index', $data);
     }

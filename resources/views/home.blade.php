@@ -26,61 +26,83 @@
     </section>
 
 
-@if ($upcoming_event)
-        <section class="px-4 bg-secondary sm:px-6">
-            <x-countdown :date="$upcoming_event->date" />
-        </section>
-        @push('js')
-            <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    const targetDate = new Date("{{ \Carbon\Carbon::parse($upcoming_event->date)->toIso8601String() }}").getTime();
+    <section class="px-4 bg-secondary sm:px-6">
+        @if ($upcoming_tournament)
+            <x-countdown
+                :date="$upcoming_tournament->start_date"
+                :title="$upcoming_tournament->title"
+            />
+            @push('js')
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const targetDate = new Date("{{ \Carbon\Carbon::parse($upcoming_tournament->start_date)->toIso8601String() }}").getTime();
 
-                    function animateChange(id, value) {
-                        const el = document.getElementById(id + "-flip");
+                        function animateChange(id, value) {
+                            const el = document.getElementById(id + "-flip");
 
-                        // Skip if unchanged
-                        if (el.textContent === value) return;
+                            // Skip if unchanged
+                            if (el.textContent === value) return;
 
-                        // Animate out
-                        el.classList.add("translate-y-full", "opacity-0", "scale-90");
+                            // Animate out
+                            el.classList.add("translate-y-full", "opacity-0", "scale-90");
 
-                        setTimeout(() => {
-                            el.textContent = value;
+                            setTimeout(() => {
+                                el.textContent = value;
 
-                            // Reset position and animate in
-                            el.classList.remove("translate-y-full", "opacity-0", "scale-90");
-                            el.classList.add("translate-y-[-100%]", "opacity-0", "scale-90");
+                                // Reset position and animate in
+                                el.classList.remove("translate-y-full", "opacity-0", "scale-90");
+                                el.classList.add("translate-y-[-100%]", "opacity-0", "scale-90");
 
-                            requestAnimationFrame(() => {
-                                el.classList.remove("translate-y-[-100%]");
+                                requestAnimationFrame(() => {
+                                    el.classList.remove("translate-y-[-100%]");
+                                    el.classList.add("translate-y-0", "opacity-100", "scale-100");
+                                });
+                            }, 200);
+                        }
+
+                        function updateCountdown() {
+                            const now = new Date().getTime();
+                            const distance = targetDate - now;
+
+                            if (distance < 0) return;
+
+                            const days = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, '0');
+                            const hours = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+                            const minutes = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+                            const seconds = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+
+                            animateChange("days", days);
+                            animateChange("hours", hours);
+                            animateChange("minutes", minutes);
+                            animateChange("seconds", seconds);
+                        }
+
+                        updateCountdown();
+                        setInterval(updateCountdown, 1000);
+                    });
+                </script>
+            @endpush
+        @else
+            <x-countdown :title="__('No upcoming events')" />
+            @push('js')
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        // Just animate the zeros once for visual consistency
+                        ['days', 'hours', 'minutes', 'seconds'].forEach(unit => {
+                            const el = document.getElementById(unit + '-flip');
+                            el.classList.add("translate-y-full", "opacity-0", "scale-90");
+
+                            setTimeout(() => {
+                                el.textContent = '00';
+                                el.classList.remove("translate-y-full", "opacity-0", "scale-90");
                                 el.classList.add("translate-y-0", "opacity-100", "scale-100");
-                            });
-                        }, 200);
-                    }
-
-                    function updateCountdown() {
-                        const now = new Date().getTime();
-                        const distance = targetDate - now;
-
-                        if (distance < 0) return;
-
-                        const days = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(2, '0');
-                        const hours = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
-                        const minutes = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
-                        const seconds = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
-
-                        animateChange("days", days);
-                        animateChange("hours", hours);
-                        animateChange("minutes", minutes);
-                        animateChange("seconds", seconds);
-                    }
-
-                    updateCountdown();
-                    setInterval(updateCountdown, 1000);
-                });
-            </script>
-        @endpush
-    @endif
+                            }, 200);
+                        });
+                    });
+                </script>
+            @endpush
+        @endif
+    </section>
 
     <!-- Upcoming Events Section -->
     <section class="bg-black py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">

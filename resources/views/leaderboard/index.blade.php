@@ -4,211 +4,132 @@
         <p class="text-lg">{{ __('See who\'s ahead, who\'s catching up, and who\'s next to take the podium') }}</p>
     </section>
 
+    <!-- Year Tabs -->
+    <div class="container mx-auto px-4 pt-6">
+        <div class="flex overflow-x-auto pb-2 mb-6 scrollbar-hide border-b border-gray-700">
+            @foreach($availableYears as $year)
+                <a href="?year={{ $year }}"
+                    @class([
+                        'flex-shrink-0 py-2 px-4 transition whitespace-nowrap',
+                        'border-b-4 border-primary text-red-600 font-semibold' => $year == $selectedYear,
+                        'text-white border-transparent' => $year != $selectedYear,
+                    ])>
+                    {{ $year }}
+                </a>
+            @endforeach
+        </div>
+    </div>
+
     <section class="container mx-auto px-4 py-8">
-        @if(isset($finalTournament))
+        @if(count($tournaments) > 0)
+            <!-- Group tournaments by their main tournament ID -->
+            @php
+                $groupedTournaments = [];
+                foreach ($tournaments as $tournament) {
+                    if ($tournament['is_final']) {
+                        $groupedTournaments[$tournament['tournament_id']]['final'] = $tournament;
+                    } else {
+                        $groupedTournaments[$tournament['id']]['main'] = $tournament;
+                    }
+                }
+            @endphp
 
-            <!-- Two-column layout when final leaderboard exists -->
-            <div class="flex flex-col lg:flex-row gap-8">
-                <!-- Final Tournament Leaderboard Column -->
-                <div class="lg:w-1/2">
-                    <div class="bg-secondary-100 p-6 rounded-lg shadow-lg">
-                        <h1 class="text-white text-3xl font-bold mb-4">{{ $finalTournament->title }} - {{__('Final Results')}}</h1>
+                <!-- Display grouped tournaments -->
+            <div class="space-y-12">
+                @foreach($groupedTournaments as $tournamentGroup)
+                    <!-- Main Tournament -->
+                    @if(isset($tournamentGroup['main']))
+                        @php $mainTournament = $tournamentGroup['main']; @endphp
+                        <div class="bg-secondary-100 p-6 rounded-lg shadow-lg">
+                            <h3 class="text-white text-2xl font-bold mb-4">
+                                {{ $mainTournament['title'] }}
+                            </h3>
 
-                        <!-- Header - Hidden on small screens -->
-                        <div class="hidden sm:grid grid-cols-12 gap-4 px-2 py-2 border-b border-gray-700">
-                            <div class="col-span-1 text-white font-bold text-center">#</div>
-                            <div class="col-span-6 text-white font-bold">{{__('Driver')}}</div>
-                            <div class="col-span-2 text-white font-bold text-center">{{__('Time')}}</div>
-                        </div>
-
-                        @foreach($finalLeaderboard as $participant)
-                            @php
-                                $minutes = floor($participant->time_taken / 60);
-                                $seconds = $participant->time_taken % 60;
-                            @endphp
-
-                            <div class="grid grid-cols-12 gap-2 md:gap-4 items-center border-b border-gray-700 p-2 md:p-3">
-                                <!-- Position -->
-                                <div class="col-span-2 md:col-span-1 text-white text-lg md:text-xl font-bold text-center">
-                                    <span class="sm:hidden text-sm mr-1">#</span>
-                                    {{ $participant->position }}
+                            <!-- Location Tabs -->
+                            <div x-data="{ tab: '{{ array_key_first($mainTournament['locationLeaderboards']->toArray()) }}' }">
+                                <div class="flex overflow-x-auto pb-2 mb-6 scrollbar-hide">
+                                    @foreach($mainTournament['locationLeaderboards'] as $location => $leaderboard)
+                                        <button
+                                            @click="tab = '{{ $location }}'"
+                                            :class="tab === '{{ $location }}'
+                                                ? 'border-b-4 border-primary text-red-600 font-semibold'
+                                                : 'text-white border-transparent'"
+                                            class="flex-shrink-0 py-2 px-4 transition whitespace-nowrap">
+                                            {{ ucfirst($location) }}
+                                        </button>
+                                    @endforeach
                                 </div>
 
-                                <!-- Driver -->
-                                <div class="col-span-7 md:col-span-6 flex items-center gap-2 md:gap-3">
-                                    <img src="{{ $participant->user->profile_photo_path ?? 'https://ui-avatars.com/api/?name=' . urlencode($participant->user->name) }}"
-                                         alt="{{ $participant->user->name }}"
-                                         class="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover border border-white">
-                                    <span class="text-white text-sm md:text-base truncate">
-                                        {{ $participant->user->name }}
-                                    </span>
-                                </div>
+                                <!-- Leaderboard Per Location -->
+                                @foreach($mainTournament['locationLeaderboards'] as $location => $leaderboard)
+                                    <div x-show="tab === '{{ $location }}'" class="space-y-2 md:space-y-4">
+                                        <h4 class="text-white text-xl font-bold mb-2">
+                                            {{ ucfirst($location) }} Results
+                                        </h4>
 
-                                <!-- Time -->
-                                <div class="col-span-3 md:col-span-2 text-green-400 text-sm md:text-lg font-bold text-right md:text-center">
-                                    <span class="sm:hidden text-xs text-white mr-1">Time:</span>
-                                    {{ sprintf('%d:%06.3f', $minutes, $seconds) }}
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-
-                <!-- Season Leaderboard Column -->
-                <div class="lg:w-1/2">
-                    <div class="bg-secondary-100 p-6 rounded-lg shadow-lg">
-                        <h1 class="text-white text-3xl font-bold mb-4">{{ __('Season Leaderboard') }}</h1>
-
-                        <!-- Location Tabs -->
-                        <div x-data="{ tab: '{{ array_key_first($season_leaderboard->toArray()) }}' }">
-                            <div class="flex overflow-x-auto pb-2 mb-6 scrollbar-hide">
-                                @foreach($season_leaderboard as $location => $participants)
-                                    <button
-                                        @click="tab = '{{ $location }}'"
-                                        :class="tab === '{{ $location }}'
-                                            ? 'border-b-4 border-primary text-red-600 font-semibold'
-                                            : 'text-white border-transparent'"
-                                        class="flex-shrink-0 py-2 px-4 transition whitespace-nowrap">
-                                        {{ ucfirst($location) }}
-                                    </button>
+                                        @include('components.leaderboard-table', [
+                                            'participants' => $leaderboard
+                                        ])
+                                    </div>
                                 @endforeach
                             </div>
+                        </div>
 
-                            <!-- Leaderboard Per Location -->
-                            @foreach($season_leaderboard as $location => $participants)
-                                <div x-show="tab === '{{ $location }}'" class="space-y-2 md:space-y-4">
-                                    <h2 class="text-white text-xl md:text-2xl font-bold mb-2 md:mb-4">
-                                        {{ ucfirst($location) }} Leaderboard
-                                    </h2>
+                        <!-- Final Tournament (if exists) -->
+                        @if(isset($tournamentGroup['final']))
+                            @php $finalTournament = $tournamentGroup['final']; @endphp
+                            <div class="bg-secondary-100 p-6 rounded-lg shadow-lg mt-6">
+                                <h3 class="text-white text-2xl font-bold mb-4">
+                                    {{ $finalTournament['title'] }} - Final Results
+                                </h3>
 
-                                    <!-- Header -->
-                                    <div class="hidden sm:grid grid-cols-12 gap-2 md:gap-4 px-2 py-2 border-b border-gray-700">
-                                        <div class="col-span-1 text-white font-bold text-center">#</div>
-                                        <div class="col-span-6 text-white font-bold">{{__('Driver')}}</div>
-                                        <div class="col-span-2 text-white font-bold text-center">{{__('Time')}}</div>
-                                        <div class="col-span-3 text-white font-bold text-center">{{__('+Diff')}}</div>
+                                <!-- Location Tabs -->
+                                <div x-data="{ tab: '{{ array_key_first($finalTournament['locationLeaderboards']->toArray()) }}' }">
+                                    <div class="flex overflow-x-auto pb-2 mb-6 scrollbar-hide">
+                                        @foreach($finalTournament['locationLeaderboards'] as $location => $leaderboard)
+                                            <button
+                                                @click="tab = '{{ $location }}'"
+                                                :class="tab === '{{ $location }}'
+                                                    ? 'border-b-4 border-primary text-red-600 font-semibold'
+                                                    : 'text-white border-transparent'"
+                                                class="flex-shrink-0 py-2 px-4 transition whitespace-nowrap">
+                                                {{ ucfirst($location) }}
+                                            </button>
+                                        @endforeach
                                     </div>
 
-                                    @foreach($participants as $index => $participant)
-                                        @php
-                                            $minutes = floor($participant->time_taken / 60);
-                                            $seconds = $participant->time_taken % 60;
-                                            $diff = $participant->time_taken - $participants[0]->time_taken;
-                                        @endphp
+                                    <!-- Leaderboard Per Location -->
+                                    @foreach($finalTournament['locationLeaderboards'] as $location => $leaderboard)
+                                        <div x-show="tab === '{{ $location }}'" class="space-y-2 md:space-y-4">
+                                            <h4 class="text-white text-xl font-bold mb-2">
+                                                {{ ucfirst($location) }} Final Results
+                                            </h4>
 
-                                        <div class="grid grid-cols-12 gap-2 md:gap-4 items-center border-b border-gray-700 p-2 md:p-3">
-                                            <!-- Position -->
-                                            <div class="col-span-2 md:col-span-1 text-white text-lg font-bold text-center">
-                                                <span class="sm:hidden text-sm mr-1">#</span>
-                                                {{ $participant->position }}
-                                            </div>
-
-                                            <!-- Driver -->
-                                            <div class="col-span-6 md:col-span-6 flex items-center gap-2 md:gap-3">
-                                                <img src="{{ $participant->user->profile_photo_path ?? 'https://ui-avatars.com/api/?name=' . urlencode($participant->user->name) }}"
-                                                     alt="{{ $participant->user->name }}"
-                                                     class="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover border border-white">
-                                                <span class="text-white text-sm md:text-base truncate">
-                                                    {{ $participant->user->name }}
-                                                </span>
-                                            </div>
-
-                                            <!-- Time -->
-                                            <div class="col-span-2 md:col-span-2 text-green-400 text-sm md:text-base font-bold text-right md:text-center">
-                                                <span class="sm:hidden text-xs text-white mr-1">Time:</span>
-                                                {{ sprintf('%d:%06.3f', $minutes, $seconds) }}
-                                            </div>
-
-                                            <!-- Diff -->
-                                            <div class="col-span-2 md:col-span-3 text-xs md:text-sm font-bold text-right md:text-center {{ $diff > 0 ? 'text-red-400' : 'text-green-400' }}">
-                                                <span class="sm:hidden text-xs text-white mr-1">Diff:</span>
-                                                {{ $diff > 0 ? '+' : '' }}{{ number_format($diff, 3) }}s
-                                            </div>
+                                            @include('components.leaderboard-table', [
+                                                'participants' => $leaderboard
+                                            ])
                                         </div>
                                     @endforeach
                                 </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
+                            </div>
+                        @endif
+                    @endif
+                @endforeach
+            </div>
+
+            <!-- Season Leaderboard -->
+            <div class="bg-secondary-100 p-6 rounded-lg shadow-lg mt-12">
+                <h2 class="text-white text-2xl font-bold mb-6">{{ __('Season Leaderboard') }}</h2>
+
+                @include('components.leaderboard-table', [
+                    'participants' => $seasonLeaderboard,
+                    'showAll' => true
+                ])
             </div>
         @else
-            <!-- Centered single column when no final leaderboard -->
-            <div class="max-w-4xl mx-auto">
-                <div class="bg-secondary-100 p-6 rounded-lg shadow-lg">
-                    <h1 class="text-white text-3xl font-bold mb-4">{{ __('Season Leaderboard') }}</h1>
-
-                    <!-- Location Tabs -->
-                    <div x-data="{ tab: '{{ array_key_first($season_leaderboard->toArray()) }}' }">
-                        <div class="flex overflow-x-auto pb-2 mb-6 scrollbar-hide">
-                            @foreach($season_leaderboard as $location => $participants)
-                                <button
-                                    @click="tab = '{{ $location }}'"
-                                    :class="tab === '{{ $location }}'
-                                        ? 'border-b-4 border-primary text-red-600 font-semibold'
-                                        : 'text-white border-transparent'"
-                                    class="flex-shrink-0 py-2 px-4 transition whitespace-nowrap">
-                                    {{ ucfirst($location) }}
-                                </button>
-                            @endforeach
-                        </div>
-
-                        <!-- Leaderboard Per Location -->
-                        @foreach($season_leaderboard as $location => $participants)
-                            <div x-show="tab === '{{ $location }}'" class="space-y-2 md:space-y-4">
-                                <h2 class="text-white text-xl md:text-2xl font-bold mb-2 md:mb-4">
-                                    {{ ucfirst($location) }} Leaderboard
-                                </h2>
-
-                                <!-- Header -->
-                                <div class="hidden sm:grid grid-cols-12 gap-2 md:gap-4 px-2 py-2 border-b border-gray-700">
-                                    <div class="col-span-1 text-white font-bold text-center">#</div>
-                                    <div class="col-span-6 text-white font-bold">{{__('Driver')}}</div>
-                                    <div class="col-span-2 text-white font-bold text-center">{{__('Time')}}</div>
-                                    <div class="col-span-3 text-white font-bold text-center">{{__('+Diff')}}</div>
-                                </div>
-
-                                @foreach($participants as $index => $participant)
-                                    @php
-                                        $minutes = floor($participant->time_taken / 60);
-                                        $seconds = $participant->time_taken % 60;
-                                        $diff = $participant->time_taken - $participants[0]->time_taken;
-                                    @endphp
-
-                                    <div class="grid grid-cols-12 gap-2 md:gap-4 items-center border-b border-gray-700 p-2 md:p-3">
-                                        <!-- Position -->
-                                        <div class="col-span-2 md:col-span-1 text-white text-lg font-bold text-center">
-                                            <span class="sm:hidden text-sm mr-1">#</span>
-                                            {{ $participant->position }}
-                                        </div>
-
-                                        <!-- Driver -->
-                                        <div class="col-span-6 md:col-span-6 flex items-center gap-2 md:gap-3">
-                                            <img src="{{ $participant->user->profile_photo_path ?? 'https://ui-avatars.com/api/?name=' . urlencode($participant->user->name) }}"
-                                                 alt="{{ $participant->user->name }}"
-                                                 class="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover border border-white">
-                                            <span class="text-white text-sm md:text-base truncate">
-                                                {{ $participant->user->name }}
-                                            </span>
-                                        </div>
-
-                                        <!-- Time -->
-                                        <div class="col-span-2 md:col-span-2 text-green-400 text-sm md:text-base font-bold text-right md:text-center">
-                                            <span class="sm:hidden text-xs text-white mr-1">Time:</span>
-                                            {{ sprintf('%d:%06.3f', $minutes, $seconds) }}
-                                        </div>
-
-                                        <!-- Diff -->
-                                        <div class="col-span-2 md:col-span-3 text-xs md:text-sm font-bold text-right md:text-center {{ $diff > 0 ? 'text-red-400' : 'text-green-400' }}">
-                                            <span class="sm:hidden text-xs text-white mr-1">Diff:</span>
-                                            {{ $diff > 0 ? '+' : '' }}{{ number_format($diff, 3) }}s
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
+            <!-- No tournaments message -->
+            <div class="bg-secondary-100 p-6 rounded-lg shadow-lg text-center">
+                <p class="text-white text-xl">{{ __('No tournaments found for') }} {{ $selectedYear }}</p>
             </div>
         @endif
     </section>

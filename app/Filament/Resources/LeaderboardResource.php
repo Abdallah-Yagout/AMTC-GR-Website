@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\LeaderboardResource\Pages;
 use App\Filament\Resources\LeaderboardResource\RelationManagers;
+use App\Filament\Resources\TournamentResource\RelationManagers\LeaderboardsRelationManager;
 use App\Helpers\Location;
 use App\Models\Leaderboard;
 use App\Models\participant;
@@ -156,7 +157,7 @@ class LeaderboardResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            LeaderboardsRelationManager::class
         ];
     }
 

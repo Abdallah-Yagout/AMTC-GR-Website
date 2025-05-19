@@ -28,6 +28,7 @@ class TournamentResource extends Resource
         return $form
             ->schema([
                 TextInput::make('title'),
+                TextInput::make('description'),
                 Select::make('location')
                 ->options(Location::cities())->multiple(),
                 Select::make('tournament_id')
@@ -36,8 +37,6 @@ class TournamentResource extends Resource
                     ),
                 Forms\Components\DatePicker::make('start_date'),
                 Forms\Components\DatePicker::make('end_date'),
-                Forms\Components\TextInput::make('number_of_players')
-                ->numeric(),
                 FileUpload::make('image')
                 ->directory('tournaments')
             ]);

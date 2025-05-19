@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TournamentResource\Pages;
 use App\Filament\Resources\TournamentResource\RelationManagers;
+use App\Helpers\Location;
 use App\Models\Tournament;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
@@ -28,11 +29,7 @@ class TournamentResource extends Resource
             ->schema([
                 TextInput::make('title'),
                 Select::make('location')
-                ->options([
-                    'sanaa'=>'sanaa',
-                    'aden'=>'aden',
-                    'mukalla'=>'mukalla',
-                ])->multiple(),
+                ->options(Location::cities())->multiple(),
                 Select::make('tournament_id')
                     ->options(
                         Tournament::pluck('title','id')

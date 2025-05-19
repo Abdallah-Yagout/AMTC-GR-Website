@@ -86,7 +86,7 @@
     <section class="bg-black py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto">
             <h2 class="text-2xl sm:text-3xl lg:text-4xl text-white font-bold text-center mb-8 sm:mb-12">
-                {{__('Upcoming Tournaments')}}
+                {{__('Tournaments')}}
             </h2>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
@@ -94,7 +94,7 @@
 
                     <x-event-card
                         :image="asset('storage/' . $tournament->image)"
-                        :date="$tournament->date"
+                        :date="$tournament->start_date"
                         :title="$tournament->title"
                         :location="$tournament->location"
                         :id="$tournament->id"
@@ -104,41 +104,70 @@
             </div>
         </div>
     </section>
-    <section class="bg-[#111] text-white py-12 border-t border-[#17171A]">
-        <div class="container mx-auto px-4">
-            <h2 class="text-3xl md:text-4xl font-semibold text-center mb-10">{{__('Community Highlights')}}</h2>
 
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Card 1 -->
-                <div class="flex items-start gap-4 bg-[#111] p-6 rounded-lg">
-                    <img src="{{asset('img/image 11.png')}}" alt="User Image" class="w-12 h-12 rounded-full">
-                    <div>
-                        <h3 class="font-bold text-lg">{{__('Mohammed (Winner of GR Supra GT Cup Round 2)')}}</h3>
-                        <p class="text-sm text-gray-300 mt-1">
-                            {{__('An incredible performance at Spa-Francorchamps secures Davidson’s second victory of the season.')}}
-                        </p>
-                        <div class="flex text-xs text-gray-500 mt-2 space-x-4">
-                            <span>{{__('2 days ago')}}</span>
+    <section class="bg-black py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl text-white font-bold text-center mb-8 sm:mb-12">
+                {{__('News')}}
+            </h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                @foreach($news as $new)
+                    <div class="bg-secondary-100 rounded-2xl overflow-hidden shadow-lg max-w-sm">
+                        <img src="{{ asset('storage'.'/'.$new->image) }}" alt="{{ $new->title }}" class="w-full h-48 object-cover">
+
+                        <div class="p-5">
+                            <p class="text-primary text-sm font-semibold mb-1">
+                                {{ \Carbon\Carbon::parse($new->created_at)->translatedFormat('F j, Y') }}
+                            </p>
+
+                            <h3 class="text-white text-lg font-bold mb-1">{{ $new->title }}</h3>
+                            <a href="{{ route('news.view', ['slug' => $new->slug]) }}"
+                               class="bg-primary hover:bg-primary-100 text-white font-bold py-2 px-4 rounded-full block text-center transition duration-300">
+                                {{__('Read More')}}
+                            </a>
                         </div>
                     </div>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="flex items-start gap-4 bg-[#111] p-6 rounded-lg">
-                    <img src="{{asset('img/image 12.png')}}" alt="User Image" class="w-12 h-12 rounded-full">
-                    <div>
-                        <h3 class="font-bold text-lg">{{__('Toni Breidinger')}}</h3>
-                        <p class="text-sm text-gray-300 mt-1">
-                            {{__('Toyota Gazoo Racing announces new track pack featuring iconic Japanese circuits.')}}
-                        </p>
-                        <div class="flex text-xs text-gray-500 mt-2 space-x-4">
-                            <span>{{__('4 days ago')}}</span>
-                        </div>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>
+
+{{--    <section class="bg-[#111] text-white py-12 border-t border-[#17171A]">--}}
+{{--        <div class="container mx-auto px-4">--}}
+{{--            <h2 class="text-3xl md:text-4xl font-semibold text-center mb-10">{{__('Community Highlights')}}</h2>--}}
+
+{{--            <div class="grid md:grid-cols-2 gap-8">--}}
+{{--                <!-- Card 1 -->--}}
+{{--                <div class="flex items-start gap-4 bg-[#111] p-6 rounded-lg">--}}
+{{--                    <img src="{{asset('img/image 11.png')}}" alt="User Image" class="w-12 h-12 rounded-full">--}}
+{{--                    <div>--}}
+{{--                        <h3 class="font-bold text-lg">{{__('Mohammed (Winner of GR Supra GT Cup Round 2)')}}</h3>--}}
+{{--                        <p class="text-sm text-gray-300 mt-1">--}}
+{{--                            {{__('An incredible performance at Spa-Francorchamps secures Davidson’s second victory of the season.')}}--}}
+{{--                        </p>--}}
+{{--                        <div class="flex text-xs text-gray-500 mt-2 space-x-4">--}}
+{{--                            <span>{{__('2 days ago')}}</span>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+
+{{--                <!-- Card 2 -->--}}
+{{--                <div class="flex items-start gap-4 bg-[#111] p-6 rounded-lg">--}}
+{{--                    <img src="{{asset('img/image 12.png')}}" alt="User Image" class="w-12 h-12 rounded-full">--}}
+{{--                    <div>--}}
+{{--                        <h3 class="font-bold text-lg">{{__('Toni Breidinger')}}</h3>--}}
+{{--                        <p class="text-sm text-gray-300 mt-1">--}}
+{{--                            {{__('Toyota Gazoo Racing announces new track pack featuring iconic Japanese circuits.')}}--}}
+{{--                        </p>--}}
+{{--                        <div class="flex text-xs text-gray-500 mt-2 space-x-4">--}}
+{{--                            <span>{{__('4 days ago')}}</span>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </section>--}}
 
 
 </x-app-layout>

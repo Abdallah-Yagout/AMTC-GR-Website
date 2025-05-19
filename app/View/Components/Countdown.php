@@ -9,12 +9,15 @@ use Illuminate\View\Component;
 class Countdown extends Component
 {
     public $date;
+    public $title;
     /**
      * Create a new component instance.
      */
-    public function __construct($date)
+    public function __construct($date = null, $title = '')
     {
         $this->date=$date;
+        $this->title = $title;
+
     }
 
     /**

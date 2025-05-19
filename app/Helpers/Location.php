@@ -6,10 +6,12 @@ class Location
 {
     public static function cities ()
     {
-        return [
+        $cities= [
             'Aden' => 'Aden',
             'Sana\'a' => 'Sana\'a',
             'Mukalla' => 'Mukalla',
         ];
+        return array_combine($cities, $cities);
+
     }
 }

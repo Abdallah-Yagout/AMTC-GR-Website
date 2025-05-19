@@ -22,7 +22,8 @@ class HomeController extends Controller
         $data['upcoming_event']=News::where('date', '>', Carbon::now())
             ->orderBy('date', 'asc')
             ->first();
-            $data['tournaments']=Tournament::take(3)->latest()->get();
+        $data['tournaments']=Tournament::take(3)->latest()->get();
+        $data['news']=News::take(3)->latest()->get();
 
         return view('home',$data);
     }

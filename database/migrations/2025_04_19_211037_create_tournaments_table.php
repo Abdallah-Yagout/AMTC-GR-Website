@@ -18,7 +18,7 @@ return new class extends Migration
             $table->json('location');
             $table->date('start_date');
             $table->date('end_date');
-            $table->integer('number_of_players');
+            $table->string('image');
             $table->unsignedTinyInteger('status')->default(0);
             $table->timestamps();
         });

@@ -67,15 +67,16 @@ class LeaderboardController extends Controller
                     }]);
                 }
 
-                // Group leaderboards by location for this main tournament
+                // Group leaderboards by location from leaderboard (not tournament)
                 $locationLeaderboards = $tournaments
                     ->filter(fn($t) => $t->tournament_id === null && $t->id === $mainTournament->id)
                     ->flatMap(function($tournament) {
-                        return $tournament->leaderboards->map(function ($leaderboard) use ($tournament) {
-                            $leaderboard->tournament_location = $tournament->location;
+                        return $tournament->leaderboards->map(function ($leaderboard) {
+                            // Get location from leaderboard instead of tournament
+                            $leaderboard->location = $leaderboard->location;
                             return $leaderboard;
                         });
-                    })->groupBy('tournament_location')
+                    })->groupBy('location')  // Group by leaderboard's location
                     ->map(fn($group) => $group->sortBy('position')->values());
 
                 $yearEntry['mainTournaments']->push([
@@ -85,19 +86,19 @@ class LeaderboardController extends Controller
                 ]);
             }
 
-
             // For the selected year, also prepare season leaderboard
             if ($year == $selectedYear) {
-                // Group participants by location
+                // Group participants by location from leaderboard
                 $locationLeaderboards = $tournaments->flatMap(function($tournament) {
-                    return $tournament->leaderboards->map(function ($leaderboard) use ($tournament) {
-                        $leaderboard->tournament_location = $tournament->location;
+                    return $tournament->leaderboards->map(function ($leaderboard) {
+                        // Get location from leaderboard instead of tournament
+                        $leaderboard->location = $leaderboard->location;
                         return $leaderboard;
                     });
-                })->groupBy('tournament_location')
-                    ->map(function($locationGroup) {
-                        return $locationGroup->sortBy('position')->values();
-                    });
+                })->groupBy('location')  // Group by leaderboard's location
+                ->map(function($locationGroup) {
+                    return $locationGroup->sortBy('position')->values();
+                });
 
                 // Season leaderboard - aggregate by user across all tournaments
                 $seasonLeaderboard = $tournaments->flatMap(function($tournament) {
@@ -114,7 +115,6 @@ class LeaderboardController extends Controller
                 $yearEntry['seasonLeaderboards'] = $locationLeaderboards;
                 $yearEntry['seasonAggregate'] = $seasonLeaderboard;
             }
-
 
             $leaderboardData['yearData'][$year] = $yearEntry;
         }

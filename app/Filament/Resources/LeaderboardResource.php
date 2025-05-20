@@ -79,24 +79,32 @@ class LeaderboardResource extends Resource
                         if (!$tournamentId || !$location) {
                             return [];
                         }
-                        return Participant::with('user') // assuming you have a 'user' relationship
-                        ->where('tournament_id', $tournamentId)
+
+                        // Get users already assigned to this tournament+location in leaderboard
+                        $existingUsers = Leaderboard::where('tournament_id', $tournamentId)
                             ->where('location', $location)
+                            ->pluck('user_id')
+                            ->toArray();
+
+                        return Participant::with('user')
+                            ->where('tournament_id', $tournamentId)
+                            ->where('location', $location)
+                            ->whereNotIn('user_id', $existingUsers) // Exclude already assigned users
                             ->get()
                             ->mapWithKeys(function ($participant) {
                                 return [
-                                    $participant->user_id => $participant->user->name // or whatever user attribute you want to display
+                                    $participant->user_id => $participant->user->name
                                 ];
                             })
                             ->toArray();
                     })
                     ->searchable()
                     ->required(),
+
                 Forms\Components\TextInput::make('time_taken')
                     ->numeric(),
                 Forms\Components\TextInput::make('position')
                     ->numeric(),
-
             ]);
     }
 

@@ -10,19 +10,27 @@
         <div class="col-span-3 text-white font-bold text-center">{{__('Tournament')}}</div>
     @endif
 </div>
-
 @foreach($participants as $participant)
     @php
-        $minutes = floor($participant->time_taken / 60);
-        $seconds = $participant->time_taken % 60;
-        $diff = isset($showDiff) && $showDiff ? $participant->time_taken - $participants[0]->time_taken : 0;
+        $timeTaken = $participant->time_taken ?? null;
+        $position = $participant->position ?? null;
+        $minutes = $timeTaken !== null ? floor($timeTaken / 60) : 0;
+        $seconds = $timeTaken !== null ? $timeTaken % 60 : 0;
+        $diff = (isset($showDiff) && $showDiff && $timeTaken !== null && isset($participants[0]->time_taken))
+            ? $timeTaken - $participants[0]->time_taken
+            : 0;
     @endphp
+
 
     <div class="grid grid-cols-12 gap-2 md:gap-4 items-center border-b border-gray-700 p-2 md:p-3">
         <!-- Position -->
         <div class="col-span-2 md:col-span-1 text-white text-lg font-bold text-center">
             <span class="sm:hidden text-sm mr-1">#</span>
-            {{ $participant->position }}
+            @if($position !== null)
+                {{ $participant->position }}
+            @else
+                N/A
+            @endif
         </div>
 
         <!-- Driver -->
@@ -38,7 +46,11 @@
         <!-- Time -->
         <div class="col-span-2 md:col-span-2 text-green-400 text-sm md:text-base font-bold text-right md:text-center">
             <span class="sm:hidden text-xs text-white mr-1">Time:</span>
-            {{ sprintf('%d:%06.3f', $minutes, $seconds) }}
+            @if($timeTaken !== null)
+                {{ sprintf('%d:%06.3f', $minutes, $seconds) }}
+            @else
+                N/A
+            @endif
         </div>
 
         @if(isset($showDiff) && $showDiff)

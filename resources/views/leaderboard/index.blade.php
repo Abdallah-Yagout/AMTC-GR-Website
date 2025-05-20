@@ -21,111 +21,65 @@
     </div>
 
     <section class="container mx-auto px-4 py-8">
-        @if(count($tournaments) > 0)
-            <!-- Group tournaments by their main tournament ID -->
-            @php
-                $groupedTournaments = [];
-                foreach ($tournaments as $tournament) {
-                    if ($tournament['is_final']) {
-                        $groupedTournaments[$tournament['tournament_id']]['final'] = $tournament;
-                    } else {
-                        $groupedTournaments[$tournament['id']]['main'] = $tournament;
-                    }
-                }
-            @endphp
-
-                <!-- Display grouped tournaments -->
-            <div class="space-y-12">
-                @foreach($groupedTournaments as $tournamentGroup)
-                    <!-- Main Tournament -->
-                    @if(isset($tournamentGroup['main']))
-                        @php $mainTournament = $tournamentGroup['main']; @endphp
-                        <div class="bg-secondary-100 p-6 rounded-lg shadow-lg">
-                            <h3 class="text-white text-2xl font-bold mb-4">
-                                {{ $mainTournament['title'] }}
-                            </h3>
-
-                            <!-- Location Tabs -->
-                            <div x-data="{ tab: '{{ array_key_first($mainTournament['locationLeaderboards']->toArray()) }}' }">
-                                <div class="flex overflow-x-auto pb-2 mb-6 scrollbar-hide">
-                                    @foreach($mainTournament['locationLeaderboards'] as $location => $leaderboard)
-                                        <button
-                                            @click="tab = '{{ $location }}'"
-                                            :class="tab === '{{ $location }}'
-                                                ? 'border-b-4 border-primary text-red-600 font-semibold'
-                                                : 'text-white border-transparent'"
-                                            class="flex-shrink-0 py-2 px-4 transition whitespace-nowrap">
-                                            {{ ucfirst($location) }}
-                                        </button>
-                                    @endforeach
-                                </div>
-
-                                <!-- Leaderboard Per Location -->
-                                @foreach($mainTournament['locationLeaderboards'] as $location => $leaderboard)
-                                    <div x-show="tab === '{{ $location }}'" class="space-y-2 md:space-y-4">
-                                        <h4 class="text-white text-xl font-bold mb-2">
-                                            {{ ucfirst($location) }} Results
-                                        </h4>
-
-                                        @include('components.leaderboard-table', [
-                                            'participants' => $leaderboard
-                                        ])
-                                    </div>
-                                @endforeach
+        @if(isset($yearData[$selectedYear]['mainTournaments']) && $yearData[$selectedYear]['mainTournaments']->isNotEmpty())
+            <div class="space-y-10">
+                @foreach($yearData[$selectedYear]['mainTournaments'] as $tournamentPair)
+                    <div class="space-y-6">
+                        <!-- Tournament Row -->
+                        <div class="flex flex-col lg:flex-row gap-6">
+                            <!-- Main Tournament -->
+                            <div class="lg:w-1/3 bg-secondary-100 p-6 rounded-lg shadow-lg">
+                                <h1 class="text-white text-2xl font-bold mb-4">
+                                    {{ $tournamentPair['main']->title }}
+                                </h1>
+                                @include('components.leaderboard-table', [
+                                    'participants' => $tournamentPair['main']->leaderboards
+                                ])
                             </div>
-                        </div>
 
-                        <!-- Final Tournament (if exists) -->
-                        @if(isset($tournamentGroup['final']))
-                            @php $finalTournament = $tournamentGroup['final']; @endphp
-                            <div class="bg-secondary-100 p-6 rounded-lg shadow-lg mt-6">
-                                <h3 class="text-white text-2xl font-bold mb-4">
-                                    {{ $finalTournament['title'] }} - Final Results
-                                </h3>
-
-                                <!-- Location Tabs -->
-                                <div x-data="{ tab: '{{ array_key_first($finalTournament['locationLeaderboards']->toArray()) }}' }">
-                                    <div class="flex overflow-x-auto pb-2 mb-6 scrollbar-hide">
-                                        @foreach($finalTournament['locationLeaderboards'] as $location => $leaderboard)
-                                            <button
-                                                @click="tab = '{{ $location }}'"
-                                                :class="tab === '{{ $location }}'
-                                                    ? 'border-b-4 border-primary text-red-600 font-semibold'
-                                                    : 'text-white border-transparent'"
-                                                class="flex-shrink-0 py-2 px-4 transition whitespace-nowrap">
-                                                {{ ucfirst($location) }}
-                                            </button>
-                                        @endforeach
-                                    </div>
-
-                                    <!-- Leaderboard Per Location -->
-                                    @foreach($finalTournament['locationLeaderboards'] as $location => $leaderboard)
-                                        <div x-show="tab === '{{ $location }}'" class="space-y-2 md:space-y-4">
-                                            <h4 class="text-white text-xl font-bold mb-2">
-                                                {{ ucfirst($location) }} Final Results
-                                            </h4>
-
+                            <!-- Location Leaderboards -->
+                            @if(!empty($tournamentPair['locations']))
+                                <div class="lg:w-1/3 space-y-4 overflow-y-auto max-h-[600px]">
+                                    @foreach($tournamentPair['locations'] as $location => $participants)
+                                        <div class="bg-primary-800 p-4 rounded-lg shadow">
+                                            <h2 class="text-white text-xl font-semibold mb-2">
+                                                {{ ucfirst($location) }} Leaderboard
+                                            </h2>
                                             @include('components.leaderboard-table', [
-                                                'participants' => $leaderboard
+                                                'participants' => $participants,
+                                                'showDiff' => true
                                             ])
                                         </div>
                                     @endforeach
                                 </div>
-                            </div>
-                        @endif
-                    @endif
+                            @endif
+
+                            <!-- Final Tournament -->
+                            @if($tournamentPair['final'])
+                                <div class="lg:w-1/3 bg-secondary-100 p-6 rounded-lg shadow-lg">
+                                    <h2 class="text-white text-2xl font-bold mb-4">
+                                        {{ $tournamentPair['final']->title }} - {{ __('Final Results') }}
+                                    </h2>
+
+                                    @include('components.leaderboard-table', [
+                                        'participants' => $tournamentPair['final']->leaderboards
+                                    ])
+                                </div>
+                            @endif
+                        </div>
+                    </div>
                 @endforeach
             </div>
 
-            <!-- Season Leaderboard -->
-            <div class="bg-secondary-100 p-6 rounded-lg shadow-lg mt-12">
-                <h2 class="text-white text-2xl font-bold mb-6">{{ __('Season Leaderboard') }}</h2>
-
-                @include('components.leaderboard-table', [
-                    'participants' => $seasonLeaderboard,
-                    'showAll' => true
-                ])
-            </div>
+            <!-- Overall Season Leaderboard -->
+            @if(isset($yearData[$selectedYear]['seasonAggregate']) && $yearData[$selectedYear]['seasonAggregate']->isNotEmpty())
+                <div class="bg-secondary-100 p-6 rounded-lg shadow-lg mt-10">
+                    <h1 class="text-white text-3xl font-bold mb-4">{{ __('Overall Season Leaderboard') }}</h1>
+                    @include('components.leaderboard-table', [
+                        'participants' => $yearData[$selectedYear]['seasonAggregate']
+                    ])
+                </div>
+            @endif
         @else
             <!-- No tournaments message -->
             <div class="bg-secondary-100 p-6 rounded-lg shadow-lg text-center">

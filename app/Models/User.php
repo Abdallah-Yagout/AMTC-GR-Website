@@ -59,6 +59,10 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(Leaderboard::class);
     }
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
 
     public function participants()
     {

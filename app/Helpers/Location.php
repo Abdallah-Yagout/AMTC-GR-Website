@@ -14,4 +14,5 @@ class Location
         return array_combine($cities, $cities);
 
     }
+
 }

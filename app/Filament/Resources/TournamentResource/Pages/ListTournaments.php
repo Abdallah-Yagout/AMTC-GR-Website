@@ -16,4 +16,5 @@ class ListTournaments extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
 }

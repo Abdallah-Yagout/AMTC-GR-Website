@@ -11,34 +11,54 @@ class EditUser extends EditRecord
 {
     protected static string $resource = UserResource::class;
 
-    protected function fillForm(): void
-    {
 
-    }
+
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        // Split data: only these belong to the user
+        // Extract user-related data
         $userData = collect($data)->only([
             'name', 'email', 'phone', 'password', 'type', 'profile_photo_path'
         ])->toArray();
 
-        // If password is empty, don't update it
-        if (empty($userData['password'])) {
-            unset($userData['password']);
-        } else {
+        // Hash password if provided
+        if (!empty($userData['password'])) {
             $userData['password'] = bcrypt($userData['password']);
+        } else {
+            unset($userData['password']);
         }
 
-        // Update user
+        // Update User model
         $record->update($userData);
 
-        // Get profile data (everything else)
-        $profileData = collect($data)->except([
-            'name', 'email', 'phone', 'password', 'type', 'password_confirmation', 'profile_photo_path'
-        ])->toArray();
+        // Prepare Profile data: only include fields present in the form
+        $profileFields = [
+            'gender',
+            'city',
+            'country',
+            'address',
+            'date_of_birth',
+            'skill_level',
+            'has_ps5',
+            'primary_platform',
+            'weekly_hours',
+            'gt7_ranking',
+            'toyota_gr_knowledge',
+            'favorite_car',
+            'participated_before',
+            'wants_training',
+            'join_whatsapp',
+            'heard_about',
+            'preferred_time',
+            'suggestions',
+            'whatsapp'
+        ];
+        $profileData = collect($data)
+            ->only($profileFields)
+            ->filter(fn ($value) => $value !== null && $value !== '')
+            ->toArray();
 
-        // If profile does not exist, create it
+        // Update or create related Profile
         if (!$record->profile) {
             $record->profile()->create($profileData);
         } else {
@@ -47,7 +67,6 @@ class EditUser extends EditRecord
 
         return $record;
     }
-
     protected function getHeaderActions(): array
     {
         return [

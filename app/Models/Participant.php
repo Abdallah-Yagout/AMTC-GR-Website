@@ -10,6 +10,11 @@ class Participant extends Model
     {
         return $this->belongsTo('App\Models\User');
     }
+
+    public function profile()
+    {
+        return $this->belongsTo('App\Models\Profile','user_id');
+    }
     public function tournament()
     {
         return $this->belongsTo('App\Models\Tournament');

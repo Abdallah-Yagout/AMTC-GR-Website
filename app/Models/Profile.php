@@ -6,8 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Profile extends Model
 {
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    protected function casts(): array
+    {
+        return [
+            'favorite_games' => 'array',
+            'motivation' => 'array',
+        ];
+    }
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
+
 }

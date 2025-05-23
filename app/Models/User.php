@@ -79,6 +79,8 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'favorite_games' => 'array',
+            'motivation' => 'array',
         ];
     }
 

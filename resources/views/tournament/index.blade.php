@@ -63,7 +63,7 @@
 
                             <!-- Register Button -->
                             <div class="sm:w-auto w-full mt-3 sm:mt-0">
-                                @if(!$tournament->status || $tournament->participants_count >= $tournament->max_participants)
+                                @if(!$tournament->status)
                                     <span class="block text-center sm:inline-block text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-1 bg-gray-400 text-white rounded cursor-not-allowed">
                                         {{ __('Full') }}
                                     </span>

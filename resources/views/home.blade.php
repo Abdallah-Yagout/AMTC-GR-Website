@@ -83,7 +83,7 @@
                 </script>
             @endpush
         @else
-            <x-countdown :title="__('No upcoming events')" />
+            <x-countdown :title="__('No upcoming tournaments')" />
             @push('js')
                 <script>
                     document.addEventListener("DOMContentLoaded", function () {

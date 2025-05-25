@@ -41,6 +41,7 @@ class LeaderboardResource extends Resource
                             ];
                         })->toArray()
                     )
+                    ->required()
                     ->searchable()
                     ->reactive()
                     ->afterStateUpdated(function (Set $set, ?string $state) {
@@ -102,8 +103,10 @@ class LeaderboardResource extends Resource
                     ->required(),
 
                 Forms\Components\TextInput::make('time_taken')
+                    ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('position')
+                    ->required()
                     ->numeric(),
             ]);
     }

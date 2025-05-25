@@ -1,7 +1,7 @@
 <x-app-layout>
     <section class="bg-primary-200 px-10 py-10 text-white">
         <h1 class="text-3xl font-bold mb-2">{{ __('Let the Race Begin!') }}</h1>
-        <p class="text-lg">Check out upcoming racing events by year</p>
+        <p class="text-lg">{{__('Check out upcoming racing events by year')}}</p>
     </section>
 
     <section x-data="{ tab: '{{ $selectedYear }}' }" class="px-10 bg-black py-6">

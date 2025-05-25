@@ -6,8 +6,13 @@ use App\Filament\Resources\NewsResource\Pages;
 use App\Filament\Resources\NewsResource\RelationManagers;
 use App\Models\News;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -27,11 +32,22 @@ class NewsResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('title'),
-                Forms\Components\FileUpload::make('image')
-                    ->directory('events'),
-                Forms\Components\RichEditor::make('description'),
-                Forms\Components\Toggle::make('status')
+                Tabs::make('Language Tabs')
+                    ->tabs([
+                        Tab::make('English')
+                            ->schema([
+                                TextInput::make('title'),
+                                FileUpload::make('image')->directory('events'),
+                                RichEditor::make('description'),
+                                Toggle::make('status'),
+                            ]),
+                        Tab::make('Arabic')
+                            ->schema([
+                                TextInput::make('title_ar'),
+                                RichEditor::make('description_ar'),
+                            ]),
+                    ])->persistTabInQueryString()
+                ->columnSpanFull(),
             ]);
     }
 

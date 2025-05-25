@@ -20,7 +20,8 @@ class   SetLocale
         $locale = Session::get('locale', config('app.locale'));
         // Set the locale for the current request
         App::setLocale($locale);
-
+        $dir = $locale=='ar' ? 'rtl' : 'ltr';
+        Session::put('dir', $dir);
         return $next($request);
     }
 }

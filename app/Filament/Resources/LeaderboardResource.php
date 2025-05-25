@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\LeaderboardResource\Pages;
 use App\Filament\Resources\LeaderboardResource\RelationManagers;
-use App\Filament\Resources\TournamentResource\RelationManagers\LeaderboardsRelationManager;
+use App\Filament\Resources\TournamentResource\RelationManagers\ParticipantsRelationManager;
 use App\Helpers\Location;
 use App\Models\Leaderboard;
 use App\Models\participant;
@@ -41,6 +41,7 @@ class LeaderboardResource extends Resource
                             ];
                         })->toArray()
                     )
+                    ->required()
                     ->searchable()
                     ->reactive()
                     ->afterStateUpdated(function (Set $set, ?string $state) {
@@ -102,8 +103,10 @@ class LeaderboardResource extends Resource
                     ->required(),
 
                 Forms\Components\TextInput::make('time_taken')
+                    ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('position')
+                    ->required()
                     ->numeric(),
             ]);
     }
@@ -165,7 +168,7 @@ class LeaderboardResource extends Resource
     public static function getRelations(): array
     {
         return [
-            LeaderboardsRelationManager::class
+            ParticipantsRelationManager::class
         ];
     }
 

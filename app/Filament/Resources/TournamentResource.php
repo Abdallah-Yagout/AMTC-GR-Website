@@ -13,6 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -60,7 +61,31 @@ class TournamentResource extends Resource
 
             ])
             ->filters([
-                //
+                SelectFilter::make('location')
+                    ->label('City')
+                    ->options(function () {
+                        $query = self::getEloquentQuery();
+                        return $query
+                            ->get()
+                            ->flatMap(function ($record) {
+                                return $record->location ?? []; // Each location is an array
+                            })
+                            ->unique()
+                            ->filter()
+                            ->sort()
+                            ->mapWithKeys(fn ($loc) => [$loc => $loc])
+                            ->toArray();
+                    })
+                    ->searchable()
+                    ->preload()
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (!empty($data['value'])) {
+                            return $query->whereJsonContains('location', $data['value']);
+                        }
+                        return $query;
+                    })
+
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -75,6 +100,7 @@ class TournamentResource extends Resource
     public static function getRelations(): array
     {
         return [
+            RelationManagers\ParticipantsRelationManager::class
         ];
     }
 

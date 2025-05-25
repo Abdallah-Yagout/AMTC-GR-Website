@@ -146,7 +146,6 @@ class LeaderboardController extends Controller
                 'user_id' => auth()->id(),
                 'tournament_id' => $validated['tournamentId'],
                 'location' => $validated['city'],
-                // Add any other fields you need to save
             ]);
         }
         catch (\Exception $e) {

@@ -21,6 +21,7 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Nette\Utils\Image;
 
 class NewsResource extends Resource
 {
@@ -36,15 +37,22 @@ class NewsResource extends Resource
                     ->tabs([
                         Tab::make('English')
                             ->schema([
-                                TextInput::make('title'),
-                                FileUpload::make('image')->directory('events'),
-                                RichEditor::make('description'),
+                                TextInput::make('title')
+                                ->required(),
+                                FileUpload::make('image')
+                                    ->required()
+                                    ->directory('events')
+                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp']),
+                                RichEditor::make('description')
+                                ->required(),
                                 Toggle::make('status'),
                             ]),
                         Tab::make('Arabic')
                             ->schema([
-                                TextInput::make('title_ar'),
-                                RichEditor::make('description_ar'),
+                                TextInput::make('title_ar')
+                                ->required(),
+                                RichEditor::make('description_ar')
+                                ->required(),
                             ]),
                     ])->persistTabInQueryString()
                 ->columnSpanFull(),
@@ -56,6 +64,9 @@ class NewsResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('title'),
+                Tables\Columns\ImageColumn::make('image')
+                ->circular()
+                ->size(70),
                 ToggleColumn::make('status')
             ])
             ->filters([

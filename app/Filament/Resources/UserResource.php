@@ -26,7 +26,6 @@ class UserResource extends Resource
 
     public static function form(Form $form): Form
     {
-
         return $form
             ->schema([
                 Forms\Components\Grid::make(3)
@@ -37,20 +36,32 @@ class UserResource extends Resource
                                     ->image()
                                     ->avatar()
                                     ->directory('gt-cup-profiles')
-                                    ->columnSpanFull(),
+                                    ->columnSpanFull()
+                                    ->visible(fn (string $operation): bool => $operation !== 'create')
+                                    ->disabled(fn (string $operation): bool => $operation === 'view'),
                                 Forms\Components\TextInput::make('name')
                                     ->label('Full Name')
                                     ->required()
-                                    ->columnSpan(1),
+                                    ->columnSpan(1)
+                                    ->disabled(fn (string $operation): bool => $operation === 'view'),
                                 Forms\Components\TextInput::make('email')
                                     ->email()
                                     ->required()
                                     ->unique(ignoreRecord: true)
-                                    ->columnSpan(1),
+                                    ->columnSpan(1)
+                                    ->disabled(fn (string $operation): bool => $operation === 'view'),
 
-                                Forms\Components\DatePicker::make('birthdate')
-                                    ->label('Date of Birth')
-                                    ->columnSpan(1),
+                                Forms\Components\Fieldset::make('birthdate')
+                                    ->label(null)
+                                    ->relationship('profile')
+                                    ->extraAttributes(['class' => 'border-none p-0'])
+                                    ->schema([
+                                        Forms\Components\DatePicker::make('birthdate')
+                                            ->label('Date of Birth')
+                                            ->columnSpan(1)
+                                            ->disabled(fn (string $operation): bool => $operation === 'create' || $operation === 'view'),
+                                    ])
+                                    ->visible(fn (string $operation): bool => $operation !== 'create'),
 
                                 Forms\Components\Select::make('profile.gender')
                                     ->label('Gender')
@@ -60,12 +71,14 @@ class UserResource extends Resource
                                         'other' => 'Other'
                                     ])
                                     ->relationship('profile','gender')
-                                    ->columnSpan(1),
+                                    ->columnSpan(1)
+                                    ->visible(fn (string $operation): bool => $operation === 'edit'),
 
                                 Forms\Components\Select::make('profile.city')
                                     ->label('City of Residence')
                                     ->options(Location::cities())
                                     ->relationship('profile', 'city')
+                                    ->visible(fn (string $operation): bool => $operation === 'edit')
 
                             ])
                             ->columns(3)
@@ -73,11 +86,16 @@ class UserResource extends Resource
 
                         Forms\Components\Section::make('Contact Information')
                             ->schema([
-                                Forms\Components\TextInput::make('phone')
-                                    ->label('Phone Number')
-                                    ->tel(),
-
-                                Forms\Components\Fieldset::make('Metadata')
+                                Forms\Components\Fieldset::make('phone')
+                                    ->label(null)
+                                    ->extraAttributes(['class' => 'border-none p-0'])
+                                    ->schema([
+                                        Forms\Components\TextInput::make('phone')
+                                            ->label('Phone Number')
+                                            ->tel()
+                                            ->disabled(fn (string $operation): bool => $operation === 'create' || $operation === 'view'),
+                                    ])->columns(1),
+                                Forms\Components\Fieldset::make('whatsapp')
                                     ->label(null)
                                     ->extraAttributes(['class' => 'border-none p-0'])
                                     ->relationship('profile')
@@ -85,20 +103,21 @@ class UserResource extends Resource
                                         Forms\Components\TextInput::make('whatsapp')
                                             ->label('WhatsApp Number')
                                             ->tel()
-                                            ->columnSpanFull()  // This makes it take full width
+                                            ->columnSpanFull()
+                                            ->disabled(fn (string $operation): bool => $operation === 'create' || $operation === 'view')
                                     ])
-                                    ->columns(1)  // Ensures the fieldset has only one column
+                                    ->columns(1)
                             ])
                             ->columnSpan(1)
-                            ->columns(1),
+                            ->columns(1)
+                            ->visible(fn (string $operation): bool => $operation !== 'create'),
 
                     ]),
 
-                // SECTION GROUP 2: Personal Details + Gaming Experience
                 Forms\Components\Fieldset::make('Gaming Experience')
-                    ->label(null) // Hides the title
+                    ->label(null)
                     ->relationship('profile')
-                    ->extraAttributes(['class' => 'border-none p-0']) // Removes border and padding
+                    ->extraAttributes(['class' => 'border-none p-0'])
                     ->schema([
                         Forms\Components\Section::make('Gaming Experience')
                             ->schema([
@@ -108,9 +127,11 @@ class UserResource extends Resource
                                         'beginner' => 'Beginner',
                                         'intermediate' => 'Intermediate',
                                         'expert' => 'Expert',
-                                    ]),
+                                    ])
+                                    ->disabled(fn (string $operation): bool => $operation === 'create' || $operation === 'view'),
                                 Forms\Components\Toggle::make('has_ps5')
-                                    ->label('Do you own a PS5?'),
+                                    ->label('Do you own a PS5?')
+                                    ->disabled(fn (string $operation): bool => $operation === 'create' || $operation === 'view'),
                                 Forms\Components\Select::make('primary_platform')
                                     ->label('Primary Gaming Platform')
                                     ->options([
@@ -118,34 +139,30 @@ class UserResource extends Resource
                                         'ps4' => 'PlayStation 4',
                                         'pc' => 'PC',
                                         'other' => 'Other Platform',
-                                    ]),
+                                    ])
+                                    ->disabled(fn (string $operation): bool => $operation === 'create' || $operation === 'view'),
                                 Forms\Components\Select::make('weekly_hours')
                                     ->label('Weekly Play Hours')
                                     ->options([
                                         'less_than_5' => 'Less than 5 hours',
                                         '5_to_10' => '5 to 10 hours',
                                         'more_than_10' => 'More than 10 hours',
-                                    ]),
+                                    ])
+                                    ->disabled(fn (string $operation): bool => $operation === 'create' || $operation === 'view'),
                             ]),
-                    ]),
+                    ])
+                    ->visible(fn (string $operation): bool => $operation !== 'create'),
 
                 Forms\Components\Fieldset::make('gaming Preferences')
                     ->label(null)
                     ->relationship('profile')
                     ->schema([
-                        // SECTION GROUP 3: Game Preferences + Toyota GR Knowledge
                         Forms\Components\Grid::make(2)
                             ->schema([
                                 Forms\Components\Section::make('Game Preferences')
                                     ->schema([
                                         Forms\Components\CheckboxList::make('favorite_games')
                                             ->label('Favorite Games')
-                                            ->afterStateHydrated(function ($component, $state) {
-                                                // Optional: Convert string to array if needed
-                                                if (is_string($state)) {
-                                                    $component->state(json_decode($state, true));
-                                                }
-                                            })
                                             ->options([
                                                 'fifa' => 'FIFA (FC25)',
                                                 'pes' => 'PES',
@@ -156,7 +173,14 @@ class UserResource extends Resource
                                                 'minecraft' => 'Minecraft',
                                                 'gta' => 'GTA V'
                                             ])
-                                            ->columns(2),
+                                            ->afterStateHydrated(function ($component, $state) {
+                                                if (is_string($state)) {
+                                                    $component->state(json_decode($state, true));
+                                                }
+                                            })
+                                            ->columns(2)
+                                            ->disabled(fn (string $operation): bool => $operation === 'create' || $operation === 'view'),
+
                                         Forms\Components\Select::make('gt7_ranking')
                                             ->label('Where does Gran Turismo 7 rank among your favorites?')
                                             ->options([
@@ -165,7 +189,7 @@ class UserResource extends Resource
                                                 'top5' => 'In my top 5 games',
                                                 'lower' => 'Lower than that'
                                             ])
-                                        ,
+                                            ->disabled(fn (string $operation): bool => $operation === 'create' || $operation === 'view'),
                                     ]),
 
                                 Forms\Components\Section::make('Toyota GR Knowledge')
@@ -178,33 +202,34 @@ class UserResource extends Resource
                                                 'heard' => 'I\'ve only heard of them',
                                                 'unknown' => 'I don\'t know them at all'
                                             ])
-                                        ,
+                                            ->disabled(fn (string $operation): bool => $operation === 'create' || $operation === 'view'),
                                         Forms\Components\Textarea::make('favorite_car')
                                             ->label('What is your favorite car (any brand) and why?')
-                                            ->columnSpanFull(),
+                                            ->columnSpanFull()
+                                            ->disabled(fn (string $operation): bool => $operation === 'create' || $operation === 'view'),
                                     ]),
                             ]),
                     ])
-                    ->columns(1),
+                    ->columns(1)
+                    ->visible(fn (string $operation): bool => $operation !== 'create'),
 
                 Forms\Components\Fieldset::make('Tournament Experience')
                     ->label(null)
                     ->relationship('profile')
                     ->schema([
-                        // SECTION GROUP 4: Tournament Experience + Additional Info
                         Forms\Components\Grid::make(2)
                             ->schema([
                                 Forms\Components\Section::make('Tournament Experience')
                                     ->schema([
                                         Forms\Components\Toggle::make('participated_before')
                                             ->label('Did you participate in AMTC 2024?')
-                                        ,
+                                            ->disabled(fn (string $operation): bool => $operation === 'create' || $operation === 'view'),
                                         Forms\Components\Toggle::make('wants_training')
                                             ->label('Would you like to participate in training before the qualifiers?')
-                                        ,
+                                            ->disabled(fn (string $operation): bool => $operation === 'create' || $operation === 'view'),
                                         Forms\Components\Toggle::make('join_whatsapp')
                                             ->label('Would you like to join the participants WhatsApp channel?')
-                                        ,
+                                            ->disabled(fn (string $operation): bool => $operation === 'create' || $operation === 'view'),
                                     ]),
 
                                 Forms\Components\Section::make('Additional Information')
@@ -217,7 +242,7 @@ class UserResource extends Resource
                                                 'gaming_cafes' => 'Gaming Cafes',
                                                 'websites' => 'Websites'
                                             ])
-                                        ,
+                                            ->disabled(fn (string $operation): bool => $operation === 'create' || $operation === 'view'),
                                         Forms\Components\CheckboxList::make('motivation')
                                             ->label('What motivates you most to participate?')
                                             ->options([
@@ -228,11 +253,13 @@ class UserResource extends Resource
                                                 'skill_development' => 'Skill development'
                                             ])
                                             ->afterStateHydrated(function ($component, $state) {
-                                                // Optional: Convert string to array if needed
                                                 if (is_string($state)) {
                                                     $component->state(json_decode($state, true));
                                                 }
-                                            })                                            ->columns(2),
+                                            })
+                                            ->columns(2)
+                                            ->disabled(fn (string $operation): bool => $operation === 'create' || $operation === 'view'),
+
                                         Forms\Components\Select::make('preferred_time')
                                             ->label('Preferred participation time')
                                             ->options([
@@ -241,17 +268,17 @@ class UserResource extends Resource
                                                 'weekend' => 'Weekends only',
                                                 'flexible' => 'Flexible (any time)'
                                             ])
-                                        ,
+                                            ->disabled(fn (string $operation): bool => $operation === 'create' || $operation === 'view'),
                                         Forms\Components\Textarea::make('suggestions')
                                             ->label('Any suggestions to improve the tournament experience?')
-                                            ->columnSpanFull(),
+                                            ->columnSpanFull()
+                                            ->disabled(fn (string $operation): bool => $operation === 'create' || $operation === 'view'),
                                     ]),
                             ]),
                     ])
-                    ->columns(1),
+                    ->columns(1)
+                    ->visible(fn (string $operation): bool => $operation !== 'create'),
 
-
-                // Admin Settings (Full Width)
                 Forms\Components\Section::make('Admin Settings')
                     ->schema([
                         Forms\Components\TextInput::make('password')
@@ -259,24 +286,24 @@ class UserResource extends Resource
                             ->required(fn (string $operation): bool => $operation === 'create')
                             ->dehydrated(fn (?string $state): bool => filled($state))
                             ->confirmed()
-                            ->minLength(8),
+                            ->minLength(8)
+                            ->hidden(fn (string $operation): bool => $operation === 'edit' || $operation === 'view'),
                         Forms\Components\TextInput::make('password_confirmation')
                             ->password()
                             ->required(fn (string $operation): bool => $operation === 'create')
-                            ->dehydrated(false),
+                            ->dehydrated(false)
+                            ->hidden(fn (string $operation): bool => $operation === 'edit' || $operation === 'view'),
                         Forms\Components\Select::make('type')
                             ->options([
-                                'admin' => 'Admin',
-                                'participant' => 'Participant',
-                                'judge' => 'Judge'
+                                '1' => 'Admin',
+                                '0' => 'User',
                             ])
-                            ->default('participant')
-                            ,
+                            ->default('0')
+                            ->disabled(fn (string $operation): bool => $operation === 'edit' || $operation === 'view'),
                     ])
-                    ->visible(fn (): bool => auth()->user()?->type === 'admin'),
+                    ->visible(fn (): bool => auth()->user()?->type === 1),
             ]);
     }
-
 
     public static function table(Table $table): Table
     {
@@ -310,9 +337,8 @@ class UserResource extends Resource
                     ]),
                 Tables\Filters\SelectFilter::make('type')
                     ->options([
-                        'admin' => 'Admin',
-                        'participant' => 'Participant',
-                        'judge' => 'Judge',
+                        '1' => 'Admin',
+                        '0' => 'User',
                     ]),
             ])
             ->actions([
@@ -325,13 +351,8 @@ class UserResource extends Resource
                 ]),
             ]);
     }
-    public static function infolist(Infolist $infolist): Infolist
-    {
-        return $infolist
-            ->schema([
-                TextEntry::make('name')
-            ]);
-    }
+
+
 
     public static function getPages(): array
     {

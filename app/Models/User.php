@@ -32,6 +32,8 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'phone',
+        'type',
     ];
 
     /**
@@ -88,4 +90,6 @@ class User extends Authenticatable implements FilamentUser
     {
         return true;
     }
+
+
 }

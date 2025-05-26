@@ -8,10 +8,25 @@
     <div>
         <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
             @if (Laravel\Fortify\Features::canUpdateProfileInformation())
-                @livewire('profile.update-profile-information-form')
+                @livewire('basic-info')
 
+{{--                @livewire('profile.update-profile-information-form')--}}
                 <x-section-border />
             @endif
+                @livewire('contact-info')
+                <x-section-border />
+
+                @livewire('gaming-experience')
+                <x-section-border />
+                @livewire('game-preferences')
+                <x-section-border />
+                @livewire('toyota-g-r-knowledge')
+                <x-section-border />
+                @livewire('tournament-experience')
+                <x-section-border />
+                @livewire('additional-information')
+                <x-section-border />
+
 
             @if (Laravel\Fortify\Features::enabled(Laravel\Fortify\Features::updatePasswords()))
                 <div class="mt-10 sm:mt-0">

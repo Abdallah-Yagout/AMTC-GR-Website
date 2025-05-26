@@ -6,6 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Leaderboard extends Model
 {
+    protected $fillable = [
+        'tournament_id',
+        'user_id',
+        'location',
+        'time_taken',
+        'position',
+        'status',
+    ];
     public function user()
     {
         return $this->belongsTo(User::class);

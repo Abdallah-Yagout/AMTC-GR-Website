@@ -7,6 +7,16 @@ use Illuminate\Support\Carbon;
 
 class Tournament extends Model
 {
+    protected $fillable = [
+        'title',
+        'tournament_id',
+        'location',
+        'start_date',
+        'end_date',
+        'status',
+        'image',
+        'description',
+    ];
     protected $casts = [
         'location' => 'array',
     ];

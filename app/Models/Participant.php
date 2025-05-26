@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Participant extends Model
 {
+    protected $fillable = [
+        'user_id',
+        'tournament_id',
+        'location',
+    ];
     public function user()
     {
         return $this->belongsTo('App\Models\User');

@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Widgets\DynamicStatsOverview;
+use App\Filament\Widgets\StatsOverview;
 use Filament\Pages\Page;
 
 class Dashboard extends \Filament\Pages\Dashboard
@@ -10,7 +11,8 @@ class Dashboard extends \Filament\Pages\Dashboard
     public function getWidgets(): array
     {
         return [
-            DynamicStatsOverview::make()
+            DynamicStatsOverview::make(),
+            StatsOverview::make()
         ];
     }
 

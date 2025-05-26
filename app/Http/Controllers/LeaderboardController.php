@@ -121,38 +121,7 @@ class LeaderboardController extends Controller
 
         return view('leaderboard.index', $leaderboardData);
     }
-    public function apply(Tournament $id)
-    {
-
-        return view('tournament.apply', ['tournament' => $id]);
-
-    }
-
-    public function submit(Request $request)
-    {
-
-        try {
-            $validated = $request->validate([
-                'name' => 'required|string|max:255',
-                'gender' => ['required', Rule::in(['Male', 'Female'])],
-                'phone' => 'required|string|max:20',
-                'email' => 'required|email|unique:leaderboard,email',
-                'city' => 'required|string|max:255',
-                'tournamentId' => 'required|exists:tournaments,id', // Make sure tournament exists
-            ]);
-
-            // Create participant with all required fields
-            participant::create([
-                'user_id' => auth()->id(),
-                'tournament_id' => $validated['tournamentId'],
-                'location' => $validated['city'],
-            ]);
-        }
-        catch (\Exception $e) {
-            dd($e->getMessage());
-        }
 
 
-        return redirect()->back()->with('success', 'Application submitted successfully!');
-    }
+
 }

@@ -7,7 +7,7 @@ use App\Filament\Resources\LeaderboardResource\RelationManagers;
 use App\Filament\Resources\TournamentResource\RelationManagers\ParticipantsRelationManager;
 use App\Helpers\Location;
 use App\Models\Leaderboard;
-use App\Models\participant;
+use App\Models\Participant;
 use App\Models\Tournament;
 use Filament\Forms;
 use Filament\Forms\Components\Select;

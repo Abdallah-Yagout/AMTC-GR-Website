@@ -55,7 +55,7 @@ class DynamicStatsOverview extends Widget implements HasForms
             if ($tournament) {
                 // Location Stats
                 $locationStats = $tournament->participants
-                    ->groupBy('user.profile.city')
+                    ->groupBy('profile.city')
                     ->map(function ($group, $city) {
                         return (object) [
                             'city' => $city ?: 'Unknown',
@@ -67,7 +67,7 @@ class DynamicStatsOverview extends Widget implements HasForms
                 // Gender Stats
 
                 $genderStats = $tournament->participants
-                    ->groupBy('user.profile.gender')
+                    ->groupBy('profile.gender')
                     ->map(function ($group, $gender) {
                         return (object) [
                             'gender' => $gender ?: 'Unknown',
@@ -76,9 +76,10 @@ class DynamicStatsOverview extends Widget implements HasForms
                     })
                     ->sortByDesc('total')
                     ->values();
+
                 // Skill Level Stats
                 $skillLevelStats = $tournament->participants
-                    ->groupBy('user.profile.skill_level')
+                    ->groupBy('profile.skill_level')
                     ->map(function ($group, $skillLevel) {
                         return (object) [
                             'skill_level' => $skillLevel ?: 'Unknown',

@@ -42,7 +42,7 @@
                                 <div class="flex flex-wrap items-center gap-2 mt-1">
                                     @foreach($tournament->location ?? [] as $loc)
                                         <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-700 text-gray-200 leading-tight">
-                                            {{ $loc }}
+                                            {{ __($loc) }}
                                         </span>
                                     @endforeach
                                 </div>

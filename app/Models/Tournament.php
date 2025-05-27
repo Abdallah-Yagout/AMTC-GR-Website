@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Spatie\Translatable\HasTranslations;
 
 class Tournament extends Model
 {
+    use HasTranslations;
+    public $translatable = ['title','description']; // translatable attributes
     protected $fillable = [
         'title',
         'tournament_id',

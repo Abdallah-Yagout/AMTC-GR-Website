@@ -9,6 +9,8 @@ use App\Models\Tournament;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -28,18 +30,33 @@ class TournamentResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('title'),
-                TextInput::make('description'),
-                Select::make('location')
-                ->options(Location::cities())->multiple(),
-                Select::make('tournament_id')
-                    ->options(
-                        Tournament::pluck('title','id')
-                    ),
-                Forms\Components\DatePicker::make('start_date'),
-                Forms\Components\DatePicker::make('end_date'),
-                FileUpload::make('image')
-                ->directory('tournaments')
+                Tabs::make('language tab')
+            ->tabs([
+                Tab::make('English')
+                    ->schema([
+                        TextInput::make('title'),
+                        TextInput::make('description'),
+                        Select::make('location')
+                            ->options(Location::cities())->multiple(),
+                        Select::make('tournament_id')
+                            ->options(
+                                Tournament::pluck('title','id')
+                            ),
+                        Forms\Components\DatePicker::make('start_date'),
+                        Forms\Components\DatePicker::make('end_date'),
+                        FileUpload::make('image')
+                            ->directory('tournaments')
+                    ]),
+                Tab::make('Arabic')
+                    ->schema([
+                        TextInput::make('title_ar')
+                            ->required(),
+                        TextInput::make('description_ar')
+                            ->required(),
+                    ]),
+            ])->persistTabInQueryString()
+                    ->columnSpanFull(),
+
             ]);
     }
 

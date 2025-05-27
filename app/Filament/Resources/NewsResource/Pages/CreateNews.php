@@ -14,11 +14,11 @@ class CreateNews extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['slug']=Str::slug($data['title']);
-        dd($data);
-//        $arabicTitle = $data['title_ar'] ?? null;
-//        $arabicBody = $data['description_ar'] ?? null;
-//        unset($data['title_ar']);
-//        unset($data['description_ar']);
+
+        $arabicTitle = $data['title_ar'] ?? null;
+        $arabicBody = $data['description_ar'] ?? null;
+        unset($data['title_ar']);
+        unset($data['description_ar']);
         return $data;
     }
 
@@ -26,18 +26,16 @@ class CreateNews extends CreateRecord
     {
         /** @var \App\Models\News $news */
         $news = new (static::getModel());
-        dd($data);
-//
-//        foreach ($news->getTranslatableAttributes() as $attribute) {
-//            $news->setTranslations($attribute, [
-//                'en' => $data[$attribute] ?? '',
-//                'ar' => $data["{$attribute}_ar"] ?? '',
-//            ]);
-//
-//            unset($data[$attribute], $data["{$attribute}_ar"]);
-//        }
-//        $news->fill($data);
-//        $news->save();
+        foreach ($news->getTranslatableAttributes() as $attribute) {
+            $news->setTranslations($attribute, [
+                'en' => $data[$attribute] ?? '',
+                'ar' => $data["{$attribute}_ar"] ?? '',
+            ]);
+
+            unset($data[$attribute], $data["{$attribute}_ar"]);
+        }
+        $news->fill($data);
+        $news->save();
 
         return $news;
     }

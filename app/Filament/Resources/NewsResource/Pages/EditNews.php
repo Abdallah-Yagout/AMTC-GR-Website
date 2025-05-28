@@ -6,6 +6,7 @@ use App\Filament\Resources\NewsResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class EditNews extends EditRecord
 {
@@ -25,7 +26,7 @@ class EditNews extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-
+        $record->slug=Str::slug($data->title);
         foreach ($record->getTranslatableAttributes() as $attribute) {
             $record->setTranslations($attribute, [
                 'en' => $data[$attribute] ?? '',

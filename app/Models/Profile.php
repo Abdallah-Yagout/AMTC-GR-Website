@@ -8,6 +8,7 @@ class Profile extends Model
 {
     protected $fillable = [
         'birthdate',
+        'user_id',
         'whatsapp',
         'gender',
         'city',

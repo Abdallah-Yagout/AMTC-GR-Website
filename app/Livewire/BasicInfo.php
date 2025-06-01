@@ -15,7 +15,7 @@ class BasicInfo extends UpdateProfileInformationForm
         $user = auth()->user();
 
 
-        $this->state['birthdate'] = optional($user->profile)->birthdate
+        $this->state['birthdate'] = $user->profile->birthdate
             ? \Carbon\Carbon::parse($user->profile->birthdate)->format('Y-m-d')
             : null;
 

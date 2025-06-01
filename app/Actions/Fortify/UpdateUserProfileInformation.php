@@ -7,6 +7,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
+use Exception;
+
 
 class UpdateUserProfileInformation implements UpdatesUserProfileInformation
 {
@@ -18,13 +20,13 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
 
     public function update(User $user, array $input): void
     {
-
+        try {
             Validator::make($input, [
                 'name' => ['required', 'string', 'max:255'],
                 'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
                 'birthdate' => ['nullable', 'date', 'before:today'],
                 'phone' => [
-                    'required',
+                    'nullable',
                     'digits:9',
                     Rule::unique('users')->ignore($user->id)
                 ],
@@ -49,6 +51,11 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'toyota_gr_knowledge' => ['nullable', 'string', 'max:255'],
                 'favorite_car' => ['nullable', 'string', 'max:1000'],
             ])->validateWithBag('updateProfileInformation');
+        }
+        catch (Exception $exception){
+
+        dd($exception);
+        }
 
         if (isset($input['photo'])) {
             $user->updateProfilePhoto($input['photo']);
@@ -62,6 +69,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'email' => $input['email'],
                 'phone' => $input['phone'],
             ])->save();
+
 
             $this->updateOrCreateProfile($user, $input ?? []);
         }
@@ -88,7 +96,6 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     protected function updateOrCreateProfile(User $user, array $profileData): void
     {
         $currentValues = $user->profile ? $user->profile->toArray() : [];
-
         // Merge new values over existing ones
         $mergedData = array_merge($currentValues, $profileData);
 

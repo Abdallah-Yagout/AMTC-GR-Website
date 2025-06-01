@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Panel;
+use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -13,7 +14,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Filament\Models\Contracts\FilamentUser;
 
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser,\Illuminate\Contracts\Auth\MustVerifyEmail
 {
     use HasApiTokens;
 

@@ -28,11 +28,13 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.env') === 'production') {
             URL::forceScheme('https');
         }
+
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {
             $switch
                 ->visible(outsidePanels: true)
                 ->locales(['ar','en']); // also accepts a closure
         });
+
         FilamentAsset::register([
             Css::make('custom-stylesheet', __DIR__ . '/../../resources/css/custom.css'),
         ]);

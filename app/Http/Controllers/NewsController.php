@@ -9,13 +9,13 @@ class NewsController extends Controller
 {
     public function index()
     {
-        $data['news']=News::paginate();
+        $data['news']=News::active()->paginate();
         return view('news.index',$data);
     }
 
     public function view($slug)
     {
-        $data['news']=News::where('slug',$slug)->firstOrFail();
+        $data['news']=News::active()->where('slug',$slug)->firstOrFail();
         $data['relatedNews'] = News::where('id', '!=', $data['news']->id)
             ->latest()
             ->take(3)

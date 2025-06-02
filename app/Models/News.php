@@ -17,4 +17,8 @@ class News extends Model
     use HasTranslations;
     public $translatable = ['title','description']; // translatable attributes
 
+    public function scopeActive($query)
+    {
+        return $query->where('status',1);
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Actions\Fortify;
 
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
@@ -24,6 +25,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             Validator::make($input, [
                 'name' => ['required', 'string', 'max:255'],
                 'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
+                'gender' => ['nullable', 'string', 'in:male,female'], // Add this
+                'city' => ['nullable', 'string', 'max:255'], // Add this
                 'birthdate' => ['nullable', 'date', 'before:today'],
                 'phone' => [
                     'nullable',
@@ -52,9 +55,9 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'favorite_car' => ['nullable', 'string', 'max:1000'],
             ])->validateWithBag('updateProfileInformation');
         }
-        catch (Exception $exception){
-
-        dd($exception);
+        catch (\Illuminate\Validation\ValidationException $e){
+            Log::error('Validation failed', ['errors' => $e->errors()]);
+            throw $e;
         }
 
         if (isset($input['photo'])) {
@@ -67,9 +70,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $user->forceFill([
                 'name' => $input['name'],
                 'email' => $input['email'],
-                'phone' => $input['phone'],
+                'phone' => $input['phone']??$user->phone,
             ])->save();
-
 
             $this->updateOrCreateProfile($user, $input ?? []);
         }
@@ -103,6 +105,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             ['user_id' => $user->id],
             [
                 'birthdate' => $mergedData['birthdate'] ?? null,
+                'city' => $mergedData['city'] ?? null,
+                'gender' => $mergedData['gender'] ?? null,
                 'heard_about' => $mergedData['heard_about'] ?? null,
                 'preferred_time' => $mergedData['preferred_time'] ?? null,
                 'suggestions' => $mergedData['suggestions'] ?? null,

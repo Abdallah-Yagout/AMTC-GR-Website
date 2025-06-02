@@ -10,7 +10,7 @@ class BasicInfo extends UpdateProfileInformationForm
 {
     public function mount()
     {
-        parent::mount();
+//        parent::mount();
         // Add your logic here
         $user = auth()->user();
 
@@ -19,6 +19,8 @@ class BasicInfo extends UpdateProfileInformationForm
             ? \Carbon\Carbon::parse($user->profile->birthdate)->format('Y-m-d')
             : null;
         $this->state['city']=$user->profile?->city ?? '';
+        $this->state['name']=$user->name ?? '';
+        $this->state['email']=$user->email ?? '';
         $this->state['gender']=$user->profile?->gender ?? '';
 
     }

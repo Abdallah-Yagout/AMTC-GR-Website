@@ -16,7 +16,7 @@ class NewsController extends Controller
     public function view($slug)
     {
         $data['news']=News::active()->where('slug',$slug)->firstOrFail();
-        $data['relatedNews'] = News::where('id', '!=', $data['news']->id)
+        $data['relatedNews'] = News::active()->where('id', '!=', $data['news']->id)
             ->latest()
             ->take(3)
             ->get();

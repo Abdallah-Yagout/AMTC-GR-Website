@@ -26,7 +26,7 @@ class HomeController extends Controller
 
 
         $data['tournaments']=Tournament::take(3)->latest()->get();
-        $data['news']=News::take(3)->latest()->get();
+        $data['news']=News::active()->take(3)->latest()->get();
 
         return view('home',$data);
     }

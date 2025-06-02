@@ -16,13 +16,13 @@
                        wire:model.live="photo"
                        x-ref="photo"
                        x-on:change="
-                                    photoName = $refs.photo.files[0].name;
-                                    const reader = new FileReader();
-                                    reader.onload = (e) => {
-                                        photoPreview = e.target.result;
-                                    };
-                                    reader.readAsDataURL($refs.photo.files[0]);
-                            " />
+                                photoName = $refs.photo.files[0].name;
+                                const reader = new FileReader();
+                                reader.onload = (e) => {
+                                    photoPreview = e.target.result;
+                                };
+                                reader.readAsDataURL($refs.photo.files[0]);
+                        " />
 
                 <x-label for="photo" value="{{ __('Photo') }}" />
 
@@ -33,9 +33,9 @@
 
                 <!-- New Profile Photo Preview -->
                 <div class="mt-2" x-show="photoPreview" style="display: none;">
-                    <span class="block rounded-full size-20 bg-cover bg-no-repeat bg-center"
-                          x-bind:style="'background-image: url(\'' + photoPreview + '\');'">
-                    </span>
+                <span class="block rounded-full size-20 bg-cover bg-no-repeat bg-center"
+                      x-bind:style="'background-image: url(\'' + photoPreview + '\');'">
+                </span>
                 </div>
 
                 <x-secondary-button class="mt-2 me-2" type="button" x-on:click.prevent="$refs.photo.click()">
@@ -60,7 +60,6 @@
         </div>
 
         <!-- Email -->
-
         <div class="col-span-6 sm:col-span-4">
             <x-label for="email" value="{{ __('Email') }}" />
             <x-input id="email" type="email" class="mt-1 block w-full" wire:model="state.email" required autocomplete="username" />
@@ -83,13 +82,40 @@
             @endif
         </div>
 
-        <div class="col-span-6 sm:col-span-4">
-            <x-label for="birthdate" value="{{ __('Birth Date') }}" />
-            <x-input id="birthdate" type="date" class="mt-1 block w-full" wire:model="state.birthdate" />
-            <x-input-error for="birthdate" class="mt-2" />
+        <!-- Birth Date, Gender, and City in a responsive grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 col-span-6">
+            <!-- Birth Date -->
+            <div class="col-span-1">
+                <x-label for="birthdate" value="{{ __('Birth Date') }}" />
+                <x-input id="birthdate" type="date" class="mt-1 block w-full" wire:model="state.birthdate" />
+                <x-input-error for="birthdate" class="mt-2" />
+            </div>
+
+            <!-- Gender -->
+            <div class="col-span-1">
+                <x-label for="gender" value="{{ __('Gender') }}" />
+                <x-select id="gender" wire:model="state.gender" class="mt-1 block w-full">
+                    <option value="">{{ __('Select Gender') }}</option>
+                    <option value="male">{{ __('Male') }}</option>
+                    <option value="female">{{ __('Female') }}</option>
+                </x-select>
+                <x-input-error for="gender" class="mt-2" />
+            </div>
+
+            <!-- City -->
+
+            <div class="col-span-1">
+                <x-label for="city" value="{{ __('City') }}" />
+                <x-select id="city" wire:model="state.city" class="mt-1 block w-full">
+                    <option value="">{{ __('Select City') }}</option>
+                    @foreach(\App\Helpers\Location::cities() as $city)
+                        <option value="{{$city}}">{{ __($city) }}</option>
+                    @endforeach
+                </x-select>
+                <x-input-error for="city" class="mt-2" />
+            </div>
         </div>
     </x-slot>
-
     <x-slot name="actions">
         <x-action-message class="me-3" on="saved">
             {{ __('Saved.') }}

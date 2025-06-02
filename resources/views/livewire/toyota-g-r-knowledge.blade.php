@@ -12,7 +12,7 @@
             <div class="space-y-4">
                 <!-- Toyota GR Knowledge (as Select or Text Input) -->
                 <div>
-                    <x-label for="toyota_gr_knowledge" value="{{__('How familiar are you with Toyota GR cars?')}}" />
+                    <x-label for="toyota_gr_knowledge" class="mb-2" value="{{__('How familiar are you with Toyota GR cars?')}}" />
                     <x-select id="toyota_gr_knowledge" wire:model="state.toyota_gr_knowledge">
                         <option value="">{{ __('Select') }}</option>
                         <option value="expert">{{ __('I know them well and follow their news') }}</option>
@@ -26,7 +26,7 @@
 
                 <!-- Toyota GR Knowledge Explanation (as Textarea) -->
                 <div>
-                    <x-label for="favorite_car" value="{{__('What is your favorite car and why?')}}" />
+                    <x-label for="favorite_car" class="mb-2" value="{{__('What is your favorite car and why?')}}" />
                     <x-textarea id="favorite_car" class="mt-1 block w-full" wire:model="state.favorite_car" rows="4" />
                     <x-input-error for="favorite_car" class="mt-1" />
                 </div>

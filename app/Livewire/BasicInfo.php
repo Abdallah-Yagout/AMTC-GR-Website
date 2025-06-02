@@ -18,6 +18,8 @@ class BasicInfo extends UpdateProfileInformationForm
         $this->state['birthdate'] = $user->profile->birthdate
             ? \Carbon\Carbon::parse($user->profile->birthdate)->format('Y-m-d')
             : null;
+        $this->state['city']=$user->profile?->city ?? '';
+        $this->state['gender']=$user->profile?->gender ?? '';
 
     }
     public function render()

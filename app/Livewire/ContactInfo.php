@@ -14,7 +14,8 @@ class ContactInfo extends UpdateProfileInformationForm
         $user = auth()->user();
 
 
-        $this->state['whatsapp'] = $user->profile->whatsapp;
+        $this->state['whatsapp'] = $user->profile?->whatsapp ?? '';
+
 
     }
     public function render()

@@ -14,8 +14,9 @@ class GamePreferences extends UpdateProfileInformationForm
         $user = auth()->user();
 
 
-        $this->state['favorite_games'] = $user->profile->favorite_games;
-        $this->state['gt7_ranking'] = $user->profile->gt7_ranking;
+        $this->state['favorite_games'] = $user->profile?->favorite_games ?? '';
+        $this->state['gt7_ranking'] = $user->profile?->gt7_ranking ?? '';
+
     }
     public function render()
     {

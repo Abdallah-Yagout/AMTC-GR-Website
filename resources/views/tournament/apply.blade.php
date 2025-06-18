@@ -46,22 +46,14 @@
 
                     <div class="space-y-1">
                         <label class="block text-sm font-medium text-white">{{ __('Gender') }}</label>
-                        <input type="text" class="w-full p-2 rounded border border-gray-300 focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400 bg-transparent" name="gender" value="{{ auth()->check() ? auth()->user()->profile->gender : old('gender') }}">
+                        <input type="text" disabled class="w-full p-2 rounded border border-gray-300 focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400 bg-transparent" name="gender" value="{{ auth()->check() ? auth()->user()->profile->gender : old('gender') }}">
                     </div>
 
                     <!-- City -->
                     <div class="space-y-1">
                         <label class="block text-sm font-medium text-white">{{ __('City') }}</label>
+                        <input type="text" disabled class="w-full p-2 rounded border border-gray-300 focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400 bg-transparent" name="city" value="{{ auth()->check() ? auth()->user()->profile->city : old('city') }}">
 
-                        <select
-                            name="city"
-                            required
-                            class="w-full p-2 rounded border border-gray-300 focus:border-blue-500 focus:ring-blue-500 placeholder-gray-400 bg-transparent focus:bg-transparent text-gray-400 appearance-none hover:bg-transparent transition-colors duration-200">
-                            <option value="">{{ __('Select') }}</option>
-                            @foreach($tournament->location as $city)
-                                <option value="{{$city}}">{{$city}}</option>
-                            @endforeach
-                        </select>
                     </div>
 
 

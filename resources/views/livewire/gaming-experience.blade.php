@@ -11,7 +11,7 @@
         <div class="col-span-6 mt-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <x-label for="skill_level" value="{{__('Skill Level in Gran Turismo 7')}}" />
+                    <x-label for="skill_level" class="mb-2" value="{{__('Skill Level in Gran Turismo 7')}}" />
                     <x-select id="skill_level" wire:model="state.skill_level">
                         <option value="">{{__('Select')}}</option>
                         <option value="beginner">{{__('Beginner')}}</option>
@@ -28,7 +28,7 @@
                 </div>
 
                 <div>
-                    <x-label for="primary_platform" value="{{__('Primary Gaming Platform')}}" />
+                    <x-label for="primary_platform" class="mb-2" value="{{__('Primary Gaming Platform')}}" />
                     <x-select id="primary_platform" wire:model="state.primary_platform">
                         <option value="">{{ __('Select') }}</option>
                         <option value="ps5">{{ __('PlayStation 5') }}</option>
@@ -40,7 +40,7 @@
                 </div>
 
                 <div>
-                    <x-label for="weekly_hours" value="{{__('Weekly Play Hours')}}" />
+                    <x-label for="weekly_hours" class="mb-2" value="{{__('Weekly Play Hours')}}" />
                     <x-select id="weekly_hours" wire:model="state.weekly_hours">
                         <option value="">{{ __('Select') }}</option>
                         <option value="less_than_5">{{ __('Less than 5 hours') }}</option>

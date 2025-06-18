@@ -12,8 +12,9 @@ class ToyotaGRKnowledge extends UpdateProfileInformationForm
         parent::mount();
         // Add your logic here
         $user = auth()->user();
-        $this->state['toyota_gr_knowledge'] = $user->profile->toyota_gr_knowledge;
-        $this->state['favorite_car'] = $user->profile->favorite_car;
+        $this->state['toyota_gr_knowledge'] = $user->profile?->toyota_gr_knowledge ?? '';
+        $this->state['favorite_car'] = $user->profile?->favorite_car ?? '';
+
 
     }
     public function render()

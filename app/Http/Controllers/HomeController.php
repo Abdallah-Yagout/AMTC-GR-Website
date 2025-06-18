@@ -7,6 +7,7 @@ use App\Models\Tournament;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 
@@ -25,7 +26,7 @@ class HomeController extends Controller
 
 
         $data['tournaments']=Tournament::take(3)->latest()->get();
-        $data['news']=News::take(3)->latest()->get();
+        $data['news']=News::active()->take(3)->latest()->get();
 
         return view('home',$data);
     }

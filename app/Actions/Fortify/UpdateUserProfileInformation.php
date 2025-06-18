@@ -5,9 +5,12 @@ namespace App\Actions\Fortify;
 use App\Models\User;
 use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
+use Exception;
+
 
 class UpdateUserProfileInformation implements UpdatesUserProfileInformation
 {
@@ -23,9 +26,11 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             Validator::make($input, [
                 'name' => ['required', 'string', 'max:255'],
                 'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
+                'gender' => ['nullable', 'string', 'in:male,female'], // Add this
+                'city' => ['nullable', 'string', 'max:255'], // Add this
                 'birthdate' => ['nullable', 'date', 'before:today'],
                 'phone' => [
-                    'required',
+                    'nullable',
                     'digits:9',
                     Rule::unique('users')->ignore($user->id)
                 ],
@@ -50,6 +55,11 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'toyota_gr_knowledge' => ['nullable', 'string', 'max:255'],
                 'favorite_car' => ['nullable', 'string', 'max:1000'],
             ])->validateWithBag('updateProfileInformation');
+        }
+        catch (\Illuminate\Validation\ValidationException $e){
+            Log::error('Validation failed', ['errors' => $e->errors()]);
+            throw $e;
+        }
 
         if (isset($input['photo'])) {
             $user->updateProfilePhoto($input['photo']);
@@ -61,7 +71,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $user->forceFill([
                 'name' => $input['name'],
                 'email' => $input['email'],
-                'phone' => $input['phone'],
+                'phone' => $input['phone']??$user->phone,
             ])->save();
 
             $this->updateOrCreateProfile($user, $input ?? []);
@@ -95,7 +105,6 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     protected function updateOrCreateProfile(User $user, array $profileData): void
     {
         $currentValues = $user->profile ? $user->profile->toArray() : [];
-
         // Merge new values over existing ones
         $mergedData = array_merge($currentValues, $profileData);
 
@@ -103,6 +112,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             ['user_id' => $user->id],
             [
                 'birthdate' => $mergedData['birthdate'] ?? null,
+                'city' => $mergedData['city'] ?? null,
+                'gender' => $mergedData['gender'] ?? null,
                 'heard_about' => $mergedData['heard_about'] ?? null,
                 'preferred_time' => $mergedData['preferred_time'] ?? null,
                 'suggestions' => $mergedData['suggestions'] ?? null,

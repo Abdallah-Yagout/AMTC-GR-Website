@@ -3,6 +3,7 @@
 namespace App\Actions\Fortify;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -18,7 +19,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
 
     public function update(User $user, array $input): void
     {
-
+        try {
             Validator::make($input, [
                 'name' => ['required', 'string', 'max:255'],
                 'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
@@ -64,6 +65,12 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             ])->save();
 
             $this->updateOrCreateProfile($user, $input ?? []);
+        }
+
+
+        }
+        catch (Exception $exception) {
+            dd($exception,$input);
         }
     }
     /**

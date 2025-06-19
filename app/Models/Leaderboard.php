@@ -23,10 +23,19 @@ class Leaderboard extends Model
             ->where('tournament_id', $this->tournament_id)
             ->where('location', $this->location);
     }
+    // app/Models/Leaderboard.php
+    public function participants()
+    {
+        return $this->belongsToMany(Participant::class)
+            ->withPivot(['position', 'time_taken', 'status'])
+            ->withTimestamps();
+    }
 //    public function user()
 //    {
 //        return $this->belongsTo(User::class);
 //    }
+
+
 
     public function tournament()
     {

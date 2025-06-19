@@ -18,8 +18,14 @@ class LeaderboardController extends Controller
         // Get selected year from request or default to current year
         $selectedYear = $request->input('year', date('Y'));
 
-        // Get all tournaments grouped by year
-        $tournamentsByYear = Tournament::orderBy('start_date')
+        // Get all tournaments grouped by year with their leaderboards and participants
+        $tournamentsByYear = Tournament::with([
+            'leaderboards.participants.user',
+            'leaderboards.participants' => function($query) {
+                $query->orderByPivot('position');
+            }
+        ])
+            ->orderBy('start_date')
             ->get()
             ->groupBy(function($tournament) {
                 return \Carbon\Carbon::parse($tournament->start_date)->format('Y');
@@ -32,9 +38,6 @@ class LeaderboardController extends Controller
         if (!$selectedYear && count($availableYears) > 0) {
             $selectedYear = $availableYears[0];
         }
-
-        // Get tournaments for selected year
-        $yearTournaments = $tournamentsByYear->get($selectedYear, collect());
 
         // Organize data structure
         $leaderboardData = [
@@ -57,27 +60,23 @@ class LeaderboardController extends Controller
             foreach ($mainTournaments as $mainTournament) {
                 $finalTournament = $tournaments->firstWhere('tournament_id', $mainTournament->id);
 
-                $mainTournament->load(['leaderboards' => function($query) {
-                    $query->with('user')->orderBy('position');
-                }]);
-
-                if ($finalTournament) {
-                    $finalTournament->load(['leaderboards' => function($query) {
-                        $query->with('user')->orderBy('position');
-                    }]);
-                }
-
-                // Group leaderboards by location from leaderboard (not tournament)
-                $locationLeaderboards = $tournaments
-                    ->filter(fn($t) => $t->tournament_id === null && $t->id === $mainTournament->id)
-                    ->flatMap(function($tournament) {
-                        return $tournament->leaderboards->map(function ($leaderboard) {
-                            // Get location from leaderboard instead of tournament
-                            $leaderboard->location = $leaderboard->location;
-                            return $leaderboard;
-                        });
-                    })->groupBy('location')  // Group by leaderboard's location
-                    ->map(fn($group) => $group->sortBy('position')->values());
+                // Group leaderboards by location with participants
+                $locationLeaderboards = $mainTournament->leaderboards
+                    ->map(function ($leaderboard) {
+                        return [
+                            'location' => $leaderboard->location,
+                            'participants' => $leaderboard->participants->map(function ($participant) {
+                                return [
+                                    'user' => $participant->user,
+                                    'position' => $participant->pivot->position,
+                                    'time_taken' => $participant->pivot->time_taken,
+                                    'status' => $participant->pivot->status
+                                ];
+                            })
+                        ];
+                    })
+                    ->groupBy('location')
+                    ->map(fn($group) => $group->flatMap->participants->sortBy('position')->values());
 
                 $yearEntry['mainTournaments']->push([
                     'main' => $mainTournament,
@@ -86,34 +85,55 @@ class LeaderboardController extends Controller
                 ]);
             }
 
-            // For the selected year, also prepare season leaderboard
+            // For the selected year, prepare season leaderboard
             if ($year == $selectedYear) {
-                // Group participants by location from leaderboard
-                $locationLeaderboards = $tournaments->flatMap(function($tournament) {
-                    return $tournament->leaderboards->map(function ($leaderboard) {
-                        // Get location from leaderboard instead of tournament
-                        $leaderboard->location = $leaderboard->location;
-                        return $leaderboard;
+                // Get all participants for the year with their pivot data
+                $yearParticipants = Participant::whereHas('leaderboards', function($query) use ($year) {
+                    $query->whereHas('tournament', function($q) use ($year) {
+                        $q->whereYear('start_date', $year);
                     });
-                })->groupBy('location')  // Group by leaderboard's location
-                ->map(function($locationGroup) {
-                    return $locationGroup->sortBy('position')->values();
-                });
+                })
+                    ->with(['user', 'leaderboards' => function($query) {
+                        $query->withPivot('position', 'time_taken');
+                    }])
+                    ->get();
 
-                // Season leaderboard - aggregate by user across all tournaments
-                $seasonLeaderboard = $tournaments->flatMap(function($tournament) {
-                    return $tournament->leaderboards;
-                })->groupBy('user_id')->map(function($entries) {
-                    $user = $entries->first()->user;
-                    $totalPoints = $entries->sum('points'); // or whatever score metric
-                    return (object)[
-                        'user' => $user,
-                        'total_points' => $totalPoints,
-                    ];
-                })->sortByDesc('total_points')->values();
+                // Group by location
+                $locationLeaderboards = collect();
+                foreach ($yearParticipants as $participant) {
+                    foreach ($participant->leaderboards as $leaderboard) {
+                        $locationLeaderboards->push([
+                            'location' => $leaderboard->location,
+                            'participant' => [
+                                'user' => $participant->user,
+                                'position' => $leaderboard->pivot->position,
+                                'time_taken' => $leaderboard->pivot->time_taken,
 
-                $yearEntry['seasonLeaderboards'] = $locationLeaderboards;
-                $yearEntry['seasonAggregate'] = $seasonLeaderboard;
+                            ]
+                        ]);
+                    }
+                }
+
+                $groupedByLocation = $locationLeaderboards
+                    ->groupBy('location')
+                    ->map(fn($group) => $group->pluck('participant')->sortBy('position')->values());
+
+                // Season aggregate leaderboard
+                $seasonAggregate = $yearParticipants
+                    ->groupBy('user_id')
+                    ->map(function($participants) {
+                        $user = $participants->first()->user;
+
+
+                        return [
+                            'user' => $user,
+                            'participations' => $participants->count()
+                        ];
+                    })
+                    ->values();
+
+                $yearEntry['seasonLeaderboards'] = $groupedByLocation;
+                $yearEntry['seasonAggregate'] = $seasonAggregate;
             }
 
             $leaderboardData['yearData'][$year] = $yearEntry;
@@ -121,7 +141,6 @@ class LeaderboardController extends Controller
 
         return view('leaderboard.index', $leaderboardData);
     }
-
 
 
 }

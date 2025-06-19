@@ -16,10 +16,11 @@ class Participant extends Model
         return $this->belongsTo('App\Models\User');
     }
 
-    public function leaderboard()
+    public function leaderboards()
     {
-
-        return $this->hasOne('App\Models\Leaderboard','user_id','user_id');
+        return $this->belongsToMany(Leaderboard::class)
+            ->withPivot(['position', 'time_taken', 'status'])
+            ->withTimestamps();
     }
 
     public function profile()

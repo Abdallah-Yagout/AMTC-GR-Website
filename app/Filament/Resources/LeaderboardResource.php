@@ -71,44 +71,6 @@ class LeaderboardResource extends Resource
                     ->reactive()
                     ->afterStateUpdated(fn (Set $set) => $set('user_id', null)),
 
-                Select::make('user_id')
-                    ->label('Participant')
-                    ->options(function (Get $get) {
-                        $tournamentId = $get('tournament_id');
-                        $location = $get('location');
-
-                        if (!$tournamentId || !$location) {
-                            return [];
-                        }
-
-                        // Get users already assigned to this tournament+location in leaderboard
-                        $existingUsers = Leaderboard::where('tournament_id', $tournamentId)
-                            ->where('location', $location)
-                            ->pluck('user_id')
-                            ->toArray();
-
-                        return Participant::with('user')
-                            ->where('tournament_id', $tournamentId)
-                            ->where('location', $location)
-                            ->whereNotIn('user_id', $existingUsers) // Exclude already assigned users
-                            ->get()
-                            ->mapWithKeys(function ($participant) {
-                                return [
-                                    $participant->user_id => $participant->user->name
-                                ];
-                            })
-                            ->toArray();
-                    })
-                    ->searchable()
-                    ->required(),
-
-                Forms\Components\TextInput::make('time_taken')
-                    ->required()
-                    ->numeric(),
-
-                Forms\Components\TextInput::make('position')
-                    ->required()
-                    ->numeric(),
             ]);
     }
 
@@ -118,22 +80,23 @@ class LeaderboardResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('tournament.title'),
                 Tables\Columns\TextColumn::make('location'),
-                Tables\Columns\TextColumn::make('user.name'),
-                Tables\Columns\TextColumn::make('position'),
-                Tables\Columns\TextColumn::make('time_taken'),
                 Tables\Columns\ToggleColumn::make('status')
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('tournament_id')
                     ->label('Tournament')
-                    ->options(
-                        Tournament::all()->mapWithKeys(function ($tournament) {
-                            $formattedDate = \Carbon\Carbon::parse($tournament->date)->format('Y-m-d');
-                            return [
-                                $tournament->id => "{$tournament->title} . {$formattedDate}"
-                            ];
-                        })->toArray()
-                    )
+                    ->options(function () {
+                        return Tournament::query()
+                            ->whereHas('leaderboards') // Only tournaments with leaderboards
+                            ->select('id', 'title', 'start_date')
+                            ->orderBy('start_date', 'desc')
+                            ->get()
+                            ->mapWithKeys(function ($tournament) {
+                                return [
+                                    $tournament->id => "{$tournament->title} • {$tournament->start_date}"
+                                ];
+                            });
+                    })
                     ->searchable(),
 
                 Tables\Filters\SelectFilter::make('location')
@@ -146,14 +109,6 @@ class LeaderboardResource extends Resource
                     )
                     ->searchable(),
 
-                Tables\Filters\SelectFilter::make('position')
-                    ->label('Position')
-                    ->options(
-                        Leaderboard::query()
-                            ->distinct()
-                            ->pluck('position', 'position')
-                            ->toArray()
-                    )
 
             ])
             ->actions([

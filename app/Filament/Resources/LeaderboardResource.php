@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\LeaderboardResource\Pages;
 use App\Filament\Resources\LeaderboardResource\RelationManagers;
-use App\Filament\Resources\TournamentResource\RelationManagers\ParticipantsRelationManager;
+use App\Filament\Resources\LeaderboardResource\RelationManagers\ParticipantsRelationManager;
 use App\Helpers\Location;
 use App\Models\Leaderboard;
 use App\Models\Participant;
@@ -105,6 +105,7 @@ class LeaderboardResource extends Resource
                 Forms\Components\TextInput::make('time_taken')
                     ->required()
                     ->numeric(),
+
                 Forms\Components\TextInput::make('position')
                     ->required()
                     ->numeric(),

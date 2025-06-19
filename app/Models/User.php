@@ -36,7 +36,29 @@ class User extends Authenticatable implements FilamentUser,\Illuminate\Contracts
         'phone',
         'type',
     ];
+    public function upvotes()
+    {
+        return $this->hasMany(Vote::class);
+    }
+    public function toggleUpvote($model)
+    {
+        $upvote = $this->upvotes()
+            ->where('upvoteable_type', get_class($model))
+            ->where('upvoteable_id', $model->id)
+            ->first();
 
+        if ($upvote) {
+            $upvote->delete();
+            return false;
+        }
+
+        $this->upvotes()->create([
+            'upvoteable_type' => get_class($model),
+            'upvoteable_id' => $model->id,
+        ]);
+
+        return true;
+    }
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -89,7 +111,7 @@ class User extends Authenticatable implements FilamentUser,\Illuminate\Contracts
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return true;
+        return auth()->user()->type==1;
     }
 
 

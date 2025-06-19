@@ -14,10 +14,19 @@ class Leaderboard extends Model
         'position',
         'status',
     ];
-    public function user()
+
+    // app/Models/Leaderboard.php
+
+    public function participant()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Participant::class, 'user_id', 'user_id')
+            ->where('tournament_id', $this->tournament_id)
+            ->where('location', $this->location);
     }
+//    public function user()
+//    {
+//        return $this->belongsTo(User::class);
+//    }
 
     public function tournament()
     {

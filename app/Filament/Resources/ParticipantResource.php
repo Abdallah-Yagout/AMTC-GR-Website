@@ -28,15 +28,54 @@ class ParticipantResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function getRecordRouteKeyName(): string
-    {
-        return 'user_id';
-    }
+//    public static function getRecordRouteKeyName(): string
+//    {
+//        return 'user_id';
+//    }
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Forms\Components\Section::make('Tournament Assignment')
+                    ->schema([
+                        Forms\Components\Select::make('user_id')
+                            ->label('User')
+                            ->searchable()
+                            ->options(\App\Models\User::all()->pluck('name', 'id'))
+                            ->required(),
+
+                        Forms\Components\Select::make('tournament_id')
+                            ->label('Tournament')
+                            ->searchable()
+                            ->options(\App\Models\Tournament::all()->pluck('title', 'id'))
+                            ->reactive()
+                            ->afterStateUpdated(fn ($state, callable $set) => $set('location', null)),
+
+                        Forms\Components\Select::make('location')
+                            ->label('Location')
+                            ->options(function (callable $get) {
+                                $tournamentId = $get('tournament_id');
+                                if (!$tournamentId) return [];
+
+                                $tournament = \App\Models\Tournament::find($tournamentId);
+                                $locations = $tournament?->location ?? '[]';
+
+
+                                if (!is_array($locations)) return [];
+
+                                return collect($locations)
+                                    ->filter(fn ($loc) => filled($loc)) // remove null/empty strings
+                                    ->mapWithKeys(fn ($loc) => [(string) $loc => (string) $loc])
+                                    ->toArray();
+                            })
+                            ->required()
+//                            ->disabled(fn (callable $get) => $get('tournament_id') === null)
+                            ->reactive()
+                    ])
+                    ->columns(3)
+                    ->visible(fn (string $operation): bool => $operation === 'create'),
+
                 Forms\Components\Grid::make(3)
                     ->schema([
                         Forms\Components\Section::make('Basic Information')
@@ -123,7 +162,7 @@ class ParticipantResource extends Resource
                             ->columns(1)
                             ->visible(fn (string $operation): bool => $operation !== 'create'),
 
-                    ]),
+                    ])->visible(fn (string $operation): bool => $operation !== 'create'),
 
                 Forms\Components\Fieldset::make('Gaming Experience')
                     ->label(null)
@@ -312,7 +351,8 @@ class ParticipantResource extends Resource
                             ->default('User')
                             ->disabled(fn (string $operation): bool => $operation === 'edit' || $operation === 'view'),
                     ])
-                    ->visible(fn (): bool => auth()->user()?->type === 1),
+                    ->visible(fn (string $operation): bool => $operation !== 'create' && auth()->user()?->type === 1)
+
             ]);
     }
 

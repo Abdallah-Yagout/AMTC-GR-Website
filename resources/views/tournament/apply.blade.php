@@ -96,47 +96,5 @@
             </form>
         </div>
     </div>
-    <section class="bg-secondary mt-10 w-full py-8 px-4 rounded-lg text-white mx-auto">
-        <h1 class="text-center text-3xl font-bold mb-12">{{__('Application Analytics')}}</h1>
-
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <!-- Total Applications -->
-            <div class="bg-black p-6 rounded-lg">
-                <div class="flex items-center justify-between mb-2">
-                    <p class="text-2xl font-medium  text-gray-300">{{ __('Total Application') }}</p>
-                    <x-icon name="heroicon-o-document" class="w-7 h-7 text-primary" />
-                </div>
-                <p class="text-2xl font-bold mb-1">1,234</p>
-            </div>
-
-            <!-- Accepted Racers -->
-            <div class="bg-black p-6 rounded-lg">
-                <div class="flex items-center justify-between mb-2">
-                    <p class="text-2xl font-medium text-gray-300">{{ __('Accepted Racers') }}</p>
-                    <x-icon name="heroicon-o-user" class="w-7 h-7 text-primary" />
-                </div>
-                <p class="text-2xl font-bold mb-1">856</p>
-            </div>
-
-            <!-- Active Events -->
-            <div class="bg-black p-6 rounded-lg">
-                <div class="flex items-center justify-between mb-2">
-                    <p class="text-2xl font-medium text-gray-300">{{ __('Active Events') }}</p>
-                    <x-icon name="heroicon-o-calendar" class="w-7 h-7 text-primary" />
-                </div>
-                <p class="text-2xl font-bold mb-1">12</p>
-                <span class="text-xs text-gray-400">{{ __('Yemen') }}</span>
-            </div>
-
-            <!-- Viewers -->
-            <div class="bg-black p-6 rounded-lg">
-                <div class="flex items-center justify-between mb-2">
-                    <p class="text-2xl font-medium text-gray-300">{{ __('Viewers') }}</p>
-                    <x-icon name="heroicon-o-eye" class="w-7 h-7 text-primary" />
-                </div>
-                <p class="text-2xl font-bold mb-1">20,656</p>
-            </div>
-        </div>
-    </section>
 
 </x-app-layout>

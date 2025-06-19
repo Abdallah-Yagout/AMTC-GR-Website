@@ -12,6 +12,10 @@ class Forum extends Model
     public $translatable = ['title','body']; // translatable attributes
 
 
+    public function upvotes()
+    {
+        return $this->morphMany(Vote::class, 'upvoteable');
+    }
     public function user()
     {
         return $this->belongsTo('App\Models\User');

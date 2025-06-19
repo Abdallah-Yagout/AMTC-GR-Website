@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ForumController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\SetLocale;
 use Livewire\Livewire;
@@ -14,6 +15,8 @@ Route::middleware([SetLocale::class])->group(function () {
     Route::get('/news', [\App\Http\Controllers\NewsController::class, 'index'])->name('news.index');
     Route::get('/news/view/{slug}', [\App\Http\Controllers\NewsController::class, 'view'])->name('news.view');
     Route::get('language/{locale}', [\App\Http\Controllers\HomeController::class, 'switchLanguage'])->name('language.switch');
+    Route::post('/forums/{forum}/upvote', [ForumController::class, 'toggleUpvote']);
+
 });
 
 

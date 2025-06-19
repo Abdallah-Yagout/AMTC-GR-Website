@@ -6,6 +6,7 @@ namespace App\Models;
 use Filament\Panel;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -17,6 +18,8 @@ use Filament\Models\Contracts\FilamentUser;
 class User extends Authenticatable implements FilamentUser,\Illuminate\Contracts\Auth\MustVerifyEmail
 {
     use HasApiTokens;
+    use SoftDeletes;
+
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;

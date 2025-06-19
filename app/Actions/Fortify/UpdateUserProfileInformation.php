@@ -3,6 +3,7 @@
 namespace App\Actions\Fortify;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -74,6 +75,12 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             ])->save();
 
             $this->updateOrCreateProfile($user, $input ?? []);
+        }
+
+
+        }
+        catch (Exception $exception) {
+            dd($exception,$input);
         }
     }
     /**

@@ -26,7 +26,8 @@ class EditNews extends EditRecord
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        $record->slug=Str::slug($data->title);
+
+        $record->slug=Str::slug($data['title']);
         foreach ($record->getTranslatableAttributes() as $attribute) {
             $record->setTranslations($attribute, [
                 'en' => $data[$attribute] ?? '',

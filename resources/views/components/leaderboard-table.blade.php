@@ -18,17 +18,32 @@
             $position = $participant->position ?? null;
             $minutes = $timeTaken !== null ? floor($timeTaken / 60) : 0;
             $seconds = $timeTaken !== null ? $timeTaken % 60 : 0;
-            $diff = (isset($showDiff) && $showDiff && $timeTaken !== null && isset($participants[0]->time_taken))
-                ? $timeTaken - $participants[0]->time_taken
-                : 0;
+            $milliseconds = $timeTaken !== null ? floor(($timeTaken - floor($timeTaken)) * 1000) : 0;
+
+  $diff = 0;
+            if (isset($showDiff) && $showDiff && $timeTaken !== null && isset($participants[0]->time_taken)) {
+                $diff = round(($timeTaken - $participants[0]->time_taken) * 1000) / 1000; // Round to 3 decimal places
+            }
+
+            // Format time with milliseconds (MM:SS.mmm)
+            $formattedTime = $timeTaken !== null
+                ? sprintf('%02d:%02d.%03d', $minutes, $seconds, $milliseconds)
+                : 'N/A';
+
+            // Format diff with milliseconds (S.mmm)
+            $formattedDiff = $diff !== 0
+                ? sprintf('%s%01d.%03d', $diff > 0 ? '+' : '', abs($diff), abs($diff - floor($diff)) * 1000)
+                : '0.000';
         @endphp
+
 
             <!-- Mobile Layout (flex) -->
         <div class="sm:hidden flex flex-col border-b border-gray-700 p-3 space-y-2">
             <div class="flex justify-between items-center">
                 <div class="flex items-center gap-2">
+
                     <span class="text-white font-bold">#{{ $position ?? 'N/A' }}</span>
-                    <img src="{{ $participant->user->profile_photo_path ?? 'https://ui-avatars.com/api/?name=' . urlencode($participant->user->name) }}"
+                    <img src="{{$participant->user->profile_photo_path? asset('storage'.'/'.$participant->user->profile_photo_path) : 'https://ui-avatars.com/api/?name=' . urlencode($participant->user->name) }}"
                          alt="{{ $participant->user->name }}"
                          class="w-8 h-8 rounded-full object-cover border border-white">
                     <span class="text-white text-sm truncate">
@@ -41,7 +56,7 @@
                 <div class="text-white text-xs">Time:</div>
                 <div class="text-green-400 text-sm font-bold">
                     @if($timeTaken !== null)
-                        {{ sprintf('%d:%06.3f', $minutes, $seconds) }}
+                        {{ sprintf('%02d:%02d.%03d', $minutes, $seconds, $milliseconds) }}
                     @else
                         N/A
                     @endif
@@ -52,7 +67,7 @@
                 <div class="flex justify-between">
                     <div class="text-white text-xs">Diff:</div>
                     <div class="text-xs font-bold {{ $diff > 0 ? 'text-red-400' : 'text-green-400' }}">
-                        {{ $diff > 0 ? '+' : '' }}{{ number_format($diff, 3) }}s
+                        {{ $formattedDiff }}s
                     </div>
                 </div>
             @endif
@@ -76,7 +91,7 @@
 
             <!-- Driver -->
             <div class="col-span-6 flex items-center gap-3">
-                <img src="{{ $participant->user->profile_photo_path ?? 'https://ui-avatars.com/api/?name=' . urlencode($participant->user->name) }}"
+                <img src="{{ $participant->user->profile_photo_path ? asset('storage'.'/'.$participant->user->profile_photo_path): 'https://ui-avatars.com/api/?name=' . urlencode($participant->user->name) }}"
                      alt="{{ $participant->user->name }}"
                      class="w-10 h-10 rounded-full object-cover border border-white">
                 <span class="text-white text-base truncate">
@@ -86,8 +101,10 @@
 
             <!-- Time -->
             <div class="col-span-2 text-green-400 text-base font-bold text-center">
+
                 @if($timeTaken !== null)
-                    {{ sprintf('%d:%06.3f', $minutes, $seconds) }}
+                    {{ sprintf('%02d:%02d.%03d', $minutes, $seconds, $milliseconds) }}
+
                 @else
                     N/A
                 @endif
@@ -96,7 +113,7 @@
             @if(isset($showDiff) && $showDiff)
                 <!-- Diff -->
                 <div class="col-span-3 text-sm font-bold text-center {{ $diff > 0 ? 'text-red-400' : 'text-green-400' }}">
-                    {{ $diff > 0 ? '+' : '' }}{{ number_format($diff, 3) }}s
+                    {{ $formattedDiff }}s
                 </div>
             @endif
 

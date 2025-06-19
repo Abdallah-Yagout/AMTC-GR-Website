@@ -13,7 +13,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <x-label for="phone" value="{{__('Phone Number')}}" />
-                    <x-input id="phone" type="number" class="mt-1 block w-full" wire:model="state.phone" />
+                    <x-input id="phone" type="number" pattern="[0-9]{9}" class="mt-1 block w-full" wire:model="state.phone" />
                     <x-input-error for="phone"/>
                 </div>
 

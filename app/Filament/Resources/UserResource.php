@@ -13,12 +13,17 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserResource extends Resource
 {
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
-        return parent::getEloquentQuery()->with('profile');
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+            SoftDeletingScope::class,
+        ])
+            ->withTrashed()->with('profile');
     }
 
     protected static ?string $model = User::class;

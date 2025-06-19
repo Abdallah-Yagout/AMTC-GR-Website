@@ -30,6 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->darkMode(true,true)
             ->colors([
                 'primary' => \Filament\Support\Colors\Color::hex('#E60010'),
                 ])

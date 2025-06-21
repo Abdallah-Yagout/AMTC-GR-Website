@@ -9,5 +9,6 @@ class Vote extends Model
     protected $fillable = [
         'upvoteable_type',
         'upvoteable_id',
+        'user_id',
     ];
 }

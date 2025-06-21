@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
-use Exception;
 
 
 class UpdateUserProfileInformation implements UpdatesUserProfileInformation
@@ -55,8 +54,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'toyota_gr_knowledge' => ['nullable', 'string', 'max:255'],
                 'favorite_car' => ['nullable', 'string', 'max:1000'],
             ])->validateWithBag('updateProfileInformation');
-        }
-        catch (\Illuminate\Validation\ValidationException $e){
+        } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Validation failed', ['errors' => $e->errors()]);
             throw $e;
         }
@@ -71,17 +69,13 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $user->forceFill([
                 'name' => $input['name'],
                 'email' => $input['email'],
-                'phone' => $input['phone']??$user->phone,
+                'phone' => $input['phone'] ?? $user->phone,
             ])->save();
 
             $this->updateOrCreateProfile($user, $input ?? []);
         }
 
 
-        }
-        catch (Exception $exception) {
-            dd($exception,$input);
-        }
     }
     /**
      * Update the given verified user's profile information.

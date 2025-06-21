@@ -8,6 +8,7 @@ use Spatie\Translatable\HasTranslations;
 
 class Forum extends Model
 {
+    protected $fillable=['image'];
     use HasTranslations;
     public $translatable = ['title','body']; // translatable attributes
 
@@ -16,6 +17,7 @@ class Forum extends Model
     {
         return $this->morphMany(Vote::class, 'upvoteable');
     }
+
     public function user()
     {
         return $this->belongsTo('App\Models\User');

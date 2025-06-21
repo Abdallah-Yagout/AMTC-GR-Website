@@ -58,13 +58,47 @@ class TournamentController extends Controller
     }
     public function apply(Tournament $id)
     {
+        $user = auth()->user();
+        $hasSubmitted = false;
 
-        return view('tournament.apply', ['tournament' => $id]);
+        if ($user) {
+            $hasSubmitted = Participant::where('user_id', $user->id)
+                ->where('tournament_id', $id->id)
+                ->exists();
+        }
 
+        return view('tournament.apply', [
+            'tournament' => $id,
+            'hasSubmitted' => $hasSubmitted
+        ]);
     }
     public function submit(Request $request)
     {
-        $profile = auth()->user()->profile;
+        $auth = auth()->user();
+        if (!$auth) {
+            return redirect()->route('login')->withErrors([
+                'auth' => 'You must be logged in to submit an application.'
+            ]);
+        }
+
+        // Get user profile
+        $profile = $auth->profile;
+        if (!$profile) {
+            return redirect()->back()->withErrors([
+                'profile' => 'User profile not found.'
+            ]);
+        }
+
+        // Check if user already submitted for this tournament
+        $existingSubmission = Participant::where('user_id', $auth->id)
+            ->where('tournament_id', $request->tournamentId)
+            ->first();
+
+        if ($existingSubmission) {
+            return redirect()->back()->withErrors([
+                'submission' => 'You have already submitted an application for this tournament.'
+            ]);
+        }
 
         // List of required profile fields
         $requiredProfileFields = [
@@ -74,7 +108,6 @@ class TournamentController extends Controller
             'city',
             'skill_level',
             'primary_platform',
-            'regular_games',
             'weekly_hours',
             'favorite_games',
             'gt7_ranking',
@@ -105,24 +138,25 @@ class TournamentController extends Controller
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
-                'gender' => ['required', Rule::in(['Male', 'Female'])],
+                'gender' => ['required', Rule::in(['male', 'female'])],
                 'phone' => 'required|string|max:20',
-                'email' => 'required|email|unique:leaderboard,email',
+                'email' => 'required|email',
                 'city' => 'required|string|max:255',
                 'tournamentId' => 'required|exists:tournaments,id',
             ]);
 
-            participant::create([
-                'user_id' => auth()->id(),
+            Participant::create([
+                'user_id' => $auth->id,
                 'tournament_id' => $validated['tournamentId'],
+                'leaderboard_id' => null,
                 'location' => $validated['city'],
             ]);
+
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
 
         return redirect()->back()->with('success', 'Application submitted successfully!');
     }
-
 
 }

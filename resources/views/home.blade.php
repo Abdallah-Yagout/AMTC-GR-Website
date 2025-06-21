@@ -120,6 +120,7 @@
                         :description="$tournament->description"
                         :location="$tournament->location"
                         :id="$tournament->id"
+                        :status="$tournament->status"
                         class="w-full"
                     />
                 @endforeach

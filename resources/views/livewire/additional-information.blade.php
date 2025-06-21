@@ -13,6 +13,7 @@
                 <div>
                     <x-label for="heard_about" value="{{ __('How did you hear about the tournament?') }}"/>
                     <x-select id="heard_about" wire:model="state.heard_about">
+                        <option value="">{{ __('Select') }}</option>
                         <option value="social_media">{{ __('Social Media') }}</option>
                         <option value="friends">{{ __('Friends & Family') }}</option>
                         <option value="gaming_cafes">{{ __('Gaming Cafes') }}</option>
@@ -52,6 +53,7 @@
                 <div>
                     <x-label for="preferred_time" value="{{ __('Preferred Time to Participate') }}"/>
                     <x-select id="preferred_time" wire:model="state.preferred_time">
+                        <option value="">{{ __('Select') }}</option>
                         <option value="afternoon">{{ __('Afternoon') }}</option>
                         <option value="evening">{{ __('Evening') }}</option>
                         <option value="weekend">{{ __('Weekend') }}</option>

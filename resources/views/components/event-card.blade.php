@@ -1,4 +1,4 @@
-@props(['date', 'title', 'description', 'location', 'image', 'id'])
+@props(['date', 'title', 'description', 'location', 'image', 'id','status'])
 
 <div class="bg-secondary-100 rounded-2xl overflow-hidden shadow-lg max-w-sm">
     <img src="{{ $image }}" alt="{{ $title }}" class="w-full h-48 object-cover">
@@ -25,9 +25,15 @@
         @else
             <p class="text-gray-400 text-sm mb-4">{{ __($location) }}</p>
         @endif
+        @if($status == 0)
+            <span class="bg-gray-400 text-white font-bold py-2 px-4 rounded-full block text-center">
+        {{ __('Full') }}
+    </span>
+        @else
+            <a href="{{ route('tournament.apply', ['id' => $id]) }}" class="bg-primary hover:bg-primary-100 text-white font-bold py-2 px-4 rounded-full block text-center transition duration-300">
+                {{ __('Register Now') }}
+            </a>
+        @endif
 
-        <a href="{{ route('tournament.apply', ['id' => $id]) }}" class="bg-primary hover:bg-primary-100 text-white font-bold py-2 px-4 rounded-full block text-center transition duration-300">
-            {{ __('Register Now') }}
-        </a>
     </div>
 </div>

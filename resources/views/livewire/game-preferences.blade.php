@@ -46,6 +46,7 @@
                 <div>
                     <x-label for="gt7_ranking" class="mb-2" value="{{__('GT7 Ranking Among Favorites')}}" />
                     <x-select id="gt7_ranking" wire:model="state.gt7_ranking">
+                        <option value="">{{ __('Select') }}</option>
                         <option value="top1">{{ __('My favorite game') }}</option>
                         <option value="top3">{{ __('Top 3') }}</option>
                         <option value="top5">{{ __('Top 5') }}</option>

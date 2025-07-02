@@ -63,6 +63,34 @@ class User extends Authenticatable implements FilamentUser,\Illuminate\Contracts
 
         return true;
     }
+    // app/Models/User.php
+    public function getAvatarUrlAttribute()
+    {
+        // If profile photo path exists
+        if ($this->profile_photo_path) {
+            $storagePath = 'storage/'.$this->profile_photo_path;
+            $fullPath = public_path($storagePath);
+
+            // Check if file actually exists
+            if (file_exists($fullPath)) {
+                return asset($storagePath);
+            }
+
+            // File doesn't exist - fall through to avatar generation
+        }
+
+        // Generate UI avatar as fallback
+        return 'https://ui-avatars.com/api/?' . http_build_query([
+                'name' => urlencode($this->name),
+                'background' => '6366f1', // indigo-500
+                'color' => 'fff',
+                'size' => 256,
+                'length' => 2, // Only use first 2 letters
+                'rounded' => true,
+                'bold' => true,
+                'format' => 'png'
+            ]);
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

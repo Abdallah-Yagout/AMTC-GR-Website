@@ -36,40 +36,16 @@ class ForumResource extends Resource
                                     ->required(),
                                 FileUpload::make('image')
                                     ->directory('forum'),
-                                RichEditor::make('body'),
+                                RichEditor::make('body')
+                                ->fileAttachmentsDisk('public'),
                             ]),
-                        Forms\Components\Tabs\Tab::make('العربية')
-                            ->schema([
-                                TextInput::make('title_ar')
-                                    ->label("العنوان")
-                                    ->required()
-                                    ->extraInputAttributes(['dir' => 'rtl']),
-                                RichEditor::make('body_ar')
-                                    ->label("المحتوى")
-                                    ->extraInputAttributes(['dir' => 'rtl']),
-                            ]),
+
                     ])
                     ->persistTabInQueryString()
                 ->columnSpanFull(), // Optional: remembers the active tab
             ]);
     }
-    public static function saveTranslations(Model $record, array $data): void
-    {
-        $translatableFields = ['title', 'body'];
-
-        foreach ($translatableFields as $field) {
-            foreach (['en', 'ar'] as $locale) {
-                $fieldName = $locale === 'en' ? $field : "{$field}_ar";
-
-                if (isset($data[$fieldName])) {
-                    $record->translations()->updateOrCreate(
-                        ['field' => $field, 'locale' => $locale],
-                        ['value' => $data[$fieldName]]
-                    );
-                }
-            }
-        }
-    }
+    
     public static function table(Table $table): Table
     {
         return $table

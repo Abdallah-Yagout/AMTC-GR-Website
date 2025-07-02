@@ -163,11 +163,7 @@ class ForumController extends Controller
 
         $forum->update($validated);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Post updated successfully',
-            'redirect' => route('forum.show', $forum->slug)
-        ]);
+        return back();
     }
     public function destroy(Forum $forum)
     {

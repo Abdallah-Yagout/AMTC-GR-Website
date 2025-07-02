@@ -37,7 +37,7 @@
                                     <div class="flex items-center gap-2 shrink-0">
                                         @if(auth()->id() === $forum->user_id)
                                             <div class="relative">
-                                                <button class="dropdown-toggle flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-md p-1 transition-colors duration-200 hover:bg-gray-700/50">
+                                                <button class="dropdown-toggle cursor-pointer flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-md p-1 transition-colors duration-200 hover:bg-gray-700/50">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
                                                     </svg>
@@ -94,7 +94,7 @@
                                     <div class="flex items-center gap-2 shrink-0">
                                         @if(auth()->id() === $forum->user_id)
                                             <div class="relative">
-                                                <button class="dropdown-toggle flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-md p-1 transition-colors duration-200 hover:bg-gray-700/50">
+                                                <button class="dropdown-toggle cursor-pointer flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-md p-1 transition-colors duration-200 hover:bg-gray-700/50">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
                                                     </svg>
@@ -329,7 +329,7 @@
                     </div>
 
                     <div class="flex justify-end gap-4">
-                        <button type="button" onclick="closeEditModal()" class="px-6 py-3 text-lg bg-zinc-600 cursor-pointer hover:bg-zinc-700 text-white rounded-lg transition duration-200">Cancel</button>
+                        <button type="button" onclick="closeEditModal()" class="px-6  py-3 text-lg bg-zinc-600 cursor-pointer hover:bg-zinc-700 text-white rounded-lg transition duration-200">Cancel</button>
                         <button type="submit" class="px-6 py-3 text-lg bg-blue-600 hover:bg-blue-700 text-white cursor-pointer rounded-lg transition duration-200">Update</button>
                     </div>
                 </form>
@@ -350,8 +350,8 @@
                 <h3 class="text-xl font-bold text-white mb-2">Delete Post</h3>
                 <p class="text-gray-400 text-center mb-6">Are you sure you want to delete this post? This action cannot be undone.</p>
                 <div class="flex justify-center gap-4 w-full">
-                    <button onclick="closeDeleteModal()" class="px-6 py-2 bg-zinc-600 hover:bg-zinc-700 text-white rounded-lg transition duration-200 flex-1">Cancel</button>
-                    <button id="confirmDeleteBtn" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition duration-200 flex-1">Delete</button>
+                    <button onclick="closeDeleteModal()" class="px-6 cursor-pointer py-2 bg-zinc-600 hover:bg-zinc-700 text-white rounded-lg transition duration-200 flex-1">Cancel</button>
+                    <button id="confirmDeleteBtn" class="px-6 py-2 cursor-pointer bg-red-600 hover:bg-red-700 text-white rounded-lg transition duration-200 flex-1">Delete</button>
                 </div>
             </div>
         </div>
@@ -372,6 +372,10 @@
                 $('#deleteModal').addClass('hidden');
                 $('body').removeClass('overflow-hidden');
                 forumIdToDelete = null;
+            }
+            function openPostModal() {
+                $('#postModal').removeClass('hidden');
+                $('body').addClass('overflow-hidden');
             }
             $(document).ready(function() {
                 // Dropdown menu toggle
@@ -404,10 +408,7 @@
                 });
 
                 // Modal functions
-                function openPostModal() {
-                    $('#postModal').removeClass('hidden');
-                    $('body').addClass('overflow-hidden');
-                }
+
 
 
 
@@ -611,7 +612,7 @@
                     const forumId = button.data('forum-id');
 
                     $.ajax({
-                        url: `/forums/${forumId}/upvote`,
+                        url: `/forum/${forumId}/upvote`,
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

@@ -17,10 +17,10 @@
                     <x-nav-link href="{{ route('forum.index') }}" :active="request()->routeIs('forum.index')">
                         {{ __('Community') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('tournament.index') }}" :active="request()->routeIs('tournament')">
+                    <x-nav-link href="{{ route('tournament.index') }}" :active="request()->routeIs('tournament.index')">
                         {{ __('Tournament') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('leaderboard.index') }}" :active="request()->routeIs('live')">
+                    <x-nav-link href="{{ route('leaderboard.index') }}" :active="request()->routeIs('leaderboard.index')">
                         {{ __('Leaderboard') }}
                     </x-nav-link>
                     <x-nav-link href="{{ route('news.index') }}" :active="request()->routeIs('news')">

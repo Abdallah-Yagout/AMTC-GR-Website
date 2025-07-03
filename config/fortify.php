@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\SetLocale;
 use Laravel\Fortify\Features;
 
 return [
@@ -101,7 +102,10 @@ return [
     |
     */
 
-    'middleware' => ['web'],
+    'middleware' => [
+        'web',
+        SetLocale::class,
+    ],
 
     /*
     |--------------------------------------------------------------------------

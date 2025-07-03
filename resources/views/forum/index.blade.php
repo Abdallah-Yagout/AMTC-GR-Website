@@ -7,12 +7,12 @@
 
     <!-- Main Content - Responsive Container -->
     <div class="bg-black text-white py-6 md:py-10 px-4 md:px-8 lg:px-16 min-h-screen">
-        <div class="max-w-7xl mx-auto">
+        <div class="mx-auto">
             <!-- Tabs - Responsive -->
             <div class="flex flex-wrap items-center gap-2 md:gap-4 border-b border-gray-700 mb-4 md:mb-6">
-                <button onclick="switchTab('popular')" class="tab-button text-sm md:text-base cursor-pointer pb-2 border-b-2 {{ $activeTab === 'popular' ? 'border-red-600 text-white' : 'border-transparent text-gray-400' }} font-medium" data-tab="popular">Popular</button>
-                <button onclick="switchTab('newest')" class="tab-button text-sm md:text-base cursor-pointer pb-2 border-b-2 {{ $activeTab === 'newest' ? 'border-red-600 text-white' : 'border-transparent text-gray-400' }} font-medium" data-tab="newest">Newest</button>
-                <button onclick="openPostModal()" class="bg-red-600 cursor-pointer hover:bg-red-700 text-white px-4 py-2 rounded-lg mb-3">Post</button>
+                <button onclick="switchTab('newest')" class="tab-button text-sm md:text-base cursor-pointer pb-2 border-b-2 {{ $activeTab === 'newest' ? 'border-red-600 text-white' : 'border-transparent text-gray-400' }} font-medium" data-tab="newest">{{__('Newest')}}</button>
+                <button onclick="switchTab('popular')" class="tab-button text-sm md:text-base cursor-pointer pb-2 border-b-2 {{ $activeTab === 'popular' ? 'border-red-600 text-white' : 'border-transparent text-gray-400' }} font-medium" data-tab="popular">{{__('Popular')}}</button>
+                <button onclick="openPostModal()" class="bg-red-600 cursor-pointer hover:bg-red-700 text-white px-4 py-2 rounded-lg mb-3">{{__('Post')}}</button>
             </div>
 
             <!-- Main Content Grid -->
@@ -22,56 +22,7 @@
                     <!-- Popular Posts -->
                     <div id="popular-tab" class="tab-content" style="{{ $activeTab !== 'popular' ? 'display: none;' : '' }}">
                         @foreach ($popularForums as $forum)
-                            <div class="forum-post mb-3 bg-zinc-800 p-4 md:p-6 rounded" data-forum-id="{{ $forum->id }}">
-                                <div class="flex flex-col sm:flex-row justify-between items-start gap-3 md:gap-4">
-                                    <!-- Forum Content -->
-                                    <a href="{{route('forum.show',$forum->slug)}}">
-                                        <div class="flex-1">
-                                            <h4 class="text-base md:text-lg font-semibold text-white">{{ $forum->title }}</h4>
-                                            <p class="text-xs text-gray-500 mt-1 md:mt-2">
-                                                Posted by {{ $forum->user->name }} • {{ $forum->upvotes_count }} upvotes
-                                            </p>
-                                        </div>
-                                    </a>
-                                    <!-- Action Buttons -->
-                                    <div class="flex items-center gap-2 shrink-0">
-                                        @if(auth()->id() === $forum->user_id)
-                                            <div class="relative">
-                                                <button class="dropdown-toggle cursor-pointer flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-md p-1 transition-colors duration-200 hover:bg-gray-700/50">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
-                                                    </svg>
-                                                </button>
-                                                <div class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-zinc-700 rounded-md shadow-lg z-50 py-1">
-                                                    <a href="#" class="edit-option block px-4 py-2 text-sm text-white hover:bg-zinc-600 flex items-center" data-forum-id="{{ $forum->id }}">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                        </svg>
-                                                        Edit
-                                                    </a>
-                                                    <a href="#" class="delete-option block px-4 py-2 text-sm text-white hover:bg-zinc-600 flex items-center" data-forum-id="{{ $forum->id }}">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                        </svg>
-                                                        Delete
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        @endif
-                                        <button class="upvote-btn flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-md p-1 transition-colors duration-200 border {{ $forum->upvotedByMe ? 'border-red-600' : 'border-gray-500' }}"
-                                                data-forum-id="{{ $forum->id }}">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                 class="h-4 w-4 md:h-5 md:w-5 {{ $forum->upvotedByMe ? 'text-red-500' : 'text-gray-500' }} hover:text-primary-600"
-                                                 viewBox="0 0 20 20" fill="currentColor">
-                                                <path fill-rule="evenodd"
-                                                      d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
-                                                      clip-rule="evenodd" />
-                                            </svg>
-                                        </button>
-                                        <span class="text-xs upvote-count {{ $forum->upvotedByMe ? 'text-red-500' : 'text-gray-400' }} md:text-sm" data-forum-id="{{ $forum->id }}">{{ $forum->upvotes_count }}</span>
-                                    </div>
-                                </div>
-                            </div>
+                            <x-forum :forum="$forum" />
                         @endforeach
                         <div class="mt-6">
                             {{ $popularForums->appends(['tab' => 'popular'])->links() }}
@@ -81,54 +32,8 @@
                     <!-- Newest Posts -->
                     <div id="newest-tab" class="tab-content" style="{{ $activeTab !== 'newest' ? 'display: none;' : '' }}">
                         @foreach ($newestForums as $forum)
-                            <div class="forum-post mb-3 bg-zinc-800 p-4 md:p-6 rounded" data-forum-id="{{ $forum->id }}">
-                                <div class="flex flex-col sm:flex-row justify-between items-start gap-3 md:gap-4">
-                                    <a href="{{route('forum.show',$forum->slug)}}">
-                                        <div class="flex-1">
-                                            <h4 class="text-base md:text-lg font-semibold text-white">{{ $forum->title }}</h4>
-                                            <p class="text-xs text-gray-500 mt-1 md:mt-2">
-                                                Posted by {{ $forum->user->name }} • {{ $forum->created_at->diffForHumans() }}
-                                            </p>
-                                        </div>
-                                    </a>
-                                    <div class="flex items-center gap-2 shrink-0">
-                                        @if(auth()->id() === $forum->user_id)
-                                            <div class="relative">
-                                                <button class="dropdown-toggle cursor-pointer flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-md p-1 transition-colors duration-200 hover:bg-gray-700/50">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
-                                                    </svg>
-                                                </button>
-                                                <div class="dropdown-menu hidden absolute right-0 mt-2 w-48 bg-zinc-700 rounded-md shadow-lg z-50 py-1">
-                                                    <a href="#" class="edit-option block px-4 py-2 text-sm text-white hover:bg-zinc-600 flex items-center" data-forum-id="{{ $forum->id }}">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                                        </svg>
-                                                        Edit
-                                                    </a>
-                                                    <a href="#" class="delete-option block px-4 py-2 text-sm text-white hover:bg-zinc-600 flex items-center" data-forum-id="{{ $forum->id }}">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                        </svg>
-                                                        Delete
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        @endif
-                                        <button class="upvote-btn flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-md p-1 transition-colors duration-200 border {{ $forum->upvotedByMe ? 'border-red-600' : 'border-gray-500' }}"
-                                                data-forum-id="{{ $forum->id }}">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                 class="h-4 w-4 md:h-5 md:w-5 {{ $forum->upvotedByMe ? 'text-red-500' : 'text-gray-500' }} hover:text-primary-600"
-                                                 viewBox="0 0 20 20" fill="currentColor">
-                                                <path fill-rule="evenodd"
-                                                      d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
-                                                      clip-rule="evenodd" />
-                                            </svg>
-                                        </button>
-                                        <span class="text-xs upvote-count {{ $forum->upvotedByMe ? 'text-red-500' : 'text-gray-400' }} md:text-sm" data-forum-id="{{ $forum->id }}">{{ $forum->upvotes_count }}</span>
-                                    </div>
-                                </div>
-                            </div>
+                            <x-forum :forum="$forum" />
+
                         @endforeach
                         <div class="mt-6">
                             {{ $newestForums->appends(['tab' => 'newest'])->links() }}
@@ -137,87 +42,87 @@
                 </div>
 
                 <!-- Sidebar - Responsive -->
-                <div class="w-full border-l border-[#454545] lg:w-3/12 space-y-6">
-                    <!-- New Discussions -->
-                    <section class="p-6 text-white">
-                        <h2 class="text-lg font-bold mb-4 border-b border-gray-700 pb-2">New Discussions</h2>
-                        <div class="space-y-4">
-                            @foreach($recentDiscussions as $discussion)
-                                <div class="flex flex-col p-3 rounded transition">
-                                    <!-- First line: Image and first name -->
-                                    <div class="flex items-center gap-3 mb-2">
-                                        <img class="w-8 h-8 rounded-full object-cover"
-                                             src="{{ asset('storage/'.$discussion->user->profile_photo_path) }}"
-                                             alt="{{ $discussion->user->name }}">
-                                        <span class="font-medium text-sm">
+                @if($recentDiscussions->isNotEmpty()&&$popularForums->isNotEmpty())
+                    <div class="w-full border-l border-[#454545] lg:w-3/12 space-y-6">
+                        <!-- New Discussions -->
+                        @if($recentDiscussions->isNotEmpty())
+                            <section class="p-6 text-white">
+                                <h2 class="text-lg font-bold mb-4 border-b border-gray-700 pb-2">{{__('New Discussions')}}</h2>
+                                <div class="space-y-4">
+                                    @foreach($recentDiscussions as $discussion)
+                                        <div class="flex flex-col p-3 rounded transition">
+                                            <!-- First line: Image and first name -->
+                                            <div class="flex items-center gap-3 mb-2">
+                                                <img class="w-8 h-8 rounded-full object-cover"
+                                                     src="{{ asset('storage/'.$discussion->user->profile_photo_path) }}"
+                                                     alt="{{ $discussion->user->name }}">
+                                                <span class="font-medium text-sm">
                                             {{ explode(' ', $discussion->user->name)[0] }}
                                         </span>
-                                    </div>
+                                            </div>
 
-                                    <!-- Second line: Discussion title -->
-                                    <a href="{{ route('forum.show', $discussion->slug) }}"
-                                       class="text-white hover:underline mb-1">
-                                        <h3 class="font-medium text-base line-clamp-2">{{ $discussion->title }}</h3>
-                                    </a>
+                                            <!-- Second line: Discussion title -->
+                                            <a href="{{ route('forum.show', $discussion->slug) }}"
+                                               class="text-white hover:underline mb-1">
+                                                <h3 class="font-medium text-base line-clamp-2">{{ $discussion->title }}</h3>
+                                            </a>
 
-                                    <!-- Third line: Date and comments count -->
-                                    <div class="flex items-center gap-2 text-xs text-gray-400">
-                                        <span>{{\Illuminate\Support\Carbon::parse($discussion->created_at)->format('j F')}}</span>
-                                        <span>•</span>
-                                        <span>{{ $discussion->comments_count }} comments</span>
-                                    </div>
+                                            <!-- Third line: Date and comments count -->
+                                            <div class="flex items-center gap-2 text-xs text-gray-400">
+                                                <span>{{\Illuminate\Support\Carbon::parse($discussion->created_at)->format('j F')}}</span>
+                                                <span>•</span>
+                                                @if(!$discussion->comments_count >0)
+                                                    <span>0 {{__('Comments')}}</span>
+
+                                                @else
+                                                    <span>{{ $discussion->comments_count }} {{__('comments')}}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 </div>
-                            @endforeach
-                        </div>
-                    </section>
+                            </section>
+                        @endif
 
-                    <!-- Popular Posts -->
-                    <section class="rounded-lg p-6 text-white">
-                        <h2 class="text-lg font-bold mb-4 border-b border-gray-700 pb-2">Popular Posts</h2>
-                        <div class="space-y-4">
-                            @foreach($popularForums as $post)
-                                <div class="flex flex-col p-3 rounded transition">
-                                    <!-- First line: Image and first name -->
-                                    <div class="flex items-center gap-3 mb-2">
-                                        <img class="w-8 h-8 rounded-full object-cover"
-                                             src="{{ asset('storage/'.$post->user->profile_photo_path) }}"
-                                             alt="{{ $post->user->name }}">
-                                        <span class="font-medium text-sm">
+
+                        <!-- Popular Posts -->
+                        @if($popularForums->isNotEmpty())
+                            <section class="rounded-lg p-6 text-white">
+                                <h2 class="text-lg font-bold mb-4 border-b border-gray-700 pb-2">{{__('Popular Posts')}}</h2>
+                                <div class="space-y-4">
+                                    @foreach($popularForums as $post)
+                                        <div class="flex flex-col p-3 rounded transition">
+                                            <!-- First line: Image and first name -->
+                                            <div class="flex items-center gap-3 mb-2">
+                                                <img class="w-8 h-8 rounded-full object-cover"
+                                                     src="{{ asset('storage/'.$post->user->profile_photo_path) }}"
+                                                     alt="{{ $post->user->name }}">
+                                                <span class="font-medium text-sm">
                                             {{ explode(' ', $post->user->name)[0] }}
                                         </span>
-                                    </div>
+                                            </div>
 
-                                    <!-- Second line: Discussion title -->
-                                    <a href="{{ route('forum.show', $post->slug) }}"
-                                       class="text-white hover:underline mb-1">
-                                        <h3 class="font-medium text-base line-clamp-2">{{ $post->title }}</h3>
-                                    </a>
+                                            <!-- Second line: Discussion title -->
+                                            <a href="{{ route('forum.show', $post->slug) }}"
+                                               class="text-white hover:underline mb-1">
+                                                <h3 class="font-medium text-base line-clamp-2">{{ $post->title }}</h3>
+                                            </a>
 
-                                    <!-- Third line: Date and comments count -->
-                                    <div class="flex items-center gap-2 text-xs text-gray-400">
-                                        <span>{{\Illuminate\Support\Carbon::parse($post->created_at)->format('j F')}}</span>
-                                        <span>•</span>
-                                        <span>{{ $post->upvotes_count }} votes</span>
-                                    </div>
+                                            <!-- Third line: Date and comments count -->
+                                            <div class="flex items-center gap-2 text-xs text-gray-400">
+                                                <span>{{\Illuminate\Support\Carbon::parse($post->created_at)->format('j F')}}</span>
+                                                <span>•</span>
+                                                <span>{{ $post->upvotes_count }} {{__('votes')}}</span>
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 </div>
-                            @endforeach
-                        </div>
-                    </section>
-                </div>
-            </div>
+                            </section>
+                        @endif
 
-            <!-- Bottom Section - Responsive Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mt-8 md:mt-12">
-                <div class="bg-zinc-800 p-4 md:p-6 rounded">
-                    <h4 class="text-base md:text-lg font-semibold mb-1 md:mb-2">News & Updates</h4>
-                    <p class="text-xs md:text-sm text-gray-400">Check out the latest news and updates from the community.</p>
-                    <a href="#" class="text-red-500 text-xs md:text-sm mt-1 md:mt-2 inline-block hover:underline">View all updates</a>
-                </div>
-                <div class="bg-zinc-800 p-4 md:p-6 rounded">
-                    <h4 class="text-base md:text-lg font-semibold mb-1 md:mb-2">Support</h4>
-                    <p class="text-xs md:text-sm text-gray-400">Feel free to contact us, we're here to help you.</p>
-                    <a href="#" class="text-red-500 text-xs md:text-sm mt-1 md:mt-2 inline-block hover:underline">Contact support</a>
-                </div>
+                    </div>
+                @endif
+
             </div>
         </div>
     </div>
@@ -230,21 +135,21 @@
         <!-- Modal Content -->
         <div class="relative w-full max-w-5xl mx-auto my-12 z-50">
             <div class="bg-zinc-800 p-6 md:p-8 rounded-lg shadow-xl overflow-y-auto max-h-[90vh]">
-                <h3 class="text-2xl font-bold text-white mb-6">Create New Post</h3>
+                <h3 class="text-2xl font-bold text-white mb-6">{{__('Create New Post')}}</h3>
                 <form method="POST" action="{{route('forum.store')}}" enctype="multipart/form-data">
                     @csrf
-                    <input name="title" type="text" placeholder="Post Title"
+                    <input name="title" type="text" placeholder="{{__('Post Title')}}"
                            class="w-full p-4 mb-6 text-lg bg-zinc-700 text-white border border-zinc-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
 
                     <!-- Image Upload Section -->
                     <div class="mb-6">
-                        <label class="block text-white mb-2">Upload Image</label>
+                        <label class="block text-white mb-2">{{__('Upload Image')}}</label>
                         <div class="flex items-center gap-4">
                             <label class="cursor-pointer bg-zinc-700 hover:bg-zinc-600 text-white px-4 py-2 rounded-lg transition duration-200">
-                                Choose File
+                                {{__('Choose File')}}
                                 <input type="file" id="image-upload" name="image" accept="image/*" class="hidden">
                             </label>
-                            <span id="file-name" class="text-zinc-300 text-sm">No file chosen</span>
+                            <span id="file-name" class="text-zinc-300 text-sm">{{__('No file chosen')}}</span>
                         </div>
 
                         <!-- Image Preview -->
@@ -265,8 +170,12 @@
                     </div>
 
                     <div class="flex justify-end gap-4">
-                        <button type="button" onclick="closePostModal()" class="px-6 py-3 text-lg bg-zinc-600 cursor-pointer hover:bg-zinc-700 text-white rounded-lg transition duration-200">Cancel</button>
-                        <button type="submit" class="px-6 py-3 text-lg bg-red-600 hover:bg-red-700 text-white cursor-pointer rounded-lg transition duration-200">Post</button>
+                        <button type="button" onclick="closePostModal()" class="px-2 py-1.5 text-lg  cursor-pointer  text-white rounded-lg transition duration-200">{{__('Cancel')}}</button>
+                        @if(auth()->user())
+                        <button type="submit" class=" cursor-pointer duration-200  px-2 py-1.5 rounded-lg text-lg text-white transition">{{__('Post')}}</button>
+                        @else
+                            <a href="{{route('login')}}" class="px-2 py-1.5 text-lg  text-red-600 hover:text-red-700 cursor-pointer rounded-lg transition underline duration-200">{{__('Login to Continue')}}</a>
+                        @endif
                     </div>
                 </form>
             </div>
@@ -281,27 +190,27 @@
         <!-- Modal Content -->
         <div class="relative w-full max-w-5xl mx-auto my-12 z-50">
             <div class="bg-zinc-800 p-6 md:p-8 rounded-lg shadow-xl overflow-y-auto max-h-[90vh]">
-                <h3 class="text-2xl font-bold text-white mb-6">Edit Post</h3>
+                <h3 class="text-2xl font-bold text-white mb-6">{{__('Edit Post')}}</h3>
                 <form id="editForm" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
-                    <input name="title" type="text" id="edit-title" placeholder="Post Title"
+                    <input name="title" type="text" id="edit-title" placeholder="{{__('Post Title')}}"
                            class="w-full p-4 mb-6 text-lg bg-zinc-700 text-white border border-zinc-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
 
                     <!-- Image Upload Section -->
                     <div class="mb-6">
-                        <label class="block text-white mb-2">Upload Image</label>
+                        <label class="block text-white mb-2">{{__('Upload Image')}}</label>
                         <div class="flex items-center gap-4">
                             <label class="cursor-pointer bg-zinc-700 hover:bg-zinc-600 text-white px-4 py-2 rounded-lg transition duration-200">
-                                Choose File
+                                {{__('Choose File')}}
                                 <input type="file" id="edit-image-upload" name="image" accept="image/*" class="hidden">
                             </label>
-                            <span id="edit-file-name" class="text-zinc-300 text-sm">No file chosen</span>
+                            <span id="edit-file-name" class="text-zinc-300 text-sm">{{__('No file chosen')}}</span>
                         </div>
 
                         <!-- Current Image -->
                         <div id="current-image-container" class="mt-4">
-                            <p class="text-sm text-gray-400 mb-2">Current Image:</p>
+                            <p class="text-sm text-gray-400 mb-2">{{__('Current Image:')}}</p>
                             <div class="relative inline-block">
                                 <img id="current-image" src="" alt="Current Image" class="max-h-40 rounded-lg border border-zinc-600">
                                 <button type="button" id="remove-current-image" class="absolute -top-2 -right-2 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center">
@@ -312,7 +221,7 @@
 
                         <!-- New Image Preview -->
                         <div id="edit-image-preview" class="mt-4 hidden">
-                            <p class="text-sm text-gray-400 mb-2">New Image Preview:</p>
+                            <p class="text-sm text-gray-400 mb-2">{{__('New Image Preview:')}}</p>
                             <div class="relative inline-block">
                                 <img id="edit-preview-image" src="#" alt="Preview" class="max-h-40 rounded-lg border border-zinc-600">
                                 <button type="button" id="edit-remove-image" class="absolute -top-2 -right-2 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center">
@@ -329,8 +238,8 @@
                     </div>
 
                     <div class="flex justify-end gap-4">
-                        <button type="button" onclick="closeEditModal()" class="px-6  py-3 text-lg bg-zinc-600 cursor-pointer hover:bg-zinc-700 text-white rounded-lg transition duration-200">Cancel</button>
-                        <button type="submit" class="px-6 py-3 text-lg bg-blue-600 hover:bg-blue-700 text-white cursor-pointer rounded-lg transition duration-200">Update</button>
+                        <button type="button" onclick="closeEditModal()" class="px-6  py-3 text-lg bg-zinc-600 cursor-pointer hover:bg-zinc-700 text-white rounded-lg transition duration-200">{{__('Cancel')}}</button>
+                        <button type="submit" class="px-6 py-3 text-lg bg-blue-600 hover:bg-blue-700 text-white cursor-pointer rounded-lg transition duration-200">{{__('Update')}}</button>
                     </div>
                 </form>
             </div>
@@ -347,8 +256,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold text-white mb-2">Delete Post</h3>
-                <p class="text-gray-400 text-center mb-6">Are you sure you want to delete this post? This action cannot be undone.</p>
+                <h3 class="text-xl font-bold text-white mb-2">{{__('Delete Post')}}</h3>
+                <p class="text-gray-400 text-center mb-6">{{__('Are you sure you want to delete this post? This action cannot be undone.')}}</p>
                 <div class="flex justify-center gap-4 w-full">
                     <button onclick="closeDeleteModal()" class="px-6 cursor-pointer py-2 bg-zinc-600 hover:bg-zinc-700 text-white rounded-lg transition duration-200 flex-1">Cancel</button>
                     <button id="confirmDeleteBtn" class="px-6 py-2 cursor-pointer bg-red-600 hover:bg-red-700 text-white rounded-lg transition duration-200 flex-1">Delete</button>
@@ -518,7 +427,7 @@
 
                 // Initialize with correct tab from URL
                 const urlParams = new URLSearchParams(window.location.search);
-                const activeTab = urlParams.get('tab') || 'popular';
+                const activeTab = urlParams.get('tab') || 'newest';
                 switchTab(activeTab);
 
                 // Image preview logic for create modal
@@ -602,7 +511,7 @@
                 // Handle back/forward navigation
                 window.addEventListener('popstate', function() {
                     const urlParams = new URLSearchParams(window.location.search);
-                    const activeTab = urlParams.get('tab') || 'popular';
+                    const activeTab = urlParams.get('tab') || 'newest';
                     switchTab(activeTab);
                 });
 

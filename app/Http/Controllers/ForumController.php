@@ -13,7 +13,7 @@ class ForumController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $activeTab = request()->get('tab', 'popular'); // Get active tab from request
+        $activeTab = request()->get('tab', 'newest'); // Get active tab from request
 
         $popularForums = Forum::select('forums.*')
             ->withCount(['upvotes as upvotes_count'])
@@ -37,6 +37,7 @@ class ForumController extends Controller
                 $forum->upvotedByMe = $user ? $forum->upvotes()->where('user_id', $user->id)->exists() : false;
                 return $forum;
             });
+
         return view('forum.index', [
             'forums' => Forum::all(),
             'popularForums' => $popularForums,
@@ -53,7 +54,7 @@ class ForumController extends Controller
 
         if (!$user) {
             return response()->json([
-                'error' => 'You must be logged in to upvote'
+                'error' => __('You must be logged in to upvote')
             ], 401);
         }
 

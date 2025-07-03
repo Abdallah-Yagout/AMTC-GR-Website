@@ -77,7 +77,7 @@ class TournamentController extends Controller
         $auth = auth()->user();
         if (!$auth) {
             return redirect()->route('login')->withErrors([
-                'auth' => 'You must be logged in to submit an application.'
+                'auth' => __('You must be logged in to submit an application.')
             ]);
         }
 
@@ -85,7 +85,7 @@ class TournamentController extends Controller
         $profile = $auth->profile;
         if (!$profile) {
             return redirect()->back()->withErrors([
-                'profile' => 'User profile not found.'
+                'profile' => __('User profile not found.')
             ]);
         }
 
@@ -96,7 +96,7 @@ class TournamentController extends Controller
 
         if ($existingSubmission) {
             return redirect()->back()->withErrors([
-                'submission' => 'You have already submitted an application for this tournament.'
+                'submission' => __('You have already submitted an application for this tournament.')
             ]);
         }
 
@@ -131,7 +131,7 @@ class TournamentController extends Controller
         // If any required profile field is missing, redirect back with error
         if (!empty($missingFields)) {
             return redirect()->back()->withErrors([
-                'profile' => 'Please complete your profile before submitting the application.',
+                'profile' => __('Please complete your profile before submitting the application.',)
             ])->withInput();
         }
 
@@ -156,7 +156,7 @@ class TournamentController extends Controller
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
 
-        return redirect()->back()->with('success', 'Application submitted successfully!');
+        return redirect()->back()->with('success', __('Application submitted successfully!'));
     }
 
 }

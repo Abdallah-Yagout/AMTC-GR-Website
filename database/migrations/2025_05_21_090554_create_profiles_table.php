@@ -21,9 +21,9 @@ return new class extends Migration
             $table->string('skill_level')->nullable();
             $table->boolean('has_ps5')->default(false);
             $table->string('primary_platform')->nullable();
-            $table->json('regular_games')->nullable();
+            $table->string('regular_games')->nullable();
             $table->string('weekly_hours')->nullable();
-            $table->json('favorite_games')->nullable();
+            $table->string('favorite_games')->nullable();
             $table->string('gt7_ranking')->nullable();
             $table->string('toyota_gr_knowledge')->nullable();
             $table->text('favorite_car')->nullable();
@@ -31,7 +31,7 @@ return new class extends Migration
             $table->boolean('wants_training')->default(false);
             $table->boolean('join_whatsapp')->default(false);
             $table->string('heard_about')->nullable();
-            $table->json('motivation')->nullable();
+            $table->string('motivation')->nullable();
             $table->string('preferred_time')->nullable();
             $table->text('suggestions')->nullable();
             $table->timestamps();

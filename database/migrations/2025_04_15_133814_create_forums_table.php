@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('forums', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->json('title');
+            $table->string('title');
             $table->string('slug');
             $table->text('body');
             $table->integer('upvotes')->default(0);
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->unsignedTinyInteger('status')->default(0);
             $table->timestamps();
         });

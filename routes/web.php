@@ -22,6 +22,8 @@ Route::middleware([SetLocale::class])->group(function () {
         Route::get('/tournament/apply/{id}', [\App\Http\Controllers\TournamentController::class, 'apply'])->name('tournament.apply');
         Route::post('/tournament/submit', [\App\Http\Controllers\TournamentController::class, 'submit'])->name('tournament.submit');
     });
+    Route::get('contact', [\App\Http\Controllers\ContactController::class, 'show'])->name('contact.index');
+    Route::post('contact', [\App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
 
     // Forum routes - RESTful structure
     Route::prefix('forum')->group(function () {

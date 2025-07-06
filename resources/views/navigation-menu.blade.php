@@ -54,7 +54,7 @@
                          x-transition:leave-end="transform opacity-0 scale-95"
                          class="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50">
                         <div class="py-1">
-                            <a href="{{ route('language.switch', 'en') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <a href="{{ route('language.switch', 'en') }}" class="flex items-center px-4 py-2 text-sm text-gray-500 hover:bg-gray-100">
                                 <span class="fi fi-gb fis rounded mr-2"></span>
                                 English
                                 @if(app()->getLocale() == 'en')
@@ -63,7 +63,7 @@
                                     </svg>
                                 @endif
                             </a>
-                            <a href="{{ route('language.switch', 'ar') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <a href="{{ route('language.switch', 'ar') }}" class="flex items-center px-4 py-2 text-sm text-gray-500 hover:bg-gray-100">
                                 <span class="fi fi-sa fis rounded mr-2"></span>
                                 العربية
                                 @if(app()->getLocale() == 'ar')
@@ -223,7 +223,7 @@
             <div class="px-4 py-2 text-sm font-medium text-gray-500">
                 {{ __('Language') }}
             </div>
-            <a href="{{ route('language.switch', 'en') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+            <a href="{{ route('language.switch', 'en') }}" class="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-gray-100">
                 <span class="fi fi-gb fis rounded mr-2"></span>
                 English
                 @if(app()->getLocale() == 'en')
@@ -232,7 +232,7 @@
                     </svg>
                 @endif
             </a>
-            <a href="{{ route('language.switch', 'ar') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+            <a href="{{ route('language.switch', 'ar') }}" class="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-gray-100">
                 <span class="fi fi-sa fis rounded mr-2"></span>
                 العربية
                 @if(app()->getLocale() == 'ar')

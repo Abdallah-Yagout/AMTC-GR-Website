@@ -28,24 +28,16 @@ class ForumResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Tabs::make('Language Tabs')
-                    ->tabs([
-                        Forms\Components\Tabs\Tab::make('English')
-                            ->schema([
-                                TextInput::make('title')
-                                    ->required(),
-                                FileUpload::make('image')
-                                    ->directory('forum'),
-                                RichEditor::make('body')
-                                ->fileAttachmentsDisk('public'),
-                            ]),
-
-                    ])
-                    ->persistTabInQueryString()
-                ->columnSpanFull(), // Optional: remembers the active tab
+                TextInput::make('title')
+                    ->required(),
+                FileUpload::make('image')
+                    ->directory('forum'),
+                RichEditor::make('body')
+                    ->fileAttachmentsDisk('public'),
+                // Optional: remembers the active tab
             ]);
     }
-    
+
     public static function table(Table $table): Table
     {
         return $table
@@ -53,9 +45,9 @@ class ForumResource extends Resource
                 TextColumn::make('title'),
                 Tables\Columns\ImageColumn::make('image')
                     ->size(60)
-                ->circular(),
+                    ->circular(),
                 TextColumn::make('upvotes')
-                ->badge(),
+                    ->badge(),
                 Tables\Columns\ToggleColumn::make('status')
 
             ])

@@ -34,17 +34,19 @@ class TournamentResource extends Resource
             ->tabs([
                 Tab::make('English')
                     ->schema([
-                        TextInput::make('title'),
-                        TextInput::make('description'),
-                        Select::make('location')
+                        TextInput::make('title')
+                        ->required(),
+                        TextInput::make('description')->required(),
+                        Select::make('location')->required()
                             ->options(Location::cities())->multiple(),
                         Select::make('tournament_id')
                             ->options(
                                 Tournament::pluck('title','id')
                             ),
-                        Forms\Components\DatePicker::make('start_date'),
-                        Forms\Components\DatePicker::make('end_date'),
+                        Forms\Components\DatePicker::make('start_date')->required(),
+                        Forms\Components\DatePicker::make('end_date')->required(),
                         FileUpload::make('image')
+                            ->required()
                             ->directory('tournaments')
                     ]),
                 Tab::make('Arabic')

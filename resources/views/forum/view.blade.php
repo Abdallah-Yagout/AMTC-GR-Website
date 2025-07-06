@@ -464,7 +464,7 @@
                     const forumId = button.data('forum-id');
 
                     $.ajax({
-                        url: `/forums/${forumId}/upvote`,
+                        url: `/forum/${forumId}/upvote`,
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -497,18 +497,54 @@
                             });
                         },
                         error: function (xhr) {
-                            const errorMessage = xhr.responseJSON?.error || 'An error occurred';
-                            const notification = $(
-                                `<div class="fixed top-4 right-4 px-4 py-2 bg-red-600 text-white rounded-md shadow-md text-sm md:text-base">
-                                ${errorMessage}
-                                <button class="ml-2" onclick="$(this).parent().remove()">×</button>
-                            </div>`
-                            );
-                            $('body').append(notification);
-                            setTimeout(() => notification.remove(), 3000);
+                            // Handle different types of errors
+                            let errorMessage = 'An error occurred';
+
+                            // Check for validation errors
+                            if (xhr.responseJSON && xhr.responseJSON.error) {
+                                errorMessage = xhr.responseJSON.error;
+                            }
+                            // Check for Laravel validation errors
+                            else if (xhr.responseJSON && xhr.responseJSON.message) {
+                                errorMessage = xhr.responseJSON.message;
+                            }
+                            // Check for HTTP errors
+                            else if (xhr.status === 401) {
+                                errorMessage = 'You must be logged in to upvote';
+                            } else if (xhr.status === 404) {
+                                errorMessage = 'Forum post not found';
+                            }
+
+                            showErrorNotification(errorMessage);
                         }
                     });
                 });
+                function showErrorNotification(message) {
+                    const notification = $(
+                        `<div class="fixed top-4 right-4 px-4 py-2 bg-red-600 text-white rounded-md shadow-md text-sm md:text-base flex items-center">
+            <span>${message}</span>
+            <button class="ml-2 text-white hover:text-gray-200">
+                &times;
+            </button>
+        </div>`
+                    );
+
+                    $('body').append(notification);
+
+                    // Auto-remove after 5 seconds
+                    setTimeout(() => {
+                        notification.fadeOut(200, function() {
+                            $(this).remove();
+                        });
+                    }, 5000);
+
+                    // Manual close
+                    notification.find('button').on('click', function() {
+                        notification.fadeOut(200, function() {
+                            $(this).remove();
+                        });
+                    });
+                }
             });
             $(document).on('click', '.toggle-replies-btn', function () {
                 const commentId = $(this).data('comment-id');

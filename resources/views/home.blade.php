@@ -12,7 +12,7 @@
             <h1 class="text-white font-bold text-4xl md:text-6xl leading-tight tracking-wide font-sans uppercase">
                 {{__('Welcome to')}} <br>
                 <span class="text-primary">{{__('Toyota Gazoo Racing')}}</span><br>
-                <span class="text-white">{{__('E-Sports')}}</span>
+                <span class="text-white">{{__('E-Sports Yemen')}}</span>
             </h1>
             <p class="text-white text-lg mt-6">
                 {{__("Experience the thrill of virtual racing with the world's most")}} <br class="hidden md:inline">

@@ -172,7 +172,7 @@
                     <div class="flex justify-end gap-4">
                         <button type="button" onclick="closePostModal()" class="px-2 py-1.5 text-lg  cursor-pointer  text-white rounded-lg transition duration-200">{{__('Cancel')}}</button>
                         @if(auth()->user())
-                        <button type="submit" class=" cursor-pointer duration-200  px-2 py-1.5 rounded-lg text-lg text-white transition">{{__('Post')}}</button>
+                        <button type="submit" class=" cursor-pointer duration-200  px-2 py-1.5 text-red-500 rounded-lg text-lg hover:text-red-600 transition">{{__('Post')}}</button>
                         @else
                             <a href="{{route('login')}}" class="px-2 py-1.5 text-lg  text-red-600 hover:text-red-700 cursor-pointer rounded-lg transition underline duration-200">{{__('Login to Continue')}}</a>
                         @endif

@@ -40,8 +40,9 @@
 
             @auth
                 <div class="mt-2 sm:mt-3 hidden" id="reply-form-{{ $comment->id }}">
+
                     <form class="reply-form"
-                          action="{{ route('comments.store', $forum) }}"
+                          action="{{ route('comments.store', $comment->forum_id) }}"
                           method="POST">
                         @csrf
                         <input type="hidden" name="parent_id" value="{{ $comment->id }}">

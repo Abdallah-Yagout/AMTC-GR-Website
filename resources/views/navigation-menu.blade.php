@@ -26,6 +26,9 @@
                     <x-nav-link href="{{ route('news.index') }}" :active="request()->routeIs('news')">
                         {{ __('News') }}
                     </x-nav-link>
+                    <x-nav-link href="{{ route('contact.index') }}" :active="request()->routeIs('contact')">
+                        {{ __('Contact') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -215,6 +218,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link href="{{ route('news.index') }}" :active="request()->routeIs('news.index')">
                 {{ __('News') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link href="{{ route('contact.index') }}" :active="request()->routeIs('contact.index')">
+                {{ __('Contact') }}
             </x-responsive-nav-link>
         </div>
 

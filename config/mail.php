@@ -48,6 +48,16 @@ return [
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
+        'contact_form' => [
+            'transport' => 'smtp',
+            'scheme' => env('MAIL_SCHEME'),
+            'host' => env('CONTACT_FORM_MAIL_HOST', 'mail.yourdomain.com'),
+            'port' => env('CONTACT_FORM_MAIL_PORT', 2525),
+            'username' => env('CONTACT_FORM_MAIL_USERNAME'),
+            'password' => env('CONTACT_FORM_MAIL_PASSWORD'),
+            'timeout' => null,
+            'auth_mode' => null,
+        ],
 
         'ses' => [
             'transport' => 'ses',
@@ -112,6 +122,11 @@ return [
 
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+        'name' => env('MAIL_FROM_NAME', 'Example'),
+    ],
+
+    'contact-from' => [
+        'address' => env('CONTACT_MAIL_FROM_ADDRESS', 'hello@example.com'),
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 

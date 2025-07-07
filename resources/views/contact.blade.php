@@ -24,8 +24,7 @@
                     </div>
                     <div>
                         <h3 class="font-semibold text-white text-base md:text-lg mb-1 md:mb-2">{{ __('Address') }}</h3>
-                        <p class="text-gray-400">{{ __('Google Android Phone') }}</p>
-                        <p class="text-gray-400">{{ __('Santa Yates, CA 93465') }}</p>
+                        <p class="text-gray-400">{{ __("Sana'a, Yemen") }}</p>
                     </div>
                 </div>
             </div>

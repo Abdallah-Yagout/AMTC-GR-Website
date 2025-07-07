@@ -17,6 +17,9 @@ Route::middleware([SetLocale::class])->group(function () {
     Route::get('/news/view/{slug}', [\App\Http\Controllers\NewsController::class, 'view'])->name('news.view');
     Route::get('language/{locale}', [\App\Http\Controllers\HomeController::class, 'switchLanguage'])->name('language.switch');
 
+    Route::get('contact', [\App\Http\Controllers\ContactController::class, 'show'])->name('contact.index');
+    Route::post('contact', [\App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
+
     // Tournament routes
     Route::middleware('auth')->group(function () {
         Route::get('/tournament/apply/{id}', [\App\Http\Controllers\TournamentController::class, 'apply'])->name('tournament.apply');

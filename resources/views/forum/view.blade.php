@@ -87,32 +87,31 @@
                         @endauth
 
                         <!-- Comments List -->
-                            <div id="comments-list" class="space-y-4 sm:space-y-6">
-                                @forelse($forum->comments->sortByDesc('created_at')->take(10) as $comment)
-                                    @include('forum.comment', [
-                                        'comment' => $comment,
-                                        'forum' => $forum
-                                    ])
-                                @empty
-                                    <div class="text-center py-4 text-gray-400 text-sm sm:text-base no-comments">
-                                        No comments yet. Be the first to comment!
-                                    </div>
-                                @endforelse
-                            </div>
-                            @if($forum->comments->count() > 10)
-                                <div class="mt-4 text-center">
-                                    <button id="load-more-comments"
-                                            data-page="2"
-                                            data-total="{{ $forum->comments->count() }}"
-                                            class="px-4 py-2 bg-blue-400 cursor-pointer hover:bg-blue-600 rounded-md text-white text-sm sm:text-base">
-                                        {{__('Show More')}} ({{ $forum->comments->count() - 10 }})
-                                    </button>
+                        <div id="comments-list" class="space-y-4 sm:space-y-6">
+                            @forelse($forum->comments->sortByDesc('created_at')->take(10) as $comment)
+                                @include('forum.comment', [
+'comment' => $comment,
+'forum' => $forum // Add this line
+])
+                            @empty
+                                <div class="text-center py-4 text-gray-400 text-sm sm:text-base no-comments">
+                                    No comments yet. Be the first to comment!
                                 </div>
-                            @endif
+                            @endforelse
+                        </div>
+                        @if($forum->comments->count() > 10)
+                            <div class="mt-4 text-center">
+                                <button id="load-more-comments"
+                                        data-page="2"
+                                        data-total="{{ $forum->comments->count() }}"
+                                        class="px-4 py-2 bg-blue-400 cursor-pointer hover:bg-blue-600 rounded-md text-white text-sm sm:text-base">
+                                    {{__('Show More')}} ({{ $forum->comments->count() - 10 }})
+                                </button>
+                            </div>
+                        @endif
                     </div>
                 </section>
             </div>
-
 
 
             <!-- Sidebar (30% width) -->
@@ -178,10 +177,10 @@
 
     @push('js')
         <script>
-            $(document).ready(function() {
+            $(document).ready(function () {
                 const commentsPerLoad = 10;
 
-                $('#load-more-comments').on('click', function() {
+                $('#load-more-comments').on('click', function () {
                     const button = $(this);
                     const page = button.data('page');
                     const forumId = {{ $forum->id }};
@@ -205,7 +204,7 @@
                             page: page,
                             per_page: commentsPerLoad
                         },
-                        success: function(response) {
+                        success: function (response) {
                             if (response.html) {
                                 $('#comments-list').append(response.html);
 
@@ -221,27 +220,27 @@
                                 }
                             }
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             console.error('Error loading comments');
                             button.html('Error - Try Again').prop('disabled', false);
                         },
-                        complete: function() {
+                        complete: function () {
                             button.prop('disabled', false);
                         }
                     });
                 });
             });
 
-            $(document).ready(function() {
+            $(document).ready(function () {
                 // Handle new comment submission
-                $('#comment-form').on('submit', function(e) {
+                $('#comment-form').on('submit', function (e) {
                     e.preventDefault();
                     const form = $(this);
                     submitCommentForm(form);
                 });
 
                 // Handle reply submission
-                $(document).on('submit', '.reply-form', function(e) {
+                $(document).on('submit', '.reply-form', function (e) {
                     e.preventDefault();
                     const form = $(this);
                     submitCommentForm(form, true);
@@ -265,7 +264,7 @@
                         headers: {
                             'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         },
-                        success: function(response) {
+                        success: function (response) {
                             if (response.success) {
                                 // Remove "no comments" message if it exists
                                 $('.no-comments').remove();
@@ -298,22 +297,22 @@
                                 textarea.val('');
                             }
                         },
-                        error: function(xhr) {
+                        error: function (xhr) {
                             const errorMessage = xhr.responseJSON?.message || 'An error occurred';
                             console.log(errorMessage);
                         },
-                        complete: function() {
+                        complete: function () {
                             button.prop('disabled', false);
                         }
                     });
                 }
 
                 // Handle comment deletion
-                $(document).ready(function() {
+                $(document).ready(function () {
                     let currentForm = null;
 
                     // Handle delete form submission
-                    $(document).on('submit', '.delete-comment-form', function(e) {
+                    $(document).on('submit', '.delete-comment-form', function (e) {
                         e.preventDefault();
                         currentForm = $(this);
 
@@ -328,7 +327,7 @@
                     });
 
                     // Confirm deletion
-                    $('#confirm-btn').on('click', function() {
+                    $('#confirm-btn').on('click', function () {
                         if (!currentForm) return;
 
                         // Add loading state
@@ -351,20 +350,20 @@
                                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
                                 'X-HTTP-Method-Override': 'DELETE'
                             },
-                            success: function(response) {
+                            success: function (response) {
                                 if (response.success) {
                                     // Remove comment and update count
-                                    currentForm.closest('.comment, .reply').fadeOut(300, function() {
+                                    currentForm.closest('.comment, .reply').fadeOut(300, function () {
                                         $(this).remove();
                                         const currentCount = parseInt($('#comments-count').text());
                                         $('#comments-count').text(currentCount - 1);
                                     });
                                 }
                             },
-                            error: function(xhr) {
+                            error: function (xhr) {
                                 showToast('Failed to delete comment', 'error');
                             },
-                            complete: function() {
+                            complete: function () {
                                 closeModal();
                                 btn.prop('disabled', false).text('Delete');
                             }
@@ -375,7 +374,7 @@
                     $('#cancel-btn').on('click', closeModal);
 
                     // Close modal when clicking outside
-                    $('#delete-modal').on('click', function(e) {
+                    $('#delete-modal').on('click', function (e) {
                         if (e.target === this) closeModal();
                     });
 
@@ -405,17 +404,21 @@
     `);
 
                         $('body').append(toast);
-                        toast.find('button').on('click', function() {
-                            toast.fadeOut(200, function() { $(this).remove(); });
+                        toast.find('button').on('click', function () {
+                            toast.fadeOut(200, function () {
+                                $(this).remove();
+                            });
                         });
 
                         setTimeout(() => {
-                            toast.fadeOut(200, function() { $(this).remove(); });
+                            toast.fadeOut(200, function () {
+                                $(this).remove();
+                            });
                         }, 3000);
                     }
                 });
                 // Handle reply button clicks
-                $(document).on('click', '.reply-btn', function() {
+                $(document).on('click', '.reply-btn', function () {
                     const commentId = $(this).data('comment-id');
                     const replyForm = $('#reply-form-' + commentId);
 
@@ -432,7 +435,7 @@
                 });
 
                 // Handle cancel buttons
-                $(document).on('click', '.cancel-reply', function() {
+                $(document).on('click', '.cancel-reply', function () {
                     const commentId = $(this).data('comment-id');
                     $('#reply-form-' + commentId).addClass('hidden');
                 });
@@ -448,7 +451,7 @@
                 }
 
                 // Toggle click handler
-                toggleCommentsBtn.on('click', function() {
+                toggleCommentsBtn.on('click', function () {
                     commentsContent.toggle();
                     const isVisible = commentsContent.is(':visible');
                     $(this).text(isVisible ? 'Hide Comments' : 'Show Comments');
@@ -456,17 +459,17 @@
                 });
 
                 // Upvote functionality
-                $(document).on('click', '.upvote-btn', function() {
+                $(document).on('click', '.upvote-btn', function () {
                     const button = $(this);
                     const forumId = button.data('forum-id');
 
                     $.ajax({
-                        url: `/forums/${forumId}/upvote`,
+                        url: `/forum/${forumId}/upvote`,
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         },
-                        success: function(response) {
+                        success: function (response) {
                             if (response.error) {
                                 // Show error notification
                                 const notification = $(
@@ -481,31 +484,67 @@
                             }
 
                             // Update ALL upvote buttons and counts for this forum
-                            $(`.upvote-btn[data-forum-id="${forumId}"]`).each(function() {
+                            $(`.upvote-btn[data-forum-id="${forumId}"]`).each(function () {
                                 const $btn = $(this);
                                 $btn.toggleClass('border-red-600 border-primary-500');
                                 $btn.find('svg').toggleClass('text-red-500 text-primary-500');
                             });
 
-                            $(`.upvote-count[data-forum-id="${forumId}"]`).each(function() {
+                            $(`.upvote-count[data-forum-id="${forumId}"]`).each(function () {
                                 const $count = $(this);
                                 $count.text(response.upvotes);
                                 $count.toggleClass('text-red-500 text-primary-500');
                             });
                         },
-                        error: function(xhr) {
-                            const errorMessage = xhr.responseJSON?.error || 'An error occurred';
-                            const notification = $(
-                                `<div class="fixed top-4 right-4 px-4 py-2 bg-red-600 text-white rounded-md shadow-md text-sm md:text-base">
-                                ${errorMessage}
-                                <button class="ml-2" onclick="$(this).parent().remove()">×</button>
-                            </div>`
-                            );
-                            $('body').append(notification);
-                            setTimeout(() => notification.remove(), 3000);
+                        error: function (xhr) {
+                            // Handle different types of errors
+                            let errorMessage = 'An error occurred';
+
+                            // Check for validation errors
+                            if (xhr.responseJSON && xhr.responseJSON.error) {
+                                errorMessage = xhr.responseJSON.error;
+                            }
+                            // Check for Laravel validation errors
+                            else if (xhr.responseJSON && xhr.responseJSON.message) {
+                                errorMessage = xhr.responseJSON.message;
+                            }
+                            // Check for HTTP errors
+                            else if (xhr.status === 401) {
+                                errorMessage = 'You must be logged in to upvote';
+                            } else if (xhr.status === 404) {
+                                errorMessage = 'Forum post not found';
+                            }
+
+                            showErrorNotification(errorMessage);
                         }
                     });
                 });
+                function showErrorNotification(message) {
+                    const notification = $(
+                        `<div class="fixed top-4 right-4 px-4 py-2 bg-red-600 text-white rounded-md shadow-md text-sm md:text-base flex items-center">
+            <span>${message}</span>
+            <button class="ml-2 text-white hover:text-gray-200">
+                &times;
+            </button>
+        </div>`
+                    );
+
+                    $('body').append(notification);
+
+                    // Auto-remove after 5 seconds
+                    setTimeout(() => {
+                        notification.fadeOut(200, function() {
+                            $(this).remove();
+                        });
+                    }, 5000);
+
+                    // Manual close
+                    notification.find('button').on('click', function() {
+                        notification.fadeOut(200, function() {
+                            $(this).remove();
+                        });
+                    });
+                }
             });
             $(document).on('click', '.toggle-replies-btn', function () {
                 const commentId = $(this).data('comment-id');

@@ -6,27 +6,27 @@
         </x-slot>
 
         <x-validation-errors class="mb-4" />
-        <h1 class="text-3xl py-4 text-white font-bold mb-10">Register</h1>
+        <h1 class="text-3xl py-4 text-white font-bold mb-10">{{__('Register')}}</h1>
         <form method="POST" action="{{ route('register') }}">
             @csrf
             <div>
                 <x-label for="name"  value="{{ __('Name') }}" />
-                <x-input placeholder="name" id="name" class="block  mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+                <x-input placeholder="{{__('name')}}" id="name" class="block  mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
             </div>
 
             <div class="mt-6">
                 <x-label  for="email" value="{{ __('Email') }}" />
-                <x-input placeholder="email" id="email" class="block mt-1 w-full " type="email" name="email" :value="old('email')" required autocomplete="username" />
+                <x-input placeholder="{{__('email')}}" id="email" class="block mt-1 w-full " type="email" name="email" :value="old('email')" required autocomplete="username" />
             </div>
 
             <div class="mt-6">
                 <x-label  for="password" value="{{ __('Password') }}" />
-                <x-input placeholder="password" id="password" class="block mt-1 w-full " type="password" name="password" required autocomplete="new-password" />
+                <x-input placeholder="{{__('password')}}" id="password" class="block mt-1 w-full " type="password" name="password" required autocomplete="new-password" />
             </div>
 
             <div class="mt-6">
                 <x-label  for="password_confirmation" value="{{ __('Confirm Password') }}" />
-                <x-input placeholder="confirm password" id="password_confirmation" class="block mt-1 w-full " type="password" name="password_confirmation" required autocomplete="new-password" />
+                <x-input placeholder="{{__('confirm password')}}" id="password_confirmation" class="block mt-1 w-full " type="password" name="password_confirmation" required autocomplete="new-password" />
             </div>
 
             @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())

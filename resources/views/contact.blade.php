@@ -16,7 +16,7 @@
                 <div class="space-y-4 md:space-y-6">
                     <div>
                         <h3 class="font-semibold text-white text-base md:text-lg mb-1 md:mb-2">{{ __('Email') }}</h3>
-                        <a href="mailto:contact@example.com" class="hover:underline text-gray-400">contact@example.com</a>
+                        <a href="mailto:contact@example.com" class="hover:underline text-gray-400">contact@gryemen.com</a>
                     </div>
                     <div>
                         <h3 class="font-semibold text-white text-base md:text-lg mb-1 md:mb-2">{{ __('Phone') }}</h3>
@@ -52,7 +52,6 @@
                         <label for="name" class="block mb-1 md:mb-2 text-white text-sm font-medium">{{ __('Name') }}</label>
                         <input
                             type="text"
-                            required
                             id="name"
                             name="name"
                             value="{{ auth()->check() ? auth()->user()->name : old('name') }}"

@@ -59,7 +59,7 @@
                     <img src="{{ $participant['user']->profile_photo_path ? asset('storage/'.$participant['user']->profile_photo_path) : 'https://ui-avatars.com/api/?name=' . urlencode($participant['user']->name) }}"
                          alt="{{ $participant['user']->name }}"
                          class="w-8 h-8 rounded-full object-cover border border-white">
-                    <span class="text-white text-sm truncate">
+                    <span class="text-white text-sm">
                         {{ $participant['user']->name }}
                     </span>
                 </div>
@@ -84,7 +84,7 @@
             @if(isset($showAll) && $showAll)
                 <div class="flex justify-between">
                     <div class="text-white text-xs">Tournament:</div>
-                    <div class="text-gray-300 text-xs truncate">
+                    <div class="text-gray-300 text-xs">
                         {{ $participant->tournament->title ?? 'N/A' }}
                     </div>
                 </div>
@@ -104,7 +104,7 @@
                 <img src="{{ $participant['user']->profile_photo_path ? asset('storage/'.$participant['user']->profile_photo_path) : 'https://ui-avatars.com/api/?name=' . urlencode($participant['user']->name) }}"
                      alt="{{ $participant['user']->name }}"
                      class="w-10 h-10 rounded-full object-cover border border-white">
-                <span class="text-white text-base truncate">
+                <span class="text-white text-base">
                     {{ $participant['user']->name }}
                 </span>
             </div>

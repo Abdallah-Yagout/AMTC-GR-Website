@@ -7,6 +7,7 @@ use Spatie\Translatable\HasTranslations;
 
 class News extends Model
 {
+
     protected $fillable = [
         'title',
         'slug',

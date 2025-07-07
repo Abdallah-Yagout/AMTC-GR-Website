@@ -13,6 +13,7 @@ class CommentController extends Controller
 
     public function store(Request $request, Forum $forum)
     {
+
         $request->validate([
             'body' => 'required|string|max:2000',
             'parent_id' => 'nullable|exists:comments,id'

@@ -51,5 +51,9 @@
     font-display: swap;
 }
 
+.prose a {
+    color: #E60010 !important;
+    text-decoration: underline !important;
+}
 
 

@@ -54,6 +54,7 @@
 .prose a {
     color: #E60010 !important;
     text-decoration: underline !important;
+    word-wrap: break-word;
 }
 
 

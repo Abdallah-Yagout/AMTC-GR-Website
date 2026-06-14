@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\MailSetting;
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Database\Eloquent\Model;
@@ -25,6 +26,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        MailSetting::applyConfig();
+
         if (config('app.env') === 'production') {
             URL::forceScheme('https');
 

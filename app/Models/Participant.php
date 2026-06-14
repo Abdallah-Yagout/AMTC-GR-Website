@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Participant extends Model
@@ -11,6 +12,7 @@ class Participant extends Model
         'tournament_id',
         'location',
     ];
+
     public function user()
     {
         return $this->belongsTo('App\Models\User');
@@ -25,16 +27,31 @@ class Participant extends Model
 
     public function profile()
     {
-        return $this->belongsTo('App\Models\Profile','user_id');
+        return $this->belongsTo('App\Models\Profile', 'user_id');
     }
+
     public function tournament()
     {
         return $this->belongsTo('App\Models\Tournament');
     }
+
     public function leaderboardEntries()
     {
         return $this->hasMany(Leaderboard::class, 'user_id', 'user_id')
             ->where('tournament_id', $this->tournament_id)
             ->where('location', $this->location);
+    }
+
+    public function scopeForUser(Builder $query, int $userId): Builder
+    {
+        return $query->where('user_id', $userId);
+    }
+
+    public function scopeWithTournamentAndResults(Builder $query): Builder
+    {
+        return $query->with([
+            'tournament',
+            'leaderboards.tournament',
+        ]);
     }
 }

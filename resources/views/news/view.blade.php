@@ -17,7 +17,7 @@
             <div class="max-w-4xl mx-auto">
                 <!-- Featured Image -->
                 <div class="mb-12 rounded-xl overflow-hidden shadow-lg">
-                    <img src="{{asset('storage').'/'. $news->image }}" alt="{{ $news->title }}" class="w-full h-auto">
+                    <img src="{{ \App\Support\GrStockImage::forStorage($news->image, 'news-article-'.$news->id) }}" alt="{{ $news->title }}" class="w-full h-auto">
                 </div>
 
                 <!-- Article Body -->
@@ -60,7 +60,7 @@
                     @foreach($relatedNews as $related)
                         <article class="bg-secondary rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300">
                             <div class="relative h-48 overflow-hidden">
-                                <img src="{{asset('storage').'/'.$related->image}}" alt="{{ $related->title }}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
+                                <img src="{{ \App\Support\GrStockImage::forStorage($related->image, 'news-related-'.$related->id) }}" alt="{{ $related->title }}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
                             </div>
                             <div class="p-6">
                                 <div class="flex items-center text-sm text-primary mb-2">

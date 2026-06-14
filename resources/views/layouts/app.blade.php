@@ -6,6 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
         <title>{{ config('app.name', 'Laravel') }}</title>
+        @stack('head')
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -101,6 +102,10 @@
 
     </head>
     <body class="{{ app()->getLocale() === 'ar' ? 'font-cairo' : 'font-changa' }}">
+    @stack('body_start')
+    {{-- Vertical neon strips: desktop-only (CSS hides on mobile); narrow fixed bars, pointer-events none --}}
+    <div class="site-neon-led site-neon-led-left" aria-hidden="true"></div>
+    <div class="site-neon-led site-neon-led-right" aria-hidden="true"></div>
     @if(session('error'))
         <div class="fixed top-4 right-4 px-4 py-2 bg-red-600 text-white rounded">
             {{ session('error') }}
@@ -108,7 +113,8 @@
     @endif
     <x-banner />
 
-        <div class="min-h-screen bg-black">
+        {{-- relative z-10: establishes stacking for page chrome; neon strips use z-30 in CSS (above this bg, pointer-events none) --}}
+        <div class="relative z-10 min-h-screen bg-black">
             @livewire('navigation-menu')
 
             <!-- Page Heading -->
@@ -125,6 +131,7 @@
                 {{ $slot }}
             </main>
         </div>
+    <x-chatbot-widget />
 
         @stack('modals')
 
@@ -133,8 +140,9 @@
     @include('layouts.footer')
     <!-- Add this before your closing </body> tag or in your layout file -->
     <!-- Delete Confirmation Modal -->
-    <div id="delete-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-transparent bg-opacity-70">
-        <div class="bg-gray-800 rounded-lg shadow-xl w-full max-w-md p-6 transform transition-all duration-300 scale-95 opacity-0" id="modal-content">
+    <div id="delete-modal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/70 p-4">
+        <div class="flex min-h-full items-center justify-center">
+            <div class="w-full max-w-md transform transition-all duration-300 scale-95 opacity-0 rounded-lg bg-gray-800 p-6 shadow-xl" id="modal-content">
             <h3 class="text-xl font-bold text-white mb-3">{{__('Delete Comment')}}</h3>
             <p class="text-gray-300 mb-6">{{__('Are you sure you want to delete this comment? This action cannot be undone.')}}</p>
             <div class="flex justify-end space-x-3">
@@ -145,6 +153,7 @@
                     {{__('Delete')}}
                 </button>
             </div>
+        </div>
         </div>
     </div>
     </body>

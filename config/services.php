@@ -35,4 +35,17 @@ return [
         ],
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI'),
+        'verify_ssl' => env('GOOGLE_VERIFY_SSL', true),
+    ],
+
+    'n8n' => [
+        'webhook_url' => env('N8N_WEBHOOK_URL'),
+        'token' => env('N8N_BEARER_TOKEN'),
+        'timeout' => (int) env('N8N_TIMEOUT', 20),
+    ],
+
 ];

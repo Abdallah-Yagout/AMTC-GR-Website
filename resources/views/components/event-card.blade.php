@@ -1,6 +1,6 @@
 @props(['date', 'title', 'description', 'location', 'image', 'id','status'])
 
-<div class="bg-secondary-100 rounded-2xl overflow-hidden shadow-lg max-w-sm">
+<div {{ $attributes->class(['tournament-neon-card bg-secondary-100 rounded-2xl overflow-hidden shadow-lg max-w-sm']) }}>
     <img src="{{ $image }}" alt="{{ $title }}" class="w-full h-48 object-cover">
 
     <div class="p-5">

@@ -1,4 +1,4 @@
-<x-form-section submit="updateProfileInformation">
+<x-form-section variant="gaming" submit="updateProfileInformation">
     <x-slot name="title">
         {{ __('Contact Information') }}
     </x-slot>
@@ -32,7 +32,7 @@
             {{ __('Saved.') }}
         </x-action-message>
 
-        <x-button wire:loading.attr="disabled">
+        <x-button class="!bg-primary hover:!bg-primary/90 !text-white focus:!ring-primary focus:!ring-offset-2 focus:!ring-offset-zinc-950" wire:loading.attr="disabled">
             {{ __('Save') }}
         </x-button>
     </x-slot>

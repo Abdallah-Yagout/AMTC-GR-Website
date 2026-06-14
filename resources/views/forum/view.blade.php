@@ -7,17 +7,18 @@
                     <!-- Upvote Section -->
                     <div class="flex items-start gap-4">
                         <div class="flex flex-col items-center">
-                            <button
-                                class="upvote-btn cursor-pointer flex flex-col items-center justify-center w-12 h-12 md:w-12 md:h-12 rounded-md p-1 transition-colors duration-200 border {{ $forum->upvotedByMe ? 'border-red-600' : 'border-primary-500' }}"
-                                data-forum-id="{{ $forum->id }}">
+                            <button type="button"
+                                class="forum-upvote-btn forum-upvote-btn--stacked upvote-btn cursor-pointer flex flex-col items-center justify-center w-12 h-12 md:w-12 md:h-12 rounded-md p-1 border {{ $forum->upvotedByMe ? 'is-active' : '' }}"
+                                data-forum-id="{{ $forum->id }}"
+                                aria-label="{{ __('Upvote') }}">
                                 <svg xmlns="http://www.w3.org/2000/svg"
-                                     class="h-4 w-4 md:h-5 md:w-5 {{ $forum->upvotedByMe ? 'text-red-500' : 'text-primary-500' }} hover:text-primary-600"
-                                     viewBox="0 0 20 20" fill="currentColor">
+                                     class="forum-upvote-icon h-4 w-4 md:h-5 md:w-5"
+                                     viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                     <path fill-rule="evenodd"
                                           d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
                                           clip-rule="evenodd"/>
                                 </svg>
-                                <span class="text-xs upvote-count md:text-sm"
+                                <span class="forum-upvote-count text-xs upvote-count md:text-sm {{ $forum->upvotedByMe ? 'is-active' : '' }}"
                                       data-forum-id="{{ $forum->id }}">{{ $forum->upvotes_count }}</span>
                             </button>
                         </div>
@@ -483,17 +484,14 @@
                                 return;
                             }
 
-                            // Update ALL upvote buttons and counts for this forum
                             $(`.upvote-btn[data-forum-id="${forumId}"]`).each(function () {
-                                const $btn = $(this);
-                                $btn.toggleClass('border-red-600 border-primary-500');
-                                $btn.find('svg').toggleClass('text-red-500 text-primary-500');
+                                $(this).toggleClass('is-active');
                             });
 
                             $(`.upvote-count[data-forum-id="${forumId}"]`).each(function () {
                                 const $count = $(this);
                                 $count.text(response.upvotes);
-                                $count.toggleClass('text-red-500 text-primary-500');
+                                $count.toggleClass('is-active');
                             });
                         },
                         error: function (xhr) {

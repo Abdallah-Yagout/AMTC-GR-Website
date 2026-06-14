@@ -1,4 +1,4 @@
-<x-form-section submit="updatePassword">
+<x-form-section variant="gaming" submit="updatePassword">
     <x-slot name="title">
         {{ __('Update Password') }}
     </x-slot>
@@ -32,7 +32,7 @@
             {{ __('Saved.') }}
         </x-action-message>
 
-        <x-button>
+        <x-button class="!bg-primary hover:!bg-primary/90 !text-white focus:!ring-primary focus:!ring-offset-2 focus:!ring-offset-zinc-950">
             {{ __('Save') }}
         </x-button>
     </x-slot>

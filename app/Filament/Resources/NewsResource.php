@@ -3,12 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\NewsResource\Pages;
-use App\Filament\Resources\NewsResource\RelationManagers;
 use App\Models\News;
-use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\TextInput;
@@ -19,9 +16,7 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Nette\Utils\Image;
+use Illuminate\Support\Str;
 
 class NewsResource extends Resource
 {
@@ -38,24 +33,24 @@ class NewsResource extends Resource
                         Tab::make('English')
                             ->schema([
                                 TextInput::make('title')
-                                ->required(),
+                                    ->required(),
                                 FileUpload::make('image')
                                     ->required()
                                     ->directory('events')
                                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp']),
                                 RichEditor::make('description')
-                                ->required(),
+                                    ->required(),
                                 Toggle::make('status'),
                             ]),
                         Tab::make('Arabic')
                             ->schema([
                                 TextInput::make('title_ar')
-                                ->required(),
+                                    ->required(),
                                 RichEditor::make('description_ar')
-                                ->required(),
+                                    ->required(),
                             ]),
                     ])->persistTabInQueryString()
-                ->columnSpanFull(),
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -65,15 +60,37 @@ class NewsResource extends Resource
             ->columns([
                 TextColumn::make('title'),
                 Tables\Columns\ImageColumn::make('image')
-                ->circular()
-                ->size(70),
-                ToggleColumn::make('status')
+                    ->circular()
+                    ->size(70),
+                ToggleColumn::make('status'),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('duplicate')
+                    ->label('Duplicate')
+                    ->icon('heroicon-o-document-duplicate')
+                    ->color('gray')
+                    ->requiresConfirmation()
+                    ->action(function (News $record): void {
+                        $copy = $record->replicate();
+
+                        $baseSlug = $record->slug ?: Str::slug((string) $record->title);
+                        $baseSlug = $baseSlug !== '' ? $baseSlug : 'news';
+
+                        $newSlug = $baseSlug.'-copy';
+                        $counter = 2;
+
+                        while (News::where('slug', $newSlug)->exists()) {
+                            $newSlug = $baseSlug.'-copy-'.$counter;
+                            $counter++;
+                        }
+
+                        $copy->slug = $newSlug;
+                        $copy->save();
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

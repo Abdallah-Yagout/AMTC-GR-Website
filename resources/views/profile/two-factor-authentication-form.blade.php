@@ -1,4 +1,4 @@
-<x-action-section>
+<x-action-section variant="gaming">
     <x-slot name="title">
         {{ __('Two Factor Authentication') }}
     </x-slot>
@@ -8,7 +8,7 @@
     </x-slot>
 
     <x-slot name="content">
-        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+        <h3 class="text-lg font-medium text-white">
             @if ($this->enabled)
                 @if ($showingConfirmation)
                     {{ __('Finish enabling two factor authentication.') }}
@@ -20,7 +20,7 @@
             @endif
         </h3>
 
-        <div class="mt-3 max-w-xl text-sm text-gray-600 dark:text-gray-400">
+        <div class="mt-3 max-w-xl text-sm text-zinc-400">
             <p>
                 {{ __('When two factor authentication is enabled, you will be prompted for a secure, random token during authentication. You may retrieve this token from your phone\'s Google Authenticator application.') }}
             </p>
@@ -28,7 +28,7 @@
 
         @if ($this->enabled)
             @if ($showingQrCode)
-                <div class="mt-4 max-w-xl text-sm text-gray-600 dark:text-gray-400">
+                <div class="mt-4 max-w-xl text-sm text-zinc-400">
                     <p class="font-semibold">
                         @if ($showingConfirmation)
                             {{ __('To finish enabling two factor authentication, scan the following QR code using your phone\'s authenticator application or enter the setup key and provide the generated OTP code.') }}
@@ -42,7 +42,7 @@
                     {!! $this->user->twoFactorQrCodeSvg() !!}
                 </div>
 
-                <div class="mt-4 max-w-xl text-sm text-gray-600 dark:text-gray-400">
+                <div class="mt-4 max-w-xl text-sm text-zinc-400">
                     <p class="font-semibold">
                         {{ __('Setup Key') }}: {{ decrypt($this->user->two_factor_secret) }}
                     </p>
@@ -62,13 +62,13 @@
             @endif
 
             @if ($showingRecoveryCodes)
-                <div class="mt-4 max-w-xl text-sm text-gray-600 dark:text-gray-400">
+                <div class="mt-4 max-w-xl text-sm text-zinc-400">
                     <p class="font-semibold">
                         {{ __('Store these recovery codes in a secure password manager. They can be used to recover access to your account if your two factor authentication device is lost.') }}
                     </p>
                 </div>
 
-                <div class="grid gap-1 max-w-xl mt-4 px-4 py-4 font-mono text-sm bg-gray-100 dark:bg-gray-900 dark:text-gray-100 rounded-lg">
+                <div class="grid gap-1 max-w-xl mt-4 px-4 py-4 font-mono text-sm bg-zinc-950 text-zinc-200 border border-zinc-700 rounded-lg">
                     @foreach (json_decode(decrypt($this->user->two_factor_recovery_codes), true) as $code)
                         <div>{{ $code }}</div>
                     @endforeach
@@ -79,7 +79,7 @@
         <div class="mt-5">
             @if (! $this->enabled)
                 <x-confirms-password wire:then="enableTwoFactorAuthentication">
-                    <x-button type="button" wire:loading.attr="disabled">
+                    <x-button type="button" class="!bg-primary hover:!bg-primary/90 !text-white focus:!ring-primary focus:!ring-offset-2 focus:!ring-offset-zinc-950" wire:loading.attr="disabled">
                         {{ __('Enable') }}
                     </x-button>
                 </x-confirms-password>
@@ -92,7 +92,7 @@
                     </x-confirms-password>
                 @elseif ($showingConfirmation)
                     <x-confirms-password wire:then="confirmTwoFactorAuthentication">
-                        <x-button type="button" class="me-3" wire:loading.attr="disabled">
+                        <x-button type="button" class="me-3 !bg-primary hover:!bg-primary/90 !text-white focus:!ring-primary focus:!ring-offset-2 focus:!ring-offset-zinc-950" wire:loading.attr="disabled">
                             {{ __('Confirm') }}
                         </x-button>
                     </x-confirms-password>

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Leaderboard extends Model
@@ -23,6 +24,7 @@ class Leaderboard extends Model
             ->where('tournament_id', $this->tournament_id)
             ->where('location', $this->location);
     }
+
     // app/Models/Leaderboard.php
     public function participants()
     {
@@ -30,20 +32,23 @@ class Leaderboard extends Model
             ->withPivot(['position', 'time_taken', 'status'])
             ->withTimestamps();
     }
-//    public function user()
-//    {
-//        return $this->belongsTo(User::class);
-//    }
-
-
+    //    public function user()
+    //    {
+    //        return $this->belongsTo(User::class);
+    //    }
 
     public function tournament()
     {
         return $this->belongsTo(Tournament::class);
     }
+
     public function scopeActive($query)
     {
         return $query->where('status', '1');
     }
 
+    public function scopeWithParticipantResults(Builder $query): Builder
+    {
+        return $query->with(['participants', 'tournament']);
+    }
 }

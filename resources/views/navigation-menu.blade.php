@@ -1,32 +1,42 @@
-<nav x-data="{ open: false, langOpen: false }" class="bg-black border border-b-primary">
+<nav
+    x-data="{ open: false, langOpen: false }"
+    class="site-header-shell {{ request()->routeIs('home') ? 'site-header-home is-at-top' : '' }}"
+>
     <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-visible">
+        <div class="site-header-main flex justify-between h-16 overflow-visible">
+            <div class="flex items-center">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a class="flex flex-1 items-center justify-center sm:justify-center md:justify-start" href="{{ route('home') }}">
-                        <img class="h-10 w-auto" src="{{ asset('img/logo.png') }}" alt="Your Company">
+                    <a class="site-header-logo-lockup flex items-center justify-start" href="{{ route('home') }}">
+                        <img class="site-header-logo-gtcup" src="{{ asset('img/gtcup-splash-logo.png') }}" alt="GT CUP Logo">
+                        <img class="site-header-logo-main" src="{{ asset('img/logo.png') }}" alt="Toyota Logo">
                     </a>
                 </div>
 
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
+                <div class="hidden space-x-8 sm:-my-px sm:ms-8 sm:flex site-header-links">
+                    <x-nav-link class="site-header-link" href="{{ route('home') }}" :active="request()->routeIs('home')">
                         {{ __('Home') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('forum.index') }}" :active="request()->routeIs('forum.index')">
+                    <x-nav-link class="site-header-link" href="{{ route('forum.index') }}" :active="request()->routeIs('forum.index')">
                         {{ __('Community') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('tournament.index') }}" :active="request()->routeIs('tournament.index')">
+                    <x-nav-link class="site-header-link" href="{{ route('tournament.index') }}" :active="request()->routeIs('tournament.index')">
                         {{ __('Tournament') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('leaderboard.index') }}" :active="request()->routeIs('leaderboard.index')">
+                    <x-nav-link class="site-header-link" href="{{ route('leaderboard.index') }}" :active="request()->routeIs('leaderboard.index')">
                         {{ __('Leaderboard') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('news.index') }}" :active="request()->routeIs('news')">
+                    <x-nav-link class="site-header-link" href="{{ route('news.index') }}" :active="request()->routeIs('news')">
                         {{ __('News') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('contact.index') }}" :active="request()->routeIs('contact')">
+                    <x-nav-link class="site-header-link" href="{{ route('games.index') }}" :active="request()->routeIs('games.index')">
+                        {{ __('Games') }}
+                    </x-nav-link>
+                    <x-nav-link class="site-header-link site-header-gr-cars-nav" href="{{ route('gr-cars.index') }}" :active="request()->routeIs('gr-cars.index')">
+                        {{ __('GR-CARS') }}
+                    </x-nav-link>
+                    <x-nav-link class="site-header-link" href="{{ route('contact.index') }}" :active="request()->routeIs('contact')">
                         {{ __('Contact') }}
                     </x-nav-link>
                 </div>
@@ -35,7 +45,7 @@
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <!-- Language Switcher -->
 
-                <div class="relative ms-4 border border-3 me-6 border-white rounded-full" x-data="{ open: false }" @click.away="open = false">
+                <div class="site-header-lang relative ms-4 me-6 rounded-full" x-data="{ open: false }" @click.away="open = false">
                     <button @click="open = !open" class="flex items-center space-x-1 px-2.5 py-2 text-gray-300 hover:text-white focus:outline-none">
                         @if(app()->getLocale() == 'ar')
 {{--                            <span class="fi fi-sa fis rounded"></span>--}}
@@ -55,7 +65,7 @@
                          x-transition:leave="transition ease-in duration-75"
                          x-transition:leave-start="transform opacity-100 scale-100"
                          x-transition:leave-end="transform opacity-0 scale-95"
-                         class="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50">
+                         class="site-header-dropdown-panel absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50">
                         <div class="py-1">
                             <a href="{{ route('language.switch', 'en') }}" class="flex items-center px-4 py-2 text-sm text-gray-500 hover:bg-gray-100">
                                 <span class="fi fi-gb fis rounded mr-2"></span>
@@ -83,7 +93,7 @@
                     <!-- Teams Dropdown -->
                     @if (Laravel\Jetstream\Jetstream::hasTeamFeatures())
                         <div class="ms-3 relative">
-                            <x-dropdown align="right" width="60">
+                            <x-dropdown align="right" width="60" dropdownClasses="site-header-dropdown-panel">
                                 <x-slot name="trigger">
                                     <span class="inline-flex rounded-md">
                                         <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-blue-50 hover:text-gray-700 focus:outline-hidden focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
@@ -133,22 +143,26 @@
 
                     <!-- Settings Dropdown -->
                     <div class="ms-3 relative">
-                        <x-dropdown align="right" width="48">
+                        <x-dropdown align="right" width="48" dropdownClasses="site-header-dropdown-panel">
                             <x-slot name="trigger">
-                                @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
-                                    <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-hidden focus:border-gray-300 transition">
-                                        <img class="size-8 rounded-full object-cover" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
-                                    </button>
-                                @else
-                                    <span class="inline-flex rounded-md">
-                                        <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-blue-50 hover:text-gray-700 focus:outline-hidden focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
-                                            {{ Auth::user()->name }}
-                                            <svg class="ms-2 -me-0.5 size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
-                                            </svg>
-                                        </button>
-                                    </span>
-                                @endif
+                                <button
+                                    type="button"
+                                    class="site-header-user-trigger flex items-center gap-2.5 rounded-lg border text-start transition focus:outline-hidden focus-visible:ring-2 focus-visible:ring-red-500/70"
+                                >
+                                    <img
+                                        class="site-header-user-avatar size-9 shrink-0 rounded-full object-cover ring-2 ring-red-600/55"
+                                        src="{{ Auth::user()->profile_photo_url }}"
+                                        alt="{{ Auth::user()->name }}"
+                                        onerror="this.onerror=null;this.src={{ \Illuminate\Support\Js::from(Auth::user()->profilePhotoFallbackUrl()) }}"
+                                    />
+                                    <div class="site-header-user-meta min-w-0 max-w-[9.5rem] md:max-w-[13rem]">
+                                        <span class="site-header-user-name block truncate">{{ Auth::user()->name }}</span>
+                                        <span class="site-header-user-email block truncate">{{ Auth::user()->email }}</span>
+                                    </div>
+                                    <svg class="site-header-user-chevron ms-0.5 size-4 shrink-0 opacity-80" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                    </svg>
+                                </button>
                             </x-slot>
 
                             <x-slot name="content">
@@ -180,7 +194,7 @@
                     </div>
                 @else
                     <div class="flex items-center gap-4">
-                        <a href="{{ route('register') }}" class="inline-block px-5 py-1.5 hover:bg-primary-100 bg-primary  text-white border border-transparent hover:border-[#19140035]  rounded-3xl text-sm leading-normal">
+                        <a href="{{ route('register') }}" class="site-header-join inline-block px-5 py-1.5 text-white rounded-3xl text-sm leading-normal">
                             {{ __('Join Race') }}
                         </a>
                     </div>
@@ -189,7 +203,7 @@
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-hidden focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                <button @click="open = ! open" class="site-header-burger inline-flex items-center justify-center p-2 rounded-md text-gray-400 transition duration-150 ease-in-out">
                     <svg class="size-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -200,7 +214,7 @@
     </div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden site-header-mobile-menu">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link href="{{ route('home') }}" :active="request()->routeIs('home')">
                 {{ __('Home') }}
@@ -218,6 +232,12 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link href="{{ route('news.index') }}" :active="request()->routeIs('news.index')">
                 {{ __('News') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link href="{{ route('games.index') }}" :active="request()->routeIs('games.index')">
+                {{ __('Games') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link class="site-header-gr-cars-nav" href="{{ route('gr-cars.index') }}" :active="request()->routeIs('gr-cars.index')">
+                {{ __('GR-CARS') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link href="{{ route('contact.index') }}" :active="request()->routeIs('contact.index')">
                 {{ __('Contact') }}
@@ -251,17 +271,17 @@
 
         @auth
             <!-- Responsive Settings Options -->
-            <div class="pt-4 pb-1 border-t border-gray-200">
-                <div class="flex items-center px-4">
-                    @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
-                        <div class="shrink-0 me-3">
-                            <img class="size-10 rounded-full object-cover" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
-                        </div>
-                    @endif
-
-                    <div>
-                        <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                        <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+            <div class="pt-4 pb-1 border-t border-white/10">
+                <div class="site-header-user-mobile mx-4 flex items-center gap-3 rounded-lg border px-3 py-2.5">
+                    <img
+                        class="site-header-user-avatar size-11 shrink-0 rounded-full object-cover ring-2 ring-red-600/55"
+                        src="{{ Auth::user()->profile_photo_url }}"
+                        alt="{{ Auth::user()->name }}"
+                        onerror="this.onerror=null;this.src={{ \Illuminate\Support\Js::from(Auth::user()->profilePhotoFallbackUrl()) }}"
+                    />
+                    <div class="site-header-user-meta min-w-0 flex-1">
+                        <span class="site-header-user-name site-header-user-name--mobile block truncate">{{ Auth::user()->name }}</span>
+                        <span class="site-header-user-email block truncate">{{ Auth::user()->email }}</span>
                     </div>
                 </div>
 

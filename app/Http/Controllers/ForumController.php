@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Forum;
+use App\Services\EngagementHubService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -15,16 +16,15 @@ class ForumController extends Controller
         $user = Auth::user();
         $activeTab = request()->get('tab', 'newest'); // Get active tab from request
 
-        $popularForums = Forum::select('forums.*')
-            ->withCount(['upvotes as upvotes_count'])
-            ->groupBy('forums.id')
-            ->having('upvotes_count', '>', 0)
+        $popularForums = Forum::withCount('upvotes')
+            ->has('upvotes')
             ->with('user')
             ->orderBy('upvotes_count', 'desc')
             ->paginate(10)
             ->withQueryString() // Preserve all query parameters including 'tab'
             ->through(function ($forum) use ($user) {
                 $forum->upvotedByMe = $user ? $forum->upvotes()->where('user_id', $user->id)->exists() : false;
+
                 return $forum;
             });
 
@@ -35,6 +35,7 @@ class ForumController extends Controller
             ->withQueryString() // Preserve all query parameters including 'tab'
             ->through(function ($forum) use ($user) {
                 $forum->upvotedByMe = $user ? $forum->upvotes()->where('user_id', $user->id)->exists() : false;
+
                 return $forum;
             });
 
@@ -48,13 +49,14 @@ class ForumController extends Controller
 
         ]);
     }
+
     public function toggleUpvote(Forum $forum)
     {
         $user = auth()->user();
 
-        if (!$user) {
+        if (! $user) {
             return response()->json([
-                'error' => __('You must be logged in to upvote')
+                'error' => __('You must be logged in to upvote'),
             ], 401);
         }
 
@@ -70,6 +72,10 @@ class ForumController extends Controller
                 'user_id' => $user->id,
             ]);
             $action = 'upvoted';
+        }
+
+        if ($action === 'upvoted') {
+            app(EngagementHubService::class)->tryAwardDailyMission($user, EngagementHubService::MISSION_COMMUNITY_UPVOTE);
         }
 
         return response()->json([
@@ -91,16 +97,15 @@ class ForumController extends Controller
         $forum->upvotedByMe = $user ? $forum->upvotes()->where('user_id', $user->id)->exists() : false;
 
         // Get popular posts with upvote check
-        $popularPosts = Forum::select('forums.*')
-            ->withCount(['upvotes as upvotes_count'])
-            ->groupBy('forums.id')
-            ->having('upvotes_count', '>', 0)
+        $popularPosts = Forum::withCount('upvotes')
+            ->has('upvotes')
             ->with('user')
             ->orderBy('upvotes_count', 'desc')
             ->limit(3)
             ->get()
             ->map(function ($forum) use ($user) {
                 $forum->upvotedByMe = $user ? $forum->upvotes()->where('user_id', $user->id)->exists() : false;
+
                 return $forum;
             });
 
@@ -111,39 +116,42 @@ class ForumController extends Controller
             ->get()
             ->map(function ($forum) use ($user) {
                 $forum->upvotedByMe = $user ? $forum->upvotes()->where('user_id', $user->id)->exists() : false;
+
                 return $forum;
             });
 
         return view('forum.view', [
             'forum' => $forum,
             'newDiscussions' => $newDiscussions,
-            'popularPosts' => $popularPosts
+            'popularPosts' => $popularPosts,
         ]);
     }
+
     public function edit(Forum $forum)
     {
 
         return response()->json([
             'title' => $forum->title,
             'body' => $forum->body,
-            'image_url' => $forum->image ? Storage::url($forum->image) : null
+            'image_url' => $forum->image ? Storage::disk('public')->url($forum->image) : null,
         ]);
     }
+
     public function update(Request $request, Forum $forum)
     {
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'body' => 'required|string',
-            'image' => 'nullable|image|max:2048',
-            'remove_image' => 'nullable|boolean'
+            'image' => 'nullable|image|max:12288',
+            'remove_image' => 'nullable|boolean',
         ]);
 
         // Handle image upload/removal
         if ($request->hasFile('image')) {
             // Delete old image if exists
             if ($forum->image) {
-                Storage::delete($forum->image);
+                Storage::disk('public')->delete($forum->image);
             }
 
             // Store new image
@@ -152,7 +160,7 @@ class ForumController extends Controller
         } elseif ($request->input('remove_image')) {
             // Remove existing image if requested
             if ($forum->image) {
-                Storage::delete($forum->image);
+                Storage::disk('public')->delete($forum->image);
             }
             $validated['image'] = null;
         }
@@ -166,19 +174,20 @@ class ForumController extends Controller
 
         return back();
     }
+
     public function destroy(Forum $forum)
     {
 
         // Delete associated image if exists
         if ($forum->image) {
-            Storage::delete($forum->image);
+            Storage::disk('public')->delete($forum->image);
         }
 
         $forum->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Post deleted successfully'
+            'message' => 'Post deleted successfully',
         ]);
     }
 
@@ -188,7 +197,7 @@ class ForumController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'body' => 'required|string',
-            'image' => 'nullable|image|max:2048', // 2MB max
+            'image' => 'nullable|image|max:12288', // 12 MB max (below PHP upload limits)
         ]);
 
         // 2. Generate a unique slug
@@ -196,7 +205,7 @@ class ForumController extends Controller
         $originalSlug = $slug;
         $count = 1;
         while (Forum::where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '-' . $count++;
+            $slug = $originalSlug.'-'.$count++;
         }
 
         // 3. Handle image upload if present
@@ -215,10 +224,14 @@ class ForumController extends Controller
 
         ]);
 
+        if ($post->user_id) {
+            $author = $post->user;
+            if ($author) {
+                app(EngagementHubService::class)->tryAwardDailyMission($author, EngagementHubService::MISSION_COMMUNITY_POST);
+            }
+        }
+
         // 5. Redirect or respond
         return redirect()->route('forum.index')->with('success', 'Post created successfully.');
     }
-
 }
-
-

@@ -1,19 +1,35 @@
 <x-app-layout>
-    <!-- Hero Section - Responsive -->
-    <section class="bg-primary-200 px-4 md:px-10 lg:px-40 py-6 md:py-8">
-        <h2 class="text-2xl md:text-3xl font-bold text-white mb-1 md:mb-2">{{__('Welcome to Our Forums')}}</h2>
-        <p class="text-sm md:text-base text-white">{{__('Ask your questions, get expert support, and collaborate on meaningful topics.')}}</p>
-    </section>
-
-    <!-- Main Content - Responsive Container -->
-    <div class="bg-black text-white py-6 md:py-10 px-4 md:px-8 lg:px-16 min-h-screen">
-        <div class="mx-auto">
-            <!-- Tabs - Responsive -->
-            <div class="flex flex-wrap items-center gap-2 md:gap-4 border-b border-gray-700 mb-4 md:mb-6">
-                <button onclick="switchTab('newest')" class="tab-button text-sm md:text-base cursor-pointer pb-2 border-b-2 {{ $activeTab === 'newest' ? 'border-red-600 text-white' : 'border-transparent text-gray-400' }} font-medium" data-tab="newest">{{__('Newest')}}</button>
-                <button onclick="switchTab('popular')" class="tab-button text-sm md:text-base cursor-pointer pb-2 border-b-2 {{ $activeTab === 'popular' ? 'border-red-600 text-white' : 'border-transparent text-gray-400' }} font-medium" data-tab="popular">{{__('Popular')}}</button>
-                <button onclick="openPostModal()" class="bg-red-600 cursor-pointer hover:bg-red-700 text-white px-4 py-2 rounded-lg mb-3">{{__('Post')}}</button>
+    <div class="forum-community-page">
+        <header class="forum-community-hero">
+            <div class="forum-community-hero-accent" aria-hidden="true"></div>
+            <div class="forum-community-hero-inner max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 md:py-11">
+                <p class="forum-community-kicker">{{ __('Toyota Gazoo Racing') }}</p>
+                <h1 class="forum-community-title">{{ __('Welcome to Our Forums') }}</h1>
+                <p class="forum-community-lead">{{ __('Ask your questions, get expert support, and collaborate on meaningful topics.') }}</p>
             </div>
+        </header>
+
+        <div class="forum-community-body text-white py-8 md:py-12 px-4 md:px-6 lg:px-8 min-h-screen">
+            <div class="max-w-7xl mx-auto">
+                <div class="forum-community-toolbar flex flex-wrap items-center gap-3 md:gap-4 mb-8">
+                    <div class="forum-community-tabs flex flex-wrap items-center gap-2">
+                        <button
+                            type="button"
+                            onclick="switchTab('newest')"
+                            class="forum-community-tab tab-button {{ $activeTab === 'newest' ? 'is-active' : '' }}"
+                            data-tab="newest"
+                        >{{ __('Newest') }}</button>
+                        <button
+                            type="button"
+                            onclick="switchTab('popular')"
+                            class="forum-community-tab tab-button {{ $activeTab === 'popular' ? 'is-active' : '' }}"
+                            data-tab="popular"
+                        >{{ __('Popular') }}</button>
+                    </div>
+                    <button type="button" onclick="openPostModal()" class="forum-community-post-btn ms-auto">
+                        {{ __('Post') }}
+                    </button>
+                </div>
 
             <!-- Main Content Grid -->
             <div class="flex flex-col lg:flex-row gap-6 md:gap-8 lg:gap-10">
@@ -24,7 +40,7 @@
                         @foreach ($popularForums as $forum)
                             <x-forum :forum="$forum" />
                         @endforeach
-                        <div class="mt-6">
+                        <div class="forum-community-pagination mt-8">
                             {{ $popularForums->appends(['tab' => 'popular'])->links() }}
                         </div>
                     </div>
@@ -35,7 +51,7 @@
                             <x-forum :forum="$forum" />
 
                         @endforeach
-                        <div class="mt-6">
+                        <div class="forum-community-pagination mt-8">
                             {{ $newestForums->appends(['tab' => 'newest'])->links() }}
                         </div>
                     </div>
@@ -43,18 +59,18 @@
 
                 <!-- Sidebar - Responsive -->
                 @if($recentDiscussions->isNotEmpty()&&$popularForums->isNotEmpty())
-                    <div class="w-full border-l border-[#454545] lg:w-3/12 space-y-6">
+                    <aside class="forum-community-sidebar w-full lg:w-3/12 space-y-6 lg:ps-8 lg:border-s border-white/10">
                         <!-- New Discussions -->
                         @if($recentDiscussions->isNotEmpty())
-                            <section class="p-6 text-white">
-                                <h2 class="text-lg font-bold mb-4 border-b border-gray-700 pb-2">{{__('New Discussions')}}</h2>
-                                <div class="space-y-4">
+                            <section class="forum-community-side-panel p-5 md:p-6 text-white">
+                                <h2 class="forum-community-side-heading">{{ __('New Discussions') }}</h2>
+                                <div class="space-y-3">
                                     @foreach($recentDiscussions as $discussion)
-                                        <div class="flex flex-col p-3 rounded transition">
+                                        <div class="forum-community-side-item flex flex-col p-3 rounded-lg transition-colors">
                                             <!-- First line: Image and first name -->
                                             <div class="flex items-center gap-3 mb-2">
                                                 <img class="w-8 h-8 rounded-full object-cover"
-                                                     src="{{ asset('storage/'.$discussion->user->profile_photo_path) }}"
+                                                     src="{{ $discussion->user->profile_photo_url }}"
                                                      alt="{{ $discussion->user->name }}">
                                                 <span class="font-medium text-sm">
                                             {{ explode(' ', $discussion->user->name)[0] }}
@@ -62,8 +78,7 @@
                                             </div>
 
                                             <!-- Second line: Discussion title -->
-                                            <a href="{{ route('forum.show', $discussion->slug) }}"
-                                               class="text-white hover:underline mb-1">
+                                            <a href="{{ route('forum.show', $discussion->slug) }}" class="forum-community-side-link mb-1">
                                                 <h3 class="font-medium text-base line-clamp-2">{{ $discussion->title }}</h3>
                                             </a>
 
@@ -87,15 +102,15 @@
 
                         <!-- Popular Posts -->
                         @if($popularForums->isNotEmpty())
-                            <section class="rounded-lg p-6 text-white">
-                                <h2 class="text-lg font-bold mb-4 border-b border-gray-700 pb-2">{{__('Popular Posts')}}</h2>
-                                <div class="space-y-4">
+                            <section class="forum-community-side-panel p-5 md:p-6 text-white">
+                                <h2 class="forum-community-side-heading">{{ __('Popular Posts') }}</h2>
+                                <div class="space-y-3">
                                     @foreach($popularForums as $post)
-                                        <div class="flex flex-col p-3 rounded transition">
+                                        <div class="forum-community-side-item flex flex-col p-3 rounded-lg transition-colors">
                                             <!-- First line: Image and first name -->
                                             <div class="flex items-center gap-3 mb-2">
                                                 <img class="w-8 h-8 rounded-full object-cover"
-                                                     src="{{ asset('storage/'.$post->user->profile_photo_path) }}"
+                                                     src="{{ $post->user->profile_photo_url }}"
                                                      alt="{{ $post->user->name }}">
                                                 <span class="font-medium text-sm">
                                             {{ explode(' ', $post->user->name)[0] }}
@@ -103,8 +118,7 @@
                                             </div>
 
                                             <!-- Second line: Discussion title -->
-                                            <a href="{{ route('forum.show', $post->slug) }}"
-                                               class="text-white hover:underline mb-1">
+                                            <a href="{{ route('forum.show', $post->slug) }}" class="forum-community-side-link mb-1">
                                                 <h3 class="font-medium text-base line-clamp-2">{{ $post->title }}</h3>
                                             </a>
 
@@ -120,36 +134,37 @@
                             </section>
                         @endif
 
-                    </div>
+                    </aside>
                 @endif
 
             </div>
         </div>
+        </div>
     </div>
 
     <!-- Post Creation Modal -->
-    <div id="postModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
-        <!-- Backdrop with opacity value -->
-        <div id="modalBackdrop" class="fixed inset-0 bg-black opacity-50" onclick="closePostModal()"></div>
+    <div id="postModal" class="forum-modal hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex min-h-full items-center justify-center p-4 relative">
+            <div id="modalBackdrop" class="forum-modal-backdrop absolute inset-0 z-0" onclick="closePostModal()" aria-hidden="true"></div>
 
-        <!-- Modal Content -->
-        <div class="relative w-full max-w-5xl mx-auto my-12 z-50">
-            <div class="bg-zinc-800 p-6 md:p-8 rounded-lg shadow-xl overflow-y-auto max-h-[90vh]">
-                <h3 class="text-2xl font-bold text-white mb-6">{{__('Create New Post')}}</h3>
+            <div class="relative z-10 w-full max-w-5xl mx-auto my-12">
+            <div class="forum-modal-panel p-6 md:p-8 overflow-y-auto max-h-[90vh]">
+                <h3 class="forum-modal-title">{{ __('Create New Post') }}</h3>
                 <form method="POST" action="{{route('forum.store')}}" enctype="multipart/form-data">
                     @csrf
                     <input name="title" type="text" placeholder="{{__('Post Title')}}"
-                           class="w-full p-4 mb-6 text-lg bg-zinc-700 text-white border border-zinc-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+                           class="forum-modal-input w-full p-4 mb-6 text-lg" required>
 
                     <!-- Image Upload Section -->
                     <div class="mb-6">
-                        <label class="block text-white mb-2">{{__('Upload Image')}}</label>
-                        <div class="flex items-center gap-4">
-                            <label class="cursor-pointer bg-zinc-700 hover:bg-zinc-600 text-white px-4 py-2 rounded-lg transition duration-200">
-                                {{__('Choose File')}}
+                        <label class="forum-modal-label">{{ __('Upload Image') }}</label>
+                        <p class="text-zinc-500 text-xs mb-2">{{ __('JPEG, PNG, WebP, etc. Max 12 MB.') }}</p>
+                        <div class="flex flex-wrap items-center gap-4">
+                            <label class="forum-modal-file-btn">
+                                {{ __('Choose File') }}
                                 <input type="file" id="image-upload" name="image" accept="image/*" class="hidden">
                             </label>
-                            <span id="file-name" class="text-zinc-300 text-sm">{{__('No file chosen')}}</span>
+                            <span id="file-name" class="text-zinc-400 text-sm">{{ __('No file chosen') }}</span>
                         </div>
 
                         <!-- Image Preview -->
@@ -166,46 +181,47 @@
                     <!-- Trix Editor -->
                     <input id="post-body" type="hidden" name="body" required>
                     <div class="mb-6">
-                        <trix-editor input="post-body" class="trix-content bg-zinc-700 text-white border border-zinc-600 rounded-lg mt-2 min-h-[200px]"></trix-editor>
+                        <trix-editor input="post-body" class="trix-content forum-modal-trix mt-2 min-h-[200px]"></trix-editor>
                     </div>
 
-                    <div class="flex justify-end gap-4">
-                        <button type="button" onclick="closePostModal()" class="px-2 py-1.5 text-lg  cursor-pointer  text-white rounded-lg transition duration-200">{{__('Cancel')}}</button>
+                    <div class="flex flex-wrap justify-end gap-3">
+                        <button type="button" onclick="closePostModal()" class="forum-modal-btn-secondary">{{ __('Cancel') }}</button>
                         @if(auth()->user())
-                        <button type="submit" class=" cursor-pointer duration-200  px-2 py-1.5 text-red-500 rounded-lg text-lg hover:text-red-600 transition">{{__('Post')}}</button>
+                            <button type="submit" class="forum-modal-btn-primary">{{ __('Post') }}</button>
                         @else
-                            <a href="{{route('login')}}" class="px-2 py-1.5 text-lg  text-red-600 hover:text-red-700 cursor-pointer rounded-lg transition underline duration-200">{{__('Login to Continue')}}</a>
+                            <a href="{{ route('login') }}" class="forum-modal-btn-primary text-center no-underline">{{ __('Login to Continue') }}</a>
                         @endif
                     </div>
                 </form>
             </div>
         </div>
+        </div>
     </div>
 
     <!-- Edit Post Modal -->
-    <div id="editModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
-        <!-- Backdrop with opacity value -->
-        <div class="fixed inset-0 bg-black opacity-50" onclick="closeEditModal()"></div>
+    <div id="editModal" class="forum-modal hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex min-h-full items-center justify-center p-4 relative">
+            <div class="forum-modal-backdrop absolute inset-0 z-0" onclick="closeEditModal()" aria-hidden="true"></div>
 
-        <!-- Modal Content -->
-        <div class="relative w-full max-w-5xl mx-auto my-12 z-50">
-            <div class="bg-zinc-800 p-6 md:p-8 rounded-lg shadow-xl overflow-y-auto max-h-[90vh]">
-                <h3 class="text-2xl font-bold text-white mb-6">{{__('Edit Post')}}</h3>
+            <div class="relative z-10 w-full max-w-5xl mx-auto my-12">
+            <div class="forum-modal-panel p-6 md:p-8 overflow-y-auto max-h-[90vh]">
+                <h3 class="forum-modal-title">{{ __('Edit Post') }}</h3>
                 <form id="editForm" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
-                    <input name="title" type="text" id="edit-title" placeholder="{{__('Post Title')}}"
-                           class="w-full p-4 mb-6 text-lg bg-zinc-700 text-white border border-zinc-600 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+                    <input name="title" type="text" id="edit-title" placeholder="{{ __('Post Title') }}"
+                           class="forum-modal-input w-full p-4 mb-6 text-lg" required>
 
                     <!-- Image Upload Section -->
                     <div class="mb-6">
-                        <label class="block text-white mb-2">{{__('Upload Image')}}</label>
-                        <div class="flex items-center gap-4">
-                            <label class="cursor-pointer bg-zinc-700 hover:bg-zinc-600 text-white px-4 py-2 rounded-lg transition duration-200">
-                                {{__('Choose File')}}
+                        <label class="forum-modal-label">{{ __('Upload Image') }}</label>
+                        <p class="text-zinc-500 text-xs mb-2">{{ __('JPEG, PNG, WebP, etc. Max 12 MB.') }}</p>
+                        <div class="flex flex-wrap items-center gap-4">
+                            <label class="forum-modal-file-btn">
+                                {{ __('Choose File') }}
                                 <input type="file" id="edit-image-upload" name="image" accept="image/*" class="hidden">
                             </label>
-                            <span id="edit-file-name" class="text-zinc-300 text-sm">{{__('No file chosen')}}</span>
+                            <span id="edit-file-name" class="text-zinc-400 text-sm">{{ __('No file chosen') }}</span>
                         </div>
 
                         <!-- Current Image -->
@@ -234,34 +250,39 @@
                     <!-- Trix Editor -->
                     <input id="edit-post-body" type="hidden" name="body" required>
                     <div class="mb-6">
-                        <trix-editor input="edit-post-body" class="trix-content bg-zinc-700 text-white border border-zinc-600 rounded-lg mt-2 min-h-[200px]"></trix-editor>
+                        <trix-editor input="edit-post-body" class="trix-content forum-modal-trix mt-2 min-h-[200px]"></trix-editor>
                     </div>
 
-                    <div class="flex justify-end gap-4">
-                        <button type="button" onclick="closeEditModal()" class="px-6  py-3 text-lg bg-zinc-600 cursor-pointer hover:bg-zinc-700 text-white rounded-lg transition duration-200">{{__('Cancel')}}</button>
-                        <button type="submit" class="px-6 py-3 text-lg bg-blue-600 hover:bg-blue-700 text-white cursor-pointer rounded-lg transition duration-200">{{__('Update')}}</button>
+                    <div class="flex flex-wrap justify-end gap-3">
+                        <button type="button" onclick="closeEditModal()" class="forum-modal-btn-secondary px-6 py-3">{{ __('Cancel') }}</button>
+                        <button type="submit" class="forum-modal-btn-primary px-6 py-3">{{ __('Update') }}</button>
                     </div>
                 </form>
+            </div>
             </div>
         </div>
     </div>
 
     <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="fixed inset-0 bg-black opacity-50" onclick="closeDeleteModal()"></div>
-        <div class="relative bg-zinc-800 rounded-lg shadow-xl max-w-md w-full z-50 p-6">
-            <div class="flex flex-col items-center">
-                <div class="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <div id="deleteModal" class="forum-modal hidden fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex min-h-full items-center justify-center p-4 relative">
+            <div class="forum-modal-backdrop absolute inset-0 z-0" onclick="closeDeleteModal()" aria-hidden="true"></div>
+            <div class="relative z-10 w-full max-w-md mx-auto">
+            <div class="forum-modal-panel forum-modal-panel--compact relative w-full p-6">
+            <div class="flex flex-col items-center text-center">
+                <div class="forum-delete-icon-wrap mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                 </div>
-                <h3 class="text-xl font-bold text-white mb-2">{{__('Delete Post')}}</h3>
-                <p class="text-gray-400 text-center mb-6">{{__('Are you sure you want to delete this post? This action cannot be undone.')}}</p>
-                <div class="flex justify-center gap-4 w-full">
-                    <button onclick="closeDeleteModal()" class="px-6 cursor-pointer py-2 bg-zinc-600 hover:bg-zinc-700 text-white rounded-lg transition duration-200 flex-1">Cancel</button>
-                    <button id="confirmDeleteBtn" class="px-6 py-2 cursor-pointer bg-red-600 hover:bg-red-700 text-white rounded-lg transition duration-200 flex-1">Delete</button>
+                <h3 class="text-xl font-bold text-white mb-2">{{ __('Delete Post') }}</h3>
+                <p class="text-zinc-400 text-sm mb-6">{{ __('Are you sure you want to delete this post? This action cannot be undone.') }}</p>
+                <div class="flex gap-3 w-full">
+                    <button type="button" onclick="closeDeleteModal()" class="forum-modal-btn-secondary flex-1">{{ __('Cancel') }}</button>
+                    <button type="button" id="confirmDeleteBtn" class="forum-modal-btn-danger flex-1">{{ __('Delete') }}</button>
                 </div>
+            </div>
+            </div>
             </div>
         </div>
     </div>
@@ -413,15 +434,8 @@
                     // Show selected tab content
                     $(`#${tabName}-tab`).show();
 
-                    // Update tab button styles
                     $('.tab-button').each(function() {
-                        if ($(this).data('tab') === tabName) {
-                            $(this).addClass('border-b-2 border-red-600 text-white')
-                                .removeClass('text-gray-400 border-transparent');
-                        } else {
-                            $(this).removeClass('border-b-2 border-red-600 text-white')
-                                .addClass('text-gray-400 border-transparent');
-                        }
+                        $(this).toggleClass('is-active', $(this).data('tab') === tabName);
                     });
                 }
 
@@ -532,18 +546,14 @@
                                 return;
                             }
 
-                            // Update UI for ALL matching forum IDs (both tabs)
                             $(`.upvote-btn[data-forum-id="${forumId}"]`).each(function() {
-                                const $btn = $(this);
-                                $btn.toggleClass('border-red-600 border-gray-500');
-                                $btn.find('svg').toggleClass('text-red-500 text-gray-500');
+                                $(this).toggleClass('is-active');
                             });
 
-                            // Update ALL upvote counts (both tabs)
                             $(`.upvote-count[data-forum-id="${forumId}"]`).each(function() {
                                 const $count = $(this);
                                 $count.text(response.upvotes);
-                                $count.toggleClass('text-red-500 text-gray-400');
+                                $count.toggleClass('is-active');
                             });
                         },
                         error: function(xhr) {

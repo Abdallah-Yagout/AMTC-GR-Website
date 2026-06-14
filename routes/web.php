@@ -1,12 +1,22 @@
 <?php
 
+use App\Http\Controllers\Auth\GoogleAuthController;
+use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ForumController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Games\MatchingGameController;
+use App\Http\Controllers\GamesController;
+use App\Http\Controllers\GamesLeaderboardController;
+use App\Http\Controllers\GRCarsController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProfileEngagementController;
 use App\Http\Middleware\SetLocale;
-use Livewire\Livewire;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('auth.google.redirect');
+Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
 
 Route::middleware([SetLocale::class])->group(function () {
     // Main routes
@@ -15,16 +25,44 @@ Route::middleware([SetLocale::class])->group(function () {
     Route::get('/leaderboard', [\App\Http\Controllers\LeaderboardController::class, 'index'])->name('leaderboard.index');
     Route::get('/news', [\App\Http\Controllers\NewsController::class, 'index'])->name('news.index');
     Route::get('/news/view/{slug}', [\App\Http\Controllers\NewsController::class, 'view'])->name('news.view');
+    Route::get('/games', [GamesController::class, 'index'])->name('games.index');
+    Route::get('/games/matching', [MatchingGameController::class, 'show'])->name('games.matching');
+    Route::get('/games/leaderboard', [GamesLeaderboardController::class, 'index'])->name('games.leaderboard');
+    Route::get('/gr-cars', [GRCarsController::class, 'index'])->name('gr-cars.index');
     Route::get('language/{locale}', [\App\Http\Controllers\HomeController::class, 'switchLanguage'])->name('language.switch');
 
     Route::get('contact', [\App\Http\Controllers\ContactController::class, 'show'])->name('contact.index');
     Route::post('contact', [\App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
+    Route::post('/chatbot/message', [ChatbotController::class, 'message'])
+        ->middleware('throttle:30,1')
+        ->name('chatbot.message');
 
     // Tournament routes
     Route::middleware('auth')->group(function () {
         Route::get('/tournament/apply/{id}', [\App\Http\Controllers\TournamentController::class, 'apply'])->name('tournament.apply');
         Route::post('/tournament/submit', [\App\Http\Controllers\TournamentController::class, 'submit'])->name('tournament.submit');
+        Route::post('/games/claim-daily', [GamesController::class, 'claimDaily'])->name('games.claim-daily');
+        Route::post('/games/matching/start', [MatchingGameController::class, 'start'])
+            ->middleware('throttle:30,1')
+            ->name('games.matching.start');
+        Route::post('/games/matching/complete', [MatchingGameController::class, 'complete'])
+            ->middleware('throttle:45,1')
+            ->name('games.matching.complete');
     });
+    $profileAuthMiddleware = config('jetstream.guard')
+        ? 'auth:'.config('jetstream.guard')
+        : 'auth';
+
+    Route::middleware(array_values(array_filter([
+        $profileAuthMiddleware,
+        config('jetstream.auth_session'),
+        'verified',
+    ])))->group(function () {
+        Route::get('/user/profile', [ProfileController::class, 'show'])->name('profile.show');
+        Route::post('/user/profile/engagement/check-in', [ProfileEngagementController::class, 'claimCheckIn'])
+            ->name('profile.engagement.check-in');
+    });
+
     Route::get('contact', [\App\Http\Controllers\ContactController::class, 'show'])->name('contact.index');
     Route::post('contact', [\App\Http\Controllers\ContactController::class, 'store'])->name('contact.store');
 

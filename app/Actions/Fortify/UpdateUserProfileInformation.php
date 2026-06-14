@@ -3,13 +3,12 @@
 namespace App\Actions\Fortify;
 
 use App\Models\User;
-use Exception;
+use App\Services\GamePointsService;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
-
 
 class UpdateUserProfileInformation implements UpdatesUserProfileInformation
 {
@@ -18,7 +17,6 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
      *
      * @param  array<string, mixed>  $input
      */
-
     public function update(User $user, array $input): void
     {
         try {
@@ -31,12 +29,12 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'phone' => [
                     'nullable',
                     'digits:9',
-                    Rule::unique('users')->ignore($user->id)
+                    Rule::unique('users')->ignore($user->id),
                 ],
                 'whatsapp' => [
                     'nullable',
                     'digits:9',
-                    Rule::unique('profiles')->ignore($user->id)
+                    Rule::unique('profiles')->ignore($user->id),
                 ],
                 'heard_about' => ['nullable', 'string', 'max:255'],
                 'preferred_time' => ['nullable', 'string', 'max:255'],
@@ -61,6 +59,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
 
         if (isset($input['photo'])) {
             $user->updateProfilePhoto($input['photo']);
+            app(GamePointsService::class)->awardImageUploaded($user->fresh());
         }
 
         if ($input['email'] !== $user->email && $user instanceof MustVerifyEmail) {
@@ -75,14 +74,14 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $this->updateOrCreateProfile($user, $input ?? []);
         }
 
-
+        app(GamePointsService::class)->awardProfileCompleted($user->fresh('profile'));
     }
+
     /**
      * Update the given verified user's profile information.
      *
      * @param  array<string, string>  $input
      */
-
     protected function updateVerifiedUser(User $user, array $input): void
     {
         $user->forceFill([
@@ -96,6 +95,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
 
         $user->sendEmailVerificationNotification();
     }
+
     protected function updateOrCreateProfile(User $user, array $profileData): void
     {
         $currentValues = $user->profile ? $user->profile->toArray() : [];
@@ -127,6 +127,4 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             ]
         );
     }
-
-
 }

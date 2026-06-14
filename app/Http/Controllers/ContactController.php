@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contact;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactFormMail;
-use Illuminate\Support\Facades\Config;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class ContactController extends Controller
 {
@@ -15,9 +14,6 @@ class ContactController extends Controller
     {
         return view('contact');
     }
-
-
-
 
     public function store(Request $request)
     {
@@ -40,23 +36,14 @@ class ContactController extends Controller
         }
 
         try {
-
-
-            // Configure custom SMTP settings
-            Config::set('mail.mailers.contact_form.host', 'smtp.hostinger.com'); // Your SMTP host
-            Config::set('mail.mailers.contact_form.port', 465); // Your SMTP port
-            Config::set('mail.mailers.contact_form.username', 'contact@gryemen.com'); // Your SMTP username
-            Config::set('mail.mailers.contact_form.password', 'A-x123123'); // Your SMTP password
-            Config::set('mail.contact-from.address', 'contact@gryemen.com'); // From address
-            Config::set('mail.contact-from.name', 'Your Website Name'); // From name
-
-            // Send email
-            Mail::to('contact@gryemen.com')->send(new ContactFormMail($request->all()));
+            Mail::to(config('mail.contact_to'))
+                ->send(new ContactFormMail($request->all()));
 
             return redirect()->back()
                 ->with('success', __('Your message has been sent successfully!'));
-        } catch (\Exception $e) {
-            dd($e);
+        } catch (Throwable $e) {
+            report($e);
+
             return redirect()->back()
                 ->with('error', __('An error occurred while saving your message. Please try again later.'))
                 ->withInput();

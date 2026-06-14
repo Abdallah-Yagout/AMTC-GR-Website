@@ -48,11 +48,20 @@ class ManageMailSettings extends Page
             'smtp_port' => $settings->smtp_port ?: config('mail.mailers.smtp.port', 587),
             'smtp_username' => $settings->smtp_username ?: config('mail.mailers.smtp.username'),
             'smtp_password' => '',
-            'smtp_encryption' => $settings->smtp_encryption ?: 'tls',
+            'smtp_encryption' => $settings->smtp_encryption ?: $this->defaultEncryptionFromConfig(),
             'from_address' => $settings->from_address ?: config('mail.from.address'),
             'from_name' => $settings->from_name ?: config('mail.from.name'),
             'test_email' => auth()->user()?->email,
         ]);
+    }
+
+    private function defaultEncryptionFromConfig(): string
+    {
+        if (config('mail.mailers.smtp.scheme') === 'smtps' || (int) config('mail.mailers.smtp.port') === 465) {
+            return 'ssl';
+        }
+
+        return 'tls';
     }
 
     public function form(Form $form): Form
@@ -189,7 +198,7 @@ class ManageMailSettings extends Page
             'smtp_port' => $settings->smtp_port,
             'smtp_username' => $settings->smtp_username,
             'smtp_password' => '',
-            'smtp_encryption' => $settings->smtp_encryption ?: 'tls',
+            'smtp_encryption' => $settings->smtp_encryption ?: $this->defaultEncryptionFromConfig(),
             'from_address' => $settings->from_address,
             'from_name' => $settings->from_name,
             'test_email' => $state['test_email'] ?? auth()->user()?->email,

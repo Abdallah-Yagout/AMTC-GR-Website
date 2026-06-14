@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Support\GrStockImage;
+use App\Support\PublicStorageUrl;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -44,6 +46,10 @@ class HeroSlide extends Model
             return $this->image;
         }
 
-        return asset('storage/'.ltrim($this->image, '/'));
+        if (filled($this->image)) {
+            return PublicStorageUrl::url($this->image);
+        }
+
+        return GrStockImage::stockUrl('hero-slide-'.($this->id ?? 'fallback'));
     }
 }

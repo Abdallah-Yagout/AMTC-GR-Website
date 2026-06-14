@@ -11,7 +11,7 @@
                     <article
                         class="home-hero-slide {{ $index === 0 ? 'is-active' : '' }}"
                         data-home-hero-slide
-                        style="background-image: url('{{ $slide->image_url }}')"
+                        style="background-image: url('{{ e($slide->image_url) }}')"
                         aria-hidden="{{ $index === 0 ? 'false' : 'true' }}"
                     >
                         <div class="home-hero-overlay"></div>

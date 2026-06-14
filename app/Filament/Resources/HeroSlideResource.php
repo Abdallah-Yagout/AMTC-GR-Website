@@ -71,6 +71,8 @@ class HeroSlideResource extends Resource
 
                 FileUpload::make('image')
                     ->required()
+                    ->disk('public')
+                    ->visibility('public')
                     ->directory('hero-slides')
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/jpg', 'image/webp']),
 
@@ -90,6 +92,7 @@ class HeroSlideResource extends Resource
             ->columns([
                 ImageColumn::make('image')
                     ->label('Image')
+                    ->disk('public')
                     ->size(80),
                 TextColumn::make('title')
                     ->searchable()

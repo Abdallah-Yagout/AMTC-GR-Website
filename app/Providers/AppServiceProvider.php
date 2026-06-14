@@ -27,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
     {
         if (config('app.env') === 'production') {
             URL::forceScheme('https');
+
+            if ($rootUrl = config('app.url')) {
+                URL::forceRootUrl($rootUrl);
+            }
         }
 
         LanguageSwitch::configureUsing(function (LanguageSwitch $switch) {

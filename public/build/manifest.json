@@ -1,0 +1,35 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app-D9QamGZR.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/fonts/Cairo-Regular.ttf": {
+    "file": "assets/Cairo-Regular-Cpd_OyVR.ttf",
+    "src": "resources/fonts/Cairo-Regular.ttf"
+  },
+  "resources/fonts/Changa-Regular.ttf": {
+    "file": "assets/Changa-Regular-D_6aZcbj.ttf",
+    "src": "resources/fonts/Changa-Regular.ttf"
+  },
+  "resources/fonts/Lekton-Bold.ttf": {
+    "file": "assets/Lekton-Bold-vc3ZUYMb.ttf",
+    "src": "resources/fonts/Lekton-Bold.ttf"
+  },
+  "resources/fonts/Lekton-Regular.ttf": {
+    "file": "assets/Lekton-Regular-ImhNH-Nw.ttf",
+    "src": "resources/fonts/Lekton-Regular.ttf"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-DaM60qqv.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  },
+  "resources/js/games/matching/main.js": {
+    "file": "assets/main-C6_qhxQL.js",
+    "name": "main",
+    "src": "resources/js/games/matching/main.js",
+    "isEntry": true
+  }
+}

@@ -214,6 +214,6 @@ SVG;
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return auth()->user()->type == 1;
+        return (int) $this->type === 1;
     }
 }

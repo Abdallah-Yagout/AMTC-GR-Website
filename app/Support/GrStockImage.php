@@ -20,7 +20,7 @@ final class GrStockImage
         $trimmed = $relativePath !== null ? trim($relativePath) : '';
 
         if ($trimmed !== '' && ! self::pathLooksLikeSvg($trimmed)) {
-            return asset('storage/'.ltrim($trimmed, '/'));
+            return PublicStorageUrl::url($trimmed);
         }
 
         return self::stockUrl($seed);

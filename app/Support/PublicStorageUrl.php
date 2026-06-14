@@ -6,6 +6,10 @@ use Illuminate\Support\Str;
 
 final class PublicStorageUrl
 {
+    /**
+     * Build a browser URL for a file on the public disk.
+     * Uses a root-relative path so images work on any host (e.g. new.gryemen.com).
+     */
     public static function url(?string $path): string
     {
         $trimmed = $path !== null ? trim($path) : '';
@@ -18,6 +22,6 @@ final class PublicStorageUrl
             return $trimmed;
         }
 
-        return asset('storage/'.ltrim($trimmed, '/'));
+        return '/storage/'.ltrim(str_replace('\\', '/', $trimmed), '/');
     }
 }

@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
+use App\Policies\HeroSlidePolicy;
 use App\Support\GrStockImage;
 use App\Support\PublicStorageUrl;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Spatie\Translatable\HasTranslations;
 
+#[UsePolicy(HeroSlidePolicy::class)]
 class HeroSlide extends Model
 {
     use HasTranslations;

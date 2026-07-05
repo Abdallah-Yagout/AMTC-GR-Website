@@ -2,23 +2,24 @@
 
 namespace App\Livewire;
 
-use Laravel\Jetstream\Http\Livewire\UpdateProfileInformationForm;
-use Livewire\Component;
-
-class ToyotaGRKnowledge extends UpdateProfileInformationForm
+class ToyotaGRKnowledge extends ProfileSectionForm
 {
-    public function mount()
+    protected function sectionKey(): string
+    {
+        return 'toyota-g-r-knowledge';
+    }
+
+    public function mount(): void
     {
         parent::mount();
-        // Add your logic here
+
         $user = auth()->user();
         $this->state['toyota_gr_knowledge'] = $user->profile?->toyota_gr_knowledge ?? '';
         $this->state['favorite_car'] = $user->profile?->favorite_car ?? '';
-
-
     }
+
     public function render()
     {
-        return view('livewire.toyota-g-r-knowledge');
+        return view('livewire.toyota-g-r-knowledge', $this->sectionViewData());
     }
 }

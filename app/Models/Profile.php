@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ProfileCompletion;
 use Illuminate\Database\Eloquent\Model;
 
 class Profile extends Model
@@ -81,6 +82,16 @@ class Profile extends Model
     public function isCompleteForRace(): bool
     {
         return count($this->missingCompletionFields()) === 0;
+    }
+
+    public function completionPercentage(): int
+    {
+        return ProfileCompletion::for($this)->percentage();
+    }
+
+    public function isSectionComplete(string $section): bool
+    {
+        return ProfileCompletion::for($this)->isSectionComplete($section);
     }
 
     protected function isEmptyForCompletion(mixed $value): bool

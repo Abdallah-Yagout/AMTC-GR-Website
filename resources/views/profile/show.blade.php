@@ -16,7 +16,13 @@
             <header class="profile-hero-panel relative mb-8 overflow-hidden rounded-xl border border-zinc-700 bg-zinc-900/95 px-6 py-8 shadow-lg shadow-black/25 sm:px-10">
                 <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent"></div>
                 <div class="pointer-events-none absolute left-0 top-0 h-full w-1 bg-primary sm:w-1.5"></div>
-                <div class="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8">
+
+                <div class="relative">
+                    @livewire('profile-completion-banner')
+
+                    <div class="profile-hero-panel-divider" aria-hidden="true"></div>
+
+                    <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:gap-8">
                     <div class="profile-hero-identity flex shrink-0 flex-row items-center justify-center gap-4 sm:justify-start sm:gap-5">
                         <div class="relative mx-auto size-24 sm:mx-0 sm:size-28">
                             <span class="absolute inset-0 rounded-full ring-2 ring-primary/60 ring-offset-4 ring-offset-zinc-900"></span>
@@ -61,6 +67,7 @@
                             @endif
                         </a>
                     </div>
+                </div>
                 </div>
             </header>
 

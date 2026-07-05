@@ -2,24 +2,23 @@
 
 namespace App\Livewire;
 
-use Laravel\Jetstream\Http\Livewire\UpdateProfileInformationForm;
-use Livewire\Component;
-
-class ContactInfo extends UpdateProfileInformationForm
+class ContactInfo extends ProfileSectionForm
 {
-    public function mount()
+    protected function sectionKey(): string
+    {
+        return 'contact-info';
+    }
+
+    public function mount(): void
     {
         parent::mount();
-        // Add your logic here
+
         $user = auth()->user();
-
-
         $this->state['whatsapp'] = $user->profile?->whatsapp ?? '';
-
-
     }
+
     public function render()
     {
-        return view('livewire.contact-info');
+        return view('livewire.contact-info', $this->sectionViewData());
     }
 }

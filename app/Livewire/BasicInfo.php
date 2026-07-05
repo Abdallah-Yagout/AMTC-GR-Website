@@ -2,14 +2,15 @@
 
 namespace App\Livewire;
 
-use Laravel\Jetstream\Http\Livewire\UpdateProfileInformationForm;
-
-class BasicInfo extends UpdateProfileInformationForm
+class BasicInfo extends ProfileSectionForm
 {
-    public function mount()
+    protected function sectionKey(): string
     {
-        //        parent::mount();
-        // Add your logic here
+        return 'basic-info';
+    }
+
+    public function mount(): void
+    {
         $user = auth()->user();
 
         $birthdate = $user->profile?->birthdate;
@@ -20,12 +21,10 @@ class BasicInfo extends UpdateProfileInformationForm
         $this->state['name'] = $user->name ?? '';
         $this->state['email'] = $user->email ?? '';
         $this->state['gender'] = $user->profile?->gender ?? '';
-
     }
 
     public function render()
     {
-
-        return view('livewire.basic-info');
+        return view('livewire.basic-info', $this->sectionViewData());
     }
 }

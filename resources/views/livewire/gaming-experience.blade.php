@@ -1,4 +1,4 @@
-<x-form-section variant="gaming" submit="updateProfileInformation">
+<x-form-section variant="gaming" :incomplete="! $sectionComplete" submit="updateProfileInformation">
     <x-slot name="title">
         {{ __('Gaming Experience') }}
     </x-slot>

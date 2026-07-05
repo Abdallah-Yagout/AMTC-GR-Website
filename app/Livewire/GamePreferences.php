@@ -2,24 +2,24 @@
 
 namespace App\Livewire;
 
-use Laravel\Jetstream\Http\Livewire\UpdateProfileInformationForm;
-use Livewire\Component;
-
-class GamePreferences extends UpdateProfileInformationForm
+class GamePreferences extends ProfileSectionForm
 {
-    public function mount()
+    protected function sectionKey(): string
+    {
+        return 'game-preferences';
+    }
+
+    public function mount(): void
     {
         parent::mount();
-        // Add your logic here
+
         $user = auth()->user();
-
-
         $this->state['favorite_games'] = $user->profile?->favorite_games ?? '';
         $this->state['gt7_ranking'] = $user->profile?->gt7_ranking ?? '';
-
     }
+
     public function render()
     {
-        return view('livewire.game-preferences');
+        return view('livewire.game-preferences', $this->sectionViewData());
     }
 }

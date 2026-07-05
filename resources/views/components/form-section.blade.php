@@ -1,4 +1,4 @@
-@props(['submit', 'variant' => 'default'])
+@props(['submit', 'variant' => 'default', 'incomplete' => false])
 
 @php
     $isGaming = $variant === 'gaming';
@@ -8,10 +8,17 @@
     $panelFooter = $isGaming
         ? 'flex items-center justify-end px-4 py-3 bg-zinc-950 border-t border-zinc-700 text-end sm:px-6 sm:rounded-b-lg'
         : 'flex items-center justify-end px-4 py-3 bg-gray-50 dark:bg-gray-800 text-end sm:px-6 shadow-sm sm:rounded-bl-md sm:rounded-br-md';
+
+    if ($isGaming && $incomplete) {
+        $panelTop = str_replace('border-l-primary', 'border-l-amber-400', $panelTop);
+    }
 @endphp
 
-<div {{ $attributes->merge(['class' => 'md:grid md:grid-cols-3 md:gap-6']) }}>
-    <x-section-title :variant="$variant">
+<div @class([
+    'md:grid md:grid-cols-3 md:gap-6',
+    'profile-form-section--incomplete' => $isGaming && $incomplete,
+])>
+    <x-section-title :variant="$variant" :incomplete="$incomplete">
         <x-slot name="title">{{ $title }}</x-slot>
         <x-slot name="description">{{ $description }}</x-slot>
     </x-section-title>

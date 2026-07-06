@@ -14,7 +14,7 @@
                     </a>
                 </div>
 
-                <div class="hidden space-x-8 sm:-my-px sm:ms-8 sm:flex site-header-links">
+                <div class="hidden gap-8 sm:-my-px sm:ms-8 sm:flex site-header-links">
                     <x-nav-link class="site-header-link" href="{{ route('home') }}" :active="request()->routeIs('home')">
                         {{ __('Home') }}
                     </x-nav-link>
@@ -46,7 +46,7 @@
                 <!-- Language Switcher -->
 
                 <div class="site-header-lang relative ms-4 me-6 rounded-full" x-data="{ open: false }" @click.away="open = false">
-                    <button @click="open = !open" class="flex items-center space-x-1 px-2.5 py-2 text-gray-300 hover:text-white focus:outline-none">
+                    <button @click="open = !open" class="flex items-center gap-1 px-2.5 py-2 text-gray-300 hover:text-white focus:outline-none">
                         @if(app()->getLocale() == 'ar')
 {{--                            <span class="fi fi-sa fis rounded"></span>--}}
                             <span class="text-sm">AR</span>
@@ -65,22 +65,22 @@
                          x-transition:leave="transition ease-in duration-75"
                          x-transition:leave-start="transform opacity-100 scale-100"
                          x-transition:leave-end="transform opacity-0 scale-95"
-                         class="site-header-dropdown-panel absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50">
+                         class="site-header-dropdown-panel absolute end-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50">
                         <div class="py-1">
                             <a href="{{ route('language.switch', 'en') }}" class="flex items-center px-4 py-2 text-sm text-gray-500 hover:bg-gray-100">
-                                <span class="fi fi-gb fis rounded mr-2"></span>
+                                <span class="fi fi-gb fis rounded me-2"></span>
                                 English
                                 @if(app()->getLocale() == 'en')
-                                    <svg class="w-4 h-4 ml-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <svg class="w-4 h-4 ms-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                     </svg>
                                 @endif
                             </a>
                             <a href="{{ route('language.switch', 'ar') }}" class="flex items-center px-4 py-2 text-sm text-gray-500 hover:bg-gray-100">
-                                <span class="fi fi-sa fis rounded mr-2"></span>
+                                <span class="fi fi-sa fis rounded me-2"></span>
                                 العربية
                                 @if(app()->getLocale() == 'ar')
-                                    <svg class="w-4 h-4 ml-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <svg class="w-4 h-4 ms-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                     </svg>
                                 @endif
@@ -250,19 +250,19 @@
                 {{ __('Language') }}
             </div>
             <a href="{{ route('language.switch', 'en') }}" class="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-gray-100">
-                <span class="fi fi-gb fis rounded mr-2"></span>
+                <span class="fi fi-gb fis rounded me-2"></span>
                 English
                 @if(app()->getLocale() == 'en')
-                    <svg class="w-4 h-4 ml-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <svg class="w-4 h-4 ms-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
                 @endif
             </a>
             <a href="{{ route('language.switch', 'ar') }}" class="flex items-center px-4 py-2 text-sm text-gray-600 hover:bg-gray-100">
-                <span class="fi fi-sa fis rounded mr-2"></span>
+                <span class="fi fi-sa fis rounded me-2"></span>
                 العربية
                 @if(app()->getLocale() == 'ar')
-                    <svg class="w-4 h-4 ml-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <svg class="w-4 h-4 ms-auto text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
                 @endif

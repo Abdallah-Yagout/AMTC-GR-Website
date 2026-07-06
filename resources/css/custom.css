@@ -41,12 +41,12 @@
 }
 
 .fi-sidebar-nav {
-    border-right: 1px solid rgb(229, 231, 235); /* Tailwind's gray-200 */
+    border-inline-end: 1px solid rgb(229, 231, 235);
 }
 
 /* Dark mode */
 .dark .fi-sidebar-nav {
-    border-right: 1px solid rgb(55, 65, 81); /* Tailwind's gray-700 */
+    border-inline-end: 1px solid rgb(55, 65, 81);
 }
 .pending{
     background-color: #714F19 !important;

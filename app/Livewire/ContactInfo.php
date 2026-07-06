@@ -19,6 +19,6 @@ class ContactInfo extends ProfileSectionForm
 
     public function render()
     {
-        return view('livewire.contact-info', $this->sectionViewData());
+        return view('livewire.contact-info');
     }
 }

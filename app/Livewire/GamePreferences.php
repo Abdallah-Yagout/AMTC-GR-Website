@@ -20,6 +20,6 @@ class GamePreferences extends ProfileSectionForm
 
     public function render()
     {
-        return view('livewire.game-preferences', $this->sectionViewData());
+        return view('livewire.game-preferences');
     }
 }

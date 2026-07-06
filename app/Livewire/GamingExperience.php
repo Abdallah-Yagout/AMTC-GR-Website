@@ -22,6 +22,6 @@ class GamingExperience extends ProfileSectionForm
 
     public function render()
     {
-        return view('livewire.gaming-experience', $this->sectionViewData());
+        return view('livewire.gaming-experience');
     }
 }

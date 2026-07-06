@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Support\ProfileCompletion;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 use Laravel\Jetstream\Http\Livewire\UpdateProfileInformationForm;
+use Livewire\Attributes\Computed;
 
 abstract class ProfileSectionForm extends UpdateProfileInformationForm
 {
@@ -14,22 +15,16 @@ abstract class ProfileSectionForm extends UpdateProfileInformationForm
     {
         parent::updateProfileInformation($updater);
 
+        $this->user->unsetRelation('profile');
+        unset($this->sectionComplete);
+
         $this->dispatch('profile-updated');
     }
 
-    protected function sectionComplete(): bool
+    #[Computed]
+    public function sectionComplete(): bool
     {
-        return ProfileCompletion::for(auth()->user()?->profile)
+        return ProfileCompletion::for($this->user->profile)
             ->isSectionComplete($this->sectionKey());
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    protected function sectionViewData(): array
-    {
-        return [
-            'sectionComplete' => $this->sectionComplete(),
-        ];
     }
 }

@@ -1,4 +1,5 @@
 import './bootstrap';
+import { isRtl, t } from './i18n';
 
 function initVideoGallery(root) {
     const track = root.querySelector('[data-video-track]');
@@ -21,7 +22,7 @@ function initVideoGallery(root) {
         const dot = document.createElement('button');
         dot.type = 'button';
         dot.className = 'video-coverflow-dot';
-        dot.setAttribute('aria-label', `Go to video ${index + 1}`);
+        dot.setAttribute('aria-label', t('goToVideo', { number: index + 1 }));
         dot.addEventListener('click', () => {
             activeIndex = index;
             render();
@@ -40,8 +41,9 @@ function initVideoGallery(root) {
                 offset += slidesLength;
             }
             const absOffset = Math.abs(offset);
-            const rotate = offset * -18;
-            const shiftX = offset * 44;
+            const rtlMultiplier = isRtl() ? -1 : 1;
+            const rotate = offset * -18 * rtlMultiplier;
+            const shiftX = offset * 44 * rtlMultiplier;
             const scale = 1 - Math.min(absOffset * 0.18, 0.42);
             const opacity = absOffset > 2 ? 0 : (1 - (absOffset * 0.22));
 
@@ -75,7 +77,7 @@ function initVideoGallery(root) {
         } else if (sourceType === 'upload' && uploadUrl) {
             modalPlayer.innerHTML = `<video src="${uploadUrl}" controls autoplay playsinline></video>`;
         } else {
-            modalPlayer.innerHTML = '<div class="p-6 text-white">Video unavailable.</div>';
+            modalPlayer.innerHTML = `<div class="p-6 text-white">${t('videoUnavailable')}</div>`;
         }
 
         modal.classList.remove('hidden');
@@ -132,7 +134,8 @@ function initVideoGallery(root) {
         if (Math.abs(deltaX) < 55) {
             return;
         }
-        activeIndex = deltaX < 0
+        const swipeNext = isRtl() ? deltaX > 0 : deltaX < 0;
+        activeIndex = swipeNext
             ? (activeIndex + 1) % slides.length
             : (activeIndex - 1 + slides.length) % slides.length;
         isSwiping = false;
@@ -242,7 +245,7 @@ function initHomeHeroSlider() {
         const dot = document.createElement('button');
         dot.type = 'button';
         dot.className = 'home-hero-dot';
-        dot.setAttribute('aria-label', `Go to slide ${index + 1}`);
+        dot.setAttribute('aria-label', t('goToSlide', { number: index + 1 }));
         dot.addEventListener('click', () => {
             activeIndex = index;
             render();
@@ -412,8 +415,8 @@ function initChatbotWidget() {
         sendButton.disabled = submitting;
         input.disabled = submitting;
         if (submitting) {
-            setStatusText('Assistant is typing...');
-        } else if (status.textContent === 'Assistant is typing...') {
+            setStatusText(t('assistantTyping'));
+        } else if (status.textContent === t('assistantTyping')) {
             setStatusText('');
         }
     }
@@ -500,14 +503,14 @@ function initChatbotWidget() {
         }
 
         if (!response.ok) {
-            const fallbackError = 'The assistant is currently unavailable. Please try again.';
+            const fallbackError = t('assistantUnavailable');
             const serverMessage = data && typeof data.reply === 'string' ? data.reply : fallbackError;
             throw new Error(serverMessage);
         }
 
         return data && typeof data.reply === 'string'
             ? data.reply
-            : 'I received your message, but I could not generate a response yet.';
+            : t('assistantNoResponse');
     }
 
     form.addEventListener('submit', async (event) => {
@@ -530,10 +533,10 @@ function initChatbotWidget() {
             addMessage('bot', reply);
             setStatusText('');
         } catch (error) {
-            const fallback = 'The assistant is currently unavailable. Please try again.';
+            const fallback = t('assistantUnavailable');
             const errorMessage = error instanceof Error && error.message ? error.message : fallback;
             addMessage('bot', errorMessage);
-            setStatusText('Connection issue detected.');
+            setStatusText(t('connectionIssue'));
         } finally {
             setSubmitting(false);
             persistHistory();

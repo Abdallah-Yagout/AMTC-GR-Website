@@ -25,6 +25,6 @@ class BasicInfo extends ProfileSectionForm
 
     public function render()
     {
-        return view('livewire.basic-info', $this->sectionViewData());
+        return view('livewire.basic-info');
     }
 }

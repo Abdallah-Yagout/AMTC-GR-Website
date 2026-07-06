@@ -4,7 +4,7 @@
         <div class="container mx-auto px-6">
             <div class="max-w-4xl mx-auto text-center">
                 <h1 class="text-4xl md:text-5xl font-bold mb-6">{{ $news->title }}</h1>
-                <div class="flex items-center justify-center space-x-4 text-gray-300">
+                <div class="flex items-center justify-center gap-4 text-gray-300">
                     <span>{{ $news->created_at->format('F j, Y') }}</span>
                 </div>
             </div>
@@ -30,8 +30,8 @@
 
                 <!-- Share Buttons -->
                 <div class="mt-12 pt-8 border-t border-gray-200">
-                    <h3 class="text-lg font-semibold mb-4">Share this article</h3>
-                    <div class="flex space-x-4">
+                    <h3 class="text-lg font-semibold mb-4">{{ __('Share this article') }}</h3>
+                    <div class="flex gap-4">
                         <a href="#" class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition-colors">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/>
@@ -72,7 +72,7 @@
                                 <p class="text-gray-600 mb-4">{{ Str::limit($related->excerpt, 100) }}</p>
                                 <a href="{{ route('news.view', $related->slug) }}" class="inline-flex items-center text-primary font-medium group">
                                     {{__('Read More')}}
-                                    <svg class="ml-1 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 {{app()->getLocale()=='ar'?'rotate-180':''}}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="ms-1 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 {{app()->getLocale()=='ar'?'rotate-180':''}}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
                                     </svg>
 

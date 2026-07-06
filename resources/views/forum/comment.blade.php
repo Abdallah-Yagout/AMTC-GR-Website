@@ -11,7 +11,7 @@
                 <span class="text-gray-500 hidden sm:inline">•</span>
                 <span class="text-gray-400 whitespace-nowrap">{{ $comment->created_at->diffForHumans() }}</span>
 
-                <div class="flex gap-1 sm:gap-2 ml-auto sm:ml-2">
+                <div class="flex gap-1 sm:gap-2 ms-auto sm:ms-2">
                     @auth
                         <button class="cursor-pointer text-blue-400 hover:text-blue-500 hover:underline reply-btn text-xs sm:text-sm"
                                 data-comment-id="{{ $comment->id }}">
@@ -72,7 +72,7 @@
             {{ __('Show Replies') }} ({{ $comment->replies->count() }})
         </button>
 
-        <div class="replies-container mt-3 sm:mt-4 ml-5 sm:ml-10 space-y-3 sm:space-y-4 pl-3 sm:pl-4 border-l-2 border-gray-700 hidden"
+        <div class="replies-container mt-3 sm:mt-4 ms-5 sm:ms-10 space-y-3 sm:space-y-4 ps-3 sm:ps-4 border-s-2 border-gray-700 hidden"
              id="replies-{{ $comment->id }}">
             @foreach($comment->replies as $reply)
                 @include('forum.reply', ['reply' => $reply])

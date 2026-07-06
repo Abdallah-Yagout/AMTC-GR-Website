@@ -572,9 +572,9 @@
                     };
 
                     const notification = $(`
-                    <div class="fixed top-4 right-4 px-4 py-2 ${colors[type]} text-white rounded-md shadow-md text-sm md:text-base flex items-center justify-between min-w-[200px]">
+                    <div class="fixed top-4 end-4 px-4 py-2 ${colors[type]} text-white rounded-md shadow-md text-sm md:text-base flex items-center justify-between min-w-[200px]">
                         <span>${message}</span>
-                        <button class="ml-2" onclick="$(this).parent().remove()">×</button>
+                        <button class="ms-2" onclick="$(this).parent().remove()">×</button>
                     </div>
                 `);
 

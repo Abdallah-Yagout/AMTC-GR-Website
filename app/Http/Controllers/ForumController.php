@@ -232,6 +232,6 @@ class ForumController extends Controller
         }
 
         // 5. Redirect or respond
-        return redirect()->route('forum.index')->with('success', 'Post created successfully.');
+        return redirect()->route('forum.index')->with('success', __('Post created successfully.'));
     }
 }

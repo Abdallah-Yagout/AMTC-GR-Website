@@ -22,6 +22,6 @@ class AdditionalInformation extends ProfileSectionForm
 
     public function render()
     {
-        return view('livewire.additional-information', $this->sectionViewData());
+        return view('livewire.additional-information');
     }
 }

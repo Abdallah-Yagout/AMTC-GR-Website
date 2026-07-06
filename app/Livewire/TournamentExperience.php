@@ -21,6 +21,6 @@ class TournamentExperience extends ProfileSectionForm
 
     public function render()
     {
-        return view('livewire.tournament-experience', $this->sectionViewData());
+        return view('livewire.tournament-experience');
     }
 }

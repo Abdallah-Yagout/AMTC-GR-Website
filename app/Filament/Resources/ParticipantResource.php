@@ -3,24 +3,18 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ParticipantResource\Pages;
-use App\Filament\Resources\ParticipantResource\RelationManagers;
+use App\Filament\Resources\ParticipantResource\Tables\ParticipantTableFilters;
 use App\Helpers\Location;
-use App\Models\Leaderboard;
 use App\Models\Participant;
 use App\Models\Tournament;
 use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Carbon;
 
 class ParticipantResource extends Resource
 {
@@ -28,10 +22,15 @@ class ParticipantResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-//    public static function getRecordRouteKeyName(): string
-//    {
-//        return 'user_id';
-//    }
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with(['user', 'profile', 'tournament']);
+    }
+
+    //    public static function getRecordRouteKeyName(): string
+    //    {
+    //        return 'user_id';
+    //    }
 
     public static function form(Form $form): Form
     {
@@ -56,13 +55,16 @@ class ParticipantResource extends Resource
                             ->label('Location')
                             ->options(function (callable $get) {
                                 $tournamentId = $get('tournament_id');
-                                if (!$tournamentId) return [];
+                                if (! $tournamentId) {
+                                    return [];
+                                }
 
                                 $tournament = \App\Models\Tournament::find($tournamentId);
                                 $locations = $tournament?->location ?? '[]';
 
-
-                                if (!is_array($locations)) return [];
+                                if (! is_array($locations)) {
+                                    return [];
+                                }
 
                                 return collect($locations)
                                     ->filter(fn ($loc) => filled($loc)) // remove null/empty strings
@@ -71,7 +73,7 @@ class ParticipantResource extends Resource
                             })
                             ->required()
 //                            ->disabled(fn (callable $get) => $get('tournament_id') === null)
-                            ->reactive()
+                            ->reactive(),
                     ])
                     ->columns(3)
                     ->visible(fn (string $operation): bool => $operation === 'create'),
@@ -87,18 +89,18 @@ class ParticipantResource extends Resource
                                     ->directory('gt-cup-profiles')
                                     ->columnSpanFull()
                                     ->visible(fn (string $operation): bool => $operation !== 'create')
-                                    ->disabled(fn (string $operation): bool =>  $operation === 'view'),
+                                    ->disabled(fn (string $operation): bool => $operation === 'view'),
                                 Forms\Components\TextInput::make('name')
                                     ->label('Full Name')
                                     ->required()
                                     ->columnSpan(1)
-                                    ->disabled(fn (string $operation): bool =>  $operation === 'view'),
+                                    ->disabled(fn (string $operation): bool => $operation === 'view'),
                                 Forms\Components\TextInput::make('email')
                                     ->email()
                                     ->required()
                                     ->unique(ignoreRecord: true)
                                     ->columnSpan(1)
-                                    ->disabled(fn (string $operation): bool =>  $operation === 'view'),
+                                    ->disabled(fn (string $operation): bool => $operation === 'view'),
 
                                 Forms\Components\Fieldset::make('birthdate')
                                     ->label(null)
@@ -117,9 +119,9 @@ class ParticipantResource extends Resource
                                     ->options([
                                         'male' => 'Male',
                                         'female' => 'Female',
-                                        'other' => 'Other'
+                                        'other' => 'Other',
                                     ])
-                                    ->relationship('profile','gender')
+                                    ->relationship('profile', 'gender')
                                     ->columnSpan(1)
                                     ->visible(fn (string $operation): bool => $operation === 'edit'),
 
@@ -127,7 +129,7 @@ class ParticipantResource extends Resource
                                     ->label('City of Residence')
                                     ->options(Location::cities())
                                     ->relationship('profile', 'city')
-                                    ->visible(fn (string $operation): bool => $operation === 'edit')
+                                    ->visible(fn (string $operation): bool => $operation === 'edit'),
 
                             ])
                             ->columns(3)
@@ -154,9 +156,9 @@ class ParticipantResource extends Resource
                                             ->label('WhatsApp Number')
                                             ->tel()
                                             ->columnSpanFull()
-                                            ->disabled(fn (string $operation): bool => $operation === 'create')
+                                            ->disabled(fn (string $operation): bool => $operation === 'create'),
                                     ])
-                                    ->columns(1)
+                                    ->columns(1),
                             ])
                             ->columnSpan(1)
                             ->columns(1)
@@ -221,7 +223,7 @@ class ParticipantResource extends Resource
                                                 'fortnite' => 'Fortnite',
                                                 'apex' => 'Apex Legends',
                                                 'minecraft' => 'Minecraft',
-                                                'gta' => 'GTA V'
+                                                'gta' => 'GTA V',
                                             ])
                                             ->afterStateHydrated(function ($component, $state) {
                                                 if (is_string($state)) {
@@ -237,7 +239,7 @@ class ParticipantResource extends Resource
                                                 'top1' => 'My favorite game',
                                                 'top3' => 'In my top 3 games',
                                                 'top5' => 'In my top 5 games',
-                                                'lower' => 'Lower than that'
+                                                'lower' => 'Lower than that',
                                             ])
                                             ->disabled(fn (string $operation): bool => $operation === 'create'),
                                     ]),
@@ -250,7 +252,7 @@ class ParticipantResource extends Resource
                                                 'expert' => 'I know them well and follow their news',
                                                 'knowledgeable' => 'I have some knowledge about them',
                                                 'heard' => 'I\'ve only heard of them',
-                                                'unknown' => 'I don\'t know them at all'
+                                                'unknown' => 'I don\'t know them at all',
                                             ])
                                             ->disabled(fn (string $operation): bool => $operation === 'create'),
                                         Forms\Components\Textarea::make('favorite_car')
@@ -290,7 +292,7 @@ class ParticipantResource extends Resource
                                                 'social_media' => 'Social Media',
                                                 'friends' => 'Friends & Family',
                                                 'gaming_cafes' => 'Gaming Cafes',
-                                                'websites' => 'Websites'
+                                                'websites' => 'Websites',
                                             ])
                                             ->disabled(fn (string $operation): bool => $operation === 'create'),
                                         Forms\Components\CheckboxList::make('motivation')
@@ -300,7 +302,7 @@ class ParticipantResource extends Resource
                                                 'love_cars' => 'Love of cars/driving',
                                                 'challenge' => 'Challenge & Competition',
                                                 'toyota_experience' => 'Toyota GR experience',
-                                                'skill_development' => 'Skill development'
+                                                'skill_development' => 'Skill development',
                                             ])
                                             ->afterStateHydrated(function ($component, $state) {
                                                 if (is_string($state)) {
@@ -316,7 +318,7 @@ class ParticipantResource extends Resource
                                                 'afternoon' => 'Afternoon',
                                                 'evening' => 'Evening',
                                                 'weekend' => 'Weekends only',
-                                                'flexible' => 'Flexible (any time)'
+                                                'flexible' => 'Flexible (any time)',
                                             ])
                                             ->disabled(fn (string $operation): bool => $operation === 'create'),
                                         Forms\Components\Textarea::make('suggestions')
@@ -351,7 +353,7 @@ class ParticipantResource extends Resource
                             ->default('User')
                             ->disabled(fn (string $operation): bool => $operation === 'edit' || $operation === 'view'),
                     ])
-                    ->visible(fn (string $operation): bool => $operation !== 'create' && auth()->user()?->type === 1)
+                    ->visible(fn (string $operation): bool => $operation !== 'create' && auth()->user()?->type === 1),
 
             ]);
     }
@@ -360,9 +362,24 @@ class ParticipantResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('user.name'),
-                TextColumn::make('tournament.title'),
-                TextColumn::make('location'),
+                TextColumn::make('user.name')
+                    ->label('Name')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('user.email')
+                    ->label('Email')
+                    ->searchable()
+                    ->toggleable(),
+                TextColumn::make('tournament.title')
+                    ->label('Tournament')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('location')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('profile.city')
+                    ->label('City')
+                    ->toggleable(),
                 Tables\Columns\TextColumn::make('profile.skill_level')
                     ->label('Skill Level')
                     ->badge()
@@ -378,31 +395,15 @@ class ParticipantResource extends Resource
                         'expert' => 'success',
                         default => 'gray',
                     }),
+                TextColumn::make('created_at')
+                    ->label('Registered')
+                    ->dateTime('Y-m-d H:i')
+                    ->sortable()
+                    ->toggleable(),
             ])
-            ->filters([
-                Tables\Filters\SelectFilter::make('tournament_id')
-                    ->label('Tournament')
-                    ->options(
-                        Tournament::all()->mapWithKeys(function ($tournament) {
-                            $formattedDate = \Carbon\Carbon::parse($tournament->date)->format('Y-m-d');
-                            return [
-                                $tournament->id => "{$tournament->title} . {$formattedDate}"
-                            ];
-                        })->toArray()
-                    )
-                    ->searchable(),
-
-                Tables\Filters\SelectFilter::make('location')
-                    ->label('Location')
-                    ->options(
-                        Leaderboard::query()
-                            ->distinct()
-                            ->pluck('location', 'location')
-                            ->toArray()
-                    )
-                    ->searchable(),
-
-            ])
+            ->filters(ParticipantTableFilters::make())
+            ->filtersFormColumns(2)
+            ->filtersLayout(ParticipantTableFilters::layout())
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make(),

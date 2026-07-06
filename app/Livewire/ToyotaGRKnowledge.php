@@ -20,6 +20,6 @@ class ToyotaGRKnowledge extends ProfileSectionForm
 
     public function render()
     {
-        return view('livewire.toyota-g-r-knowledge', $this->sectionViewData());
+        return view('livewire.toyota-g-r-knowledge');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Support\ProfileCompletion;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Profile extends Model
@@ -92,6 +93,34 @@ class Profile extends Model
     public function isSectionComplete(string $section): bool
     {
         return ProfileCompletion::for($this)->isSectionComplete($section);
+    }
+
+    public function scopeRegistrationComplete(Builder $query): Builder
+    {
+        foreach (self::REQUIRED_COMPLETION_FIELDS as $field) {
+            if (in_array($field, ['participated_before', 'has_ps5', 'wants_training', 'join_whatsapp'], true)) {
+                $query->whereNotNull($field);
+
+                continue;
+            }
+
+            if (in_array($field, ['favorite_games', 'motivation'], true)) {
+                $query->whereNotNull($field)
+                    ->where($field, '!=', '')
+                    ->where($field, '!=', '[]');
+
+                continue;
+            }
+
+            $query->whereNotNull($field)->where($field, '!=', '');
+        }
+
+        return $query;
+    }
+
+    public function scopeRegistrationIncomplete(Builder $query): Builder
+    {
+        return $query->whereNot(fn (Builder $inner): Builder => $inner->registrationComplete());
     }
 
     protected function isEmptyForCompletion(mixed $value): bool

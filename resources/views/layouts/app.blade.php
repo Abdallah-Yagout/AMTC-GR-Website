@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" dir="{{ session('dir', 'ltr') }}">
+<html lang="{{ app()->getLocale() }}" dir="{{ $dir ?? (app()->getLocale() === 'ar' ? 'rtl' : 'ltr') }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,9 +9,20 @@
         @stack('head')
 
         <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="https://unpkg.com/trix@1.3.1/dist/trix.css">
+
+        <script>
+            window.__locale = @json(app()->getLocale());
+            window.__translations = {
+                goToSlide: @json(__('Go to slide :number')),
+                goToVideo: @json(__('Go to video :number')),
+                videoUnavailable: @json(__('Video unavailable.')),
+                assistantTyping: @json(__('Assistant is typing...')),
+                assistantUnavailable: @json(__('The assistant is currently unavailable. Please try again.')),
+                assistantNoResponse: @json(__('I received your message, but I could not generate a response yet.')),
+                connectionIssue: @json(__('Connection issue detected.')),
+            };
+        </script>
 
         <!-- Before </body> -->
         <script src="https://unpkg.com/trix@1.3.1/dist/trix.js"></script>
@@ -54,7 +65,7 @@
                 padding: 2px;
                 border-radius: 10px;
                 border: none !important;     /* Remove borders */
-                margin-right: 0.5rem;        /* Add space between buttons */
+                margin-inline-end: 0.5rem;
             }
 
             /* Remove border on hover/active states too */
@@ -107,7 +118,7 @@
     <div class="site-neon-led site-neon-led-left" aria-hidden="true"></div>
     <div class="site-neon-led site-neon-led-right" aria-hidden="true"></div>
     @if(session('error'))
-        <div class="fixed top-4 right-4 px-4 py-2 bg-red-600 text-white rounded">
+        <div class="fixed top-4 end-4 px-4 py-2 bg-red-600 text-white rounded">
             {{ session('error') }}
         </div>
     @endif
@@ -145,7 +156,7 @@
             <div class="w-full max-w-md transform transition-all duration-300 scale-95 opacity-0 rounded-lg bg-gray-800 p-6 shadow-xl" id="modal-content">
             <h3 class="text-xl font-bold text-white mb-3">{{__('Delete Comment')}}</h3>
             <p class="text-gray-300 mb-6">{{__('Are you sure you want to delete this comment? This action cannot be undone.')}}</p>
-            <div class="flex justify-end space-x-3">
+            <div class="flex justify-end gap-3">
                 <button id="cancel-btn" class="px-4 cursor-pointer me-3 py-2 rounded-md bg-gray-600 hover:bg-gray-500 text-white transition-colors">
                     {{__('Cancel')}}
                 </button>

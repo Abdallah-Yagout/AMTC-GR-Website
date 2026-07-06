@@ -54,4 +54,15 @@ class Participant extends Model
             'leaderboards.tournament',
         ]);
     }
+
+    public function hasPublishedResult(): bool
+    {
+        return $this->leaderboards->contains(function ($leaderboard): bool {
+            $pivot = $leaderboard->pivot;
+
+            return ! is_null($pivot?->position)
+                || ! is_null($pivot?->time_taken)
+                || ! is_null($pivot?->status);
+        });
+    }
 }
